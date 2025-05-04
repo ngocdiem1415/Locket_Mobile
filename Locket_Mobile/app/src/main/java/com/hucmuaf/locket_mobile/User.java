@@ -7,18 +7,29 @@ public class User {
    private String email;
    private String phoneNumber;
    private String urlAvatar;
+   private String password;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public User(String id, String userName, String fullName, String email, String phoneNumber, String urlAvatar) {
+
+    public User(String id, String userName, String fullName, String email, String phoneNumber, String urlAvatar, String password) {
         this.id = id;
         this.userName = userName;
         this.fullName = fullName;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.urlAvatar = urlAvatar;
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getId() {

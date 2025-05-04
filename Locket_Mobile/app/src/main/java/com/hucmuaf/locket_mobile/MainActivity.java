@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         });
         
         // Tạo dữ liệu mẫu
-        User user1 = new User("1", "tuvo", "Võ Thị Cẩm Tú", "tuvo@example.com", "0123456789", "https://linktoavatar.com");
+        User user1 = new User("1", "tuvo", "Võ Thị Cẩm Tú", "tuvo@example.com", "0123456789", "https://linktoavatar.com","123");
 
         Friend friend1 = new Friend("1", "tuvo");
 
