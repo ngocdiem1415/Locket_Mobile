@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="gray">#858080</color>
+    <color name="hint_white">#00FFFFFF</color>
+    <color name="light_gray">#DDDDDD</color>
+    <color name="white">#FFFFFFFF</color>
+    <string name="app_name">Locket_Mobile</string>
+    <style name="Base.Theme.Locket_Mobile" parent="Theme.Material3.DayNight.NoActionBar">
+        
+        
+    </style>
+    <style name="Theme.Locket_Mobile" parent="Base.Theme.Locket_Mobile"/>
+</resources>
