@@ -2,4 +2,10 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="pallet1">#191C21</color>
+    <color name="pallet2">#33363B</color>
+    <color name="pallet3">#D5DEEF</color>
+    <color name="pallet4">#F0FAF3</color>
+    <color name="pallet5">#5465FB</color>
+    <color name="whiteBray">#6F9EAFF1</color>
 </resources>
