@@ -1,30 +1,41 @@
 package com.hucmuaf.locket_mobile;
 
+import java.time.LocalDateTime;
+
 public class Friend {
-   private String id;
-   private String nameOfFriend;
+    public String userId;     // người dùng hiện tại
+    public String friendId;   // bạn của người dùng
+    public long since;        // thời điểm kết bạn
 
-    public Friend() {
+    public Friend() {}
+
+    public Friend(String userId, String friendId, long since) {
+        this.userId = userId;
+        this.friendId = friendId;
+        this.since = since;
     }
 
-    public Friend(String id, String nameOfFriend) {
-        this.id = id;
-        this.nameOfFriend = nameOfFriend;
+    public String getUserId() {
+        return userId;
     }
 
-    public String getId() {
-        return id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getFriendId() {
+        return friendId;
     }
 
-    public String getNameOfFriend() {
-        return nameOfFriend;
+    public void setFriendId(String friendId) {
+        this.friendId = friendId;
     }
 
-    public void setNameOfFriend(String nameOfFriend) {
-        this.nameOfFriend = nameOfFriend;
+    public long getSince() {
+        return since;
+    }
+
+    public void setSince(long since) {
+        this.since = since;
     }
 }

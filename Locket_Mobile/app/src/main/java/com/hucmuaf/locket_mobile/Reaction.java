@@ -2,16 +2,16 @@ package com.hucmuaf.locket_mobile;
 
 import java.time.LocalDateTime;
 
-public class Activity {
+public class Reaction {
    private String userId;
    private String imageId;
    private String icon;
-   private LocalDateTime timestamp;
+   private long timestamp;
 
-    public Activity() {
+    public Reaction() {
     }
 
-    public Activity(String userId, String imageId, String icon, LocalDateTime timestamp) {
+    public Reaction(String userId, String imageId, String icon, long timestamp) {
         this.userId = userId;
         this.imageId = imageId;
         this.icon = icon;
@@ -42,11 +42,11 @@ public class Activity {
         this.icon = icon;
     }
 
-    public LocalDateTime getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 }
