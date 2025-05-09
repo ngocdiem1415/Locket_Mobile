@@ -1394,6 +1394,7 @@ color cardview_dark_background
 color cardview_light_background
 color cardview_shadow_end_color
 color cardview_shadow_start_color
+color dark_gray
 color design_bottom_navigation_shadow_color
 color design_box_stroke_color
 color design_dark_default_color_background
@@ -3020,11 +3021,13 @@ drawable btn_radio_on_to_off_mtrl_animation
 drawable circle_border
 drawable circle_border_yellow
 drawable circle_white
+drawable dark_gray_border
 drawable design_fab_background
 drawable design_ic_visibility
 drawable design_ic_visibility_off
 drawable design_password_eye
 drawable design_snackbar_background
+drawable gray_border
 drawable ic_arrow_back_black_24
 drawable ic_call_answer
 drawable ic_call_answer_low
@@ -3370,6 +3373,7 @@ id invisible
 id inward
 id italic
 id item_touch_helper_previous_elevation
+id ivIcon
 id jumpToEnd
 id jumpToStart
 id labeled
@@ -3381,11 +3385,14 @@ id line1
 id line3
 id linear
 id listMode
+id list_friends
 id list_item
 id m3_side_sheet
 id main
 id main_layout
+id main_screen
 id marquee
+id mask
 id masked
 id match_constraint
 id match_parent
@@ -3624,6 +3631,7 @@ id transition_position
 id transition_scene_layoutid_cache
 id transition_transform
 id triangle
+id tvName
 id unchecked
 id uniform
 id unlabeled
@@ -3783,6 +3791,7 @@ layout home
 layout ime_base_split_test_activity
 layout ime_secondary_split_test_activity
 layout input_method_extract_view
+layout item_friend
 layout m3_alert_dialog
 layout m3_alert_dialog_actions
 layout m3_alert_dialog_title
@@ -3850,6 +3859,7 @@ mipmap add_reaction
 mipmap cached
 mipmap down_toggle
 mipmap flash
+mipmap friends
 mipmap grid_view
 mipmap groups
 mipmap ic_launcher
@@ -3857,6 +3867,7 @@ mipmap ic_launcher_round
 mipmap message_circle
 mipmap metro
 mipmap pending
+mipmap right_arrow
 mipmap trathanhtuyen
 plurals mtrl_badge_content_description
 string abc_action_bar_home_description
