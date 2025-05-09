@@ -1,14 +1,32 @@
 package com.hucmuaf.locket_mobile;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.SurfaceTexture;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCaptureSession;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraDevice;
+import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraMetadata;
+import android.hardware.camera2.CaptureRequest;
 import android.os.Bundle;
+import android.view.GestureDetector;
+import android.view.Surface;
+import android.view.TextureView;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.core.app.ActivityCompat;
+
+import java.util.Collections;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,16 +39,159 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private TextureView textureView;
+    private CameraDevice cameraDevice;
+    private CaptureRequest.Builder captureRequestBuilder;
+    private CameraCaptureSession cameraCaptureSession;
+    private String cameraId;
+    private CameraManager cameraManager;
+
+    private boolean isFrontCamera = false; // true = trước, false = sau
+
+    GestureDetector gestureDetector;
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+        setContentView(R.layout.home);
+//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_layout), (v, insets) -> {
+//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+//            return insets;
+//        });
+
+        View main = findViewById(R.id.main_layout);
+        gestureDetector = new GestureDetector(this, new SwipeGestureListener(this));
+        main.setOnTouchListener((v, event) -> gestureDetector.onTouchEvent(event));
+
+        ImageView cached = findViewById(R.id.cached);
+        cached.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onPause();
+                isFrontCamera = !isFrontCamera; // đổi chiều
+                openCamera();
+            }
         });
+
+        textureView = findViewById(R.id.camera_preview);
+
+        cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+        textureView.setSurfaceTextureListener(surfaceTextureListener);
+
+    }
+
+    private String getCameraId(boolean useFrontCamera) throws CameraAccessException {
+        CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+        for (String id : manager.getCameraIdList()) {
+            CameraCharacteristics characteristics = manager.getCameraCharacteristics(id);
+            Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
+            if (useFrontCamera && facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
+                return id;
+            } else if (!useFrontCamera && facing != null && facing == CameraCharacteristics.LENS_FACING_BACK) {
+                return id;
+            }
+        }
+        return null; // Không tìm thấy camera
+    }
+
+    private final TextureView.SurfaceTextureListener surfaceTextureListener =
+            new TextureView.SurfaceTextureListener() {
+                @Override
+                public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
+                    openCamera();
+                }
+
+                @Override
+                public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+                }
+
+                @Override
+                public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+                    return false;
+                }
+
+                @Override
+                public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+                }
+            };
+
+    private void openCamera() {
+        CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+
+        try {
+            cameraId = getCameraId(isFrontCamera);
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 101);
+                return;
+            }
+            cameraManager.openCamera(cameraId, stateCallback, null);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
+        @Override
+        public void onOpened(@NonNull CameraDevice camera) {
+            cameraDevice = camera;
+            createCameraPreview();
+        }
+
+        @Override
+        public void onDisconnected(@NonNull CameraDevice camera) {
+            camera.close();
+            cameraDevice = null;
+        }
+
+        @Override
+        public void onError(@NonNull CameraDevice camera, int error) {
+            camera.close();
+            cameraDevice = null;
+        }
+    };
+
+    private void createCameraPreview() {
+        try {
+            SurfaceTexture texture = textureView.getSurfaceTexture();
+            assert texture != null;
+            texture.setDefaultBufferSize(1080, 1920); // hoặc dùng kích thước camera output phù hợp
+            Surface surface = new Surface(texture);
+            captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+            captureRequestBuilder.addTarget(surface);
+
+            cameraDevice.createCaptureSession(Collections.singletonList(surface), new CameraCaptureSession.StateCallback() {
+                @Override
+                public void onConfigured(@NonNull CameraCaptureSession session) {
+                    cameraCaptureSession = session;
+                    try {
+                        captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
+                        session.setRepeatingRequest(captureRequestBuilder.build(), null, null);
+                    } catch (CameraAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onConfigureFailed(@NonNull CameraCaptureSession session) {
+                    Toast.makeText(MainActivity.this, "Cấu hình camera thất bại!", Toast.LENGTH_SHORT).show();
+                }
+            }, null);
+
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        if (cameraDevice != null) {
+            cameraDevice.close();
+            cameraDevice = null;
+        }
+        super.onPause();
 
         // Firebase reference
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -106,5 +267,6 @@ public class MainActivity extends AppCompatActivity {
         DatabaseReference reactionsRef = myRef.child("reactions").child(imageId);
         Reaction reaction = new Reaction("u2", imageId, "❤️", System.currentTimeMillis());
         reactionsRef.child("u2").setValue(reaction);
+
     }
 }
