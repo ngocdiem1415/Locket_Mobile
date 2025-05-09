@@ -16,8 +16,6 @@ public class SwipeGestureListener extends GestureDetector.SimpleOnGestureListene
         this.context = context;
     }
 
-
-
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2,
                            float velocityX, float velocityY) {

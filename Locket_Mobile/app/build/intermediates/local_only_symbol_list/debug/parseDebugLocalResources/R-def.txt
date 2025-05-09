@@ -25,6 +25,7 @@ id camera_preview
 id down_toggle
 id flash
 id friends
+id friends_board
 id ivIcon
 id list_friends
 id main
