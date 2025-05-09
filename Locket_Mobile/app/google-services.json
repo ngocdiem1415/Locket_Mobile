@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1090123548415",
+    "project_id": "modis-8f5f6",
+    "storage_bucket": "modis-8f5f6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090123548415:android:6443d3910ccf205b1e2eca",
+        "android_client_info": {
+          "package_name": "com.hucmuaf.locket_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7oNN-keDYSusHIJdSohTEQ4I8L6L2rsU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
