@@ -1,7 +1,7 @@
 package com.hucmuaf.locket_mobile;
 
 public class User {
-   private String id;
+   private String userId;
    private String userName;
    private String fullName;
    private String email;
@@ -14,8 +14,8 @@ public class User {
     }
 
 
-    public User(String id, String userName, String fullName, String email, String phoneNumber, String urlAvatar, String password) {
-        this.id = id;
+    public User(String userId, String userName, String fullName, String email, String phoneNumber, String urlAvatar, String password) {
+        this.userId = userId;
         this.userName = userName;
         this.fullName = fullName;
         this.email = email;
@@ -32,12 +32,12 @@ public class User {
         this.password = password;
     }
 
-    public String getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getUserName() {
