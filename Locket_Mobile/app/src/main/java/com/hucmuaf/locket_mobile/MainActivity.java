@@ -54,49 +54,25 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-    }
         // Firebase reference
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference();
-// Read from the database
+
+        // Lắng nghe thay đổi
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
                 String value = dataSnapshot.getValue(String.class);
-                // xử lý dữ liệu
-                Toast.makeText(getBaseContext(), "Value is", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "Value is: " + value, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                // Failed to read value
                 Toast.makeText(getBaseContext(), "Failed to read value", Toast.LENGTH_SHORT).show();
             }
         });
-        
-        // Tạo dữ liệu mẫu
-//        User user1 = new User("1", "tuvo", "Võ Thị Cẩm Tú", "tuvo@example.com", "0123456789", "https://linktoavatar.com","123");
-//
-//        Friend friend1 = new Friend("1", "tuvo");
-//
-//        Message message1 = new Message("text", "Hello!", "1");
-//
-//        Reaction activity1 = new Reaction("1", "image1", "1", "activity_icon.png");
-//
-//        Image image1 = new Image("image1", "https://linktoimage.com", "A beautiful image");
-//
-//        // Đẩy lên Firebase Realtime Database
-//        myRef.child("users").child(user1.getId()).setValue(user1);
-//
-//        myRef.child("friends").child(user1.getId()).child(friend1.getId()).setValue(friend1);
-//
-//        myRef.child("messages").child("message1").setValue(message1);
-//
-//        myRef.child("activities").child("activity1").setValue(activity1);
-//
-//        myRef.child("images").child(image1.getId()).setValue(image1);
+
+        // Thêm dữ liệu mẫu
         DatabaseReference usersRef = myRef.child("users");
         User user1 = new User("u1", "namnguyen", "Nguyễn Nam", "nam@gmail.com", "0987654321", "https://example.com/avatars/user123.jpg", "123");
         User user2 = new User("u2", "linhphan", "Phan Linh", "linh@gmail.com", "0909123456", "https://example.com/avatars/user456.jpg", "123");
@@ -117,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
         DatabaseReference imagesRef = myRef.child("images");
         String imageId = imagesRef.push().getKey();
-        List<String> receivers = Arrays.asList("u1", "u2");  // danh sách id bạn nhận ảnh
+        List<String> receivers = Arrays.asList("u1", "u2");
         Image image = new Image(imageId, "https://example.com/photo1.jpg", "Buổi chiều 🌇", System.currentTimeMillis(), "u1", receivers);
         imagesRef.child(imageId).setValue(image);
 
@@ -129,7 +105,5 @@ public class MainActivity extends AppCompatActivity {
         DatabaseReference reactionsRef = myRef.child("reactions").child(imageId);
         Reaction reaction = new Reaction("u2", imageId, "❤️", System.currentTimeMillis());
         reactionsRef.child("u2").setValue(reaction);
-
     }
-
 }
