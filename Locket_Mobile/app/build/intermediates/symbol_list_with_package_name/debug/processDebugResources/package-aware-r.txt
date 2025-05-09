@@ -3339,6 +3339,7 @@ id floating
 id forever
 id fragment_container_view_tag
 id friends
+id friends_board
 id frost
 id fullscreen_header
 id ghost_view

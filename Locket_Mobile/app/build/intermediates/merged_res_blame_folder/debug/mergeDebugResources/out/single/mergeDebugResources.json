@@ -20,16 +20,16 @@
         "source": "C:\\Users\\KhanhDuy\\.gradle\\daemon\\8.10.2\\com.hucmuaf.locket_mobile.app-main-41:\\mipmap-hdpi\\add_reaction.png"
     },
     {
-        "merged": "com.hucmuaf.locket_mobile.app-debug-39:/layout_item_friend.xml.flat",
-        "source": "com.hucmuaf.locket_mobile.app-main-41:/layout/item_friend.xml"
-    },
-    {
         "merged": "C:\\Users\\KhanhDuy\\.gradle\\daemon\\8.10.2\\com.hucmuaf.locket_mobile.app-debug-39:\\layout_home.xml.flat",
         "source": "C:\\Users\\KhanhDuy\\.gradle\\daemon\\8.10.2\\com.hucmuaf.locket_mobile.app-main-41:\\layout\\home.xml"
     },
     {
         "merged": "C:\\Users\\KhanhDuy\\.gradle\\daemon\\8.10.2\\com.hucmuaf.locket_mobile.app-debug-39:\\mipmap-hdpi_ic_launcher_round.webp.flat",
         "source": "C:\\Users\\KhanhDuy\\.gradle\\daemon\\8.10.2\\com.hucmuaf.locket_mobile.app-main-41:\\mipmap-hdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.hucmuaf.locket_mobile.app-debug-39:/layout_react_emoji_comment.xml.flat",
+        "source": "com.hucmuaf.locket_mobile.app-main-41:/layout/react_emoji_comment.xml"
     },
     {
         "merged": "C:\\Users\\KhanhDuy\\.gradle\\daemon\\8.10.2\\com.hucmuaf.locket_mobile.app-debug-39:\\drawable_circle_border_yellow.xml.flat",
