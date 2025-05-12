@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.hucmuaf.locket_mobile.app-mergeDebugResources-37:/values-h720dp-v13/values-h720dp-v13.xml",
+            "outputFile": "com.hucmuaf.locket_mobile.app-mergeDebugResources-41:/values-h720dp-v13/values-h720dp-v13.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\KhanhDuy\\.gradle\\caches\\8.10.2\\transforms\\aa030002debd94c61701d5a2603f9463\\transformed\\appcompat-1.7.0\\res\\values-h720dp-v13\\values-h720dp-v13.xml",
+                    "source": "C:\\Users\\Camt9\\.gradle\\caches\\8.11.1\\transforms\\187dbca6334d10793c99f787ea0c79c4\\transformed\\appcompat-1.7.0\\res\\values-h720dp-v13\\values-h720dp-v13.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

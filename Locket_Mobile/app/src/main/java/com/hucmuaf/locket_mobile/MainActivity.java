@@ -2,6 +2,7 @@ package com.hucmuaf.locket_mobile;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -17,6 +18,7 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import android.widget.Toast;
@@ -61,7 +63,16 @@ public class MainActivity extends AppCompatActivity {
 //            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
 //            return insets;
 //        });
-
+// Tìm LinearLayout với id="friends" và thêm sự kiện onClick
+        LinearLayout friendsLayout = findViewById(R.id.friends);
+        friendsLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Chuyển sang ListFriendActivity
+                Intent intent = new Intent(MainActivity.this, ListFriendActivity.class);
+                startActivity(intent);
+            }
+        });
         View main = findViewById(R.id.main_layout);
         gestureDetector = new GestureDetector(this, new SwipeGestureListener(this));
         main.setOnTouchListener((v, event) -> gestureDetector.onTouchEvent(event));

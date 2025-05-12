@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.hucmuaf.locket_mobile.app-mergeDebugResources-37:/values-w400dp-port-v13/values-w400dp-port-v13.xml",
+            "outputFile": "com.hucmuaf.locket_mobile.app-mergeDebugResources-41:/values-w400dp-port-v13/values-w400dp-port-v13.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\KhanhDuy\\.gradle\\caches\\8.10.2\\transforms\\072b86c6d7ba725a1dde372b53182894\\transformed\\material-1.12.0\\res\\values-w400dp-port-v13\\values-w400dp-port-v13.xml",
+                    "source": "C:\\Users\\Camt9\\.gradle\\caches\\8.11.1\\transforms\\fb6c72d7b09600aaf1f9cfb57e26b23d\\transformed\\material-1.12.0\\res\\values-w400dp-port-v13\\values-w400dp-port-v13.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",

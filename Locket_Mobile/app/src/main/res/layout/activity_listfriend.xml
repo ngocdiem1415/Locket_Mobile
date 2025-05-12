@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#121212"
+    android:fitsSystemWindows="true"
     android:padding="16dp">
 
     <!-- Tiêu đề -->
@@ -11,6 +13,7 @@
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:text="Bạn bè của bạn"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
@@ -24,9 +27,11 @@
         android:id="@+id/friendCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:text="10 / 20 người bạn đã được bổ sung"
         android:textColor="#CCCCCC"
         android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title" />
 
@@ -38,12 +43,25 @@
         android:layout_marginTop="12dp"
         android:background="@drawable/search_box"
         android:hint="Thêm một người bạn"
-        android:textColorHint="#888888"
         android:paddingStart="12dp"
         android:textColor="#FFFFFF"
+        android:textColorHint="#888888"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/friendCount" />
+
+    <TextView
+        android:id="@+id/friendApp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:drawableStart="@drawable/ic_add_friend"
+        android:gravity="center_horizontal"
+        android:text="  Tìm bạn bè từ các ứng dụng khác"
+        android:textColor="#CCCCCC"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchFriend" />
 
     <!-- Gợi ý thêm từ app khác -->
     <LinearLayout
@@ -51,66 +69,177 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        android:background="@drawable/rounded_background"
+        android:gravity="center_horizontal"
         android:orientation="horizontal"
+        android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchFriend">
+        app:layout_constraintTop_toBottomOf="@id/friendApp">
 
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_messenger" />
+        <!-- First App: Messenger -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:minHeight="60dp"
+            android:orientation="vertical"
+            android:padding="4dp">
 
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_zalo" />
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_messenger" />
 
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_instagram" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Messenger"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
 
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_share" />
+        <!-- Second App: Facebook -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:minHeight="60dp"
+            android:orientation="vertical"
+            android:padding="4dp">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_facebook" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Facebook"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- Third App: Instagram -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:minHeight="60dp"
+            android:orientation="vertical"
+            android:padding="4dp">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_instagram" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Instagram"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- Fourth App: Share -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:minHeight="60dp"
+            android:orientation="vertical"
+            android:padding="4dp">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_share" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Share"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
+        </LinearLayout>
     </LinearLayout>
 
-    <!-- Danh sách bạn bè -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/friendList"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toTopOf="@id/suggestionTitle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appSuggestions" />
-
-    <!-- Gợi ý bạn bè -->
     <TextView
-        android:id="@+id/suggestionTitle"
+        android:id="@+id/yourFriend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="Các đề xuất"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
+        android:drawableStart="@drawable/ic_friend_group"
+        android:gravity="center_horizontal"
+        android:text="  Bạn bè của bạn"
+        android:textColor="#CCCCCC"
+        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/friendList" />
-
-    <!-- Danh sách đề xuất -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/suggestionList"
+        app:layout_constraintTop_toBottomOf="@id/appSuggestions" />
+    <LinearLayout
+        android:id="@+id/myFriends"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/suggestionTitle" />
+        app:layout_constraintTop_toBottomOf="@id/yourFriend">
 
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <!-- Avatar và Tên -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/circle_border_yellow"
+                    android:src="@drawable/avt" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CamTu"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
+
+            <!-- Spacer để đẩy nút xóa sang phải -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <!-- Nút xóa -->
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/remove" />
+        </LinearLayout>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

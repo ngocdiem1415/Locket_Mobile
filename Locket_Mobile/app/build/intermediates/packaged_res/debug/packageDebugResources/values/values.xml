@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="accent_color">#5465FB</color>
     <color name="black">#FF000000</color>
     <color name="dark_gray">#4D4B4B</color>
     <color name="gray">#858080</color>
     <color name="hint_white">#00FFFFFF</color>
     <color name="light_gray">#DDDDDD</color>
+    <color name="neutral_dark1">#191C21</color>
+    <color name="neutral_dark2">#33363B</color>
+    <color name="neutral_light1">#D5DEEF</color>
+    <color name="neutral_light2">#F0FAF3</color>
     <color name="white">#FFFFFFFF</color>
     <string name="app_name">Locket_Mobile</string>
+    <string name="gcm_defaultSenderId" translatable="false">1090123548415</string>
+    <string name="google_api_key" translatable="false">AIzaSyA7oNN-keDYSusHIJdSohTEQ4I8L6L2rsU</string>
+    <string name="google_app_id" translatable="false">1:1090123548415:android:6443d3910ccf205b1e2eca</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyA7oNN-keDYSusHIJdSohTEQ4I8L6L2rsU</string>
+    <string name="google_storage_bucket" translatable="false">modis-8f5f6.firebasestorage.app</string>
+    <string name="project_id" translatable="false">modis-8f5f6</string>
     <style name="Base.Theme.Locket_Mobile" parent="Theme.Material3.DayNight.NoActionBar">
         
         
+    </style>
+    <style name="ShapeAppearanceOverlay.App.Circle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
     </style>
     <style name="Theme.Locket_Mobile" parent="Base.Theme.Locket_Mobile"/>
 </resources>
