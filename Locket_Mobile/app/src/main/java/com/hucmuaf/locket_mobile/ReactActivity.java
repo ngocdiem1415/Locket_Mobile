@@ -1,6 +1,9 @@
 package com.hucmuaf.locket_mobile;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
@@ -38,15 +41,35 @@ public class ReactActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         List<ItemFriend> list = Arrays.asList(
+          new ItemFriend("account_icon", "Tất cả bạn bè"),
           new ItemFriend("account_icon", "Khanh Duy"),
-          new ItemFriend("account_icon", "Bích Loan"),
+          new ItemFriend("account_icon", "Cẩm Tú"),
           new ItemFriend("account_icon", "Tấn Lực"),
-          new ItemFriend("account_icon", "Thanh Diệu")
+          new ItemFriend("account_icon", "Thanh Diệu"),
+          new ItemFriend("account_icon", "Ngọc Diễm"),
+          new ItemFriend("account_icon", "Ngọc Diễm"),
+          new ItemFriend("account_icon", "Ngọc Diễm")
         );
 
         itemAdapter = new ItemFriendAdapter(this, list);
 
         recyclerView.setAdapter(itemAdapter);
+
+        View maskView = findViewById(R.id.mask);
+        LinearLayout layout = findViewById(R.id.friends_board);
+
+        ImageView down_toggle = findViewById(R.id.down_toggle);
+
+        down_toggle.setOnClickListener(v ->{
+            maskView.setVisibility(View.VISIBLE);
+            layout.setVisibility(View.VISIBLE);
+        });
+
+        maskView.setOnClickListener(e ->{
+            maskView.setVisibility(View.GONE);
+            layout.setVisibility(View.GONE);
+        });
+
 
     }
 }
