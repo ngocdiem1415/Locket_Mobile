@@ -1,6 +1,4 @@
-package com.hucmuaf.locket_mobile;
-
-import java.time.LocalDateTime;
+package vn.edu.hcumuaf.locket.model;
 
 public class Reaction {
    private String userId;
