@@ -23,7 +23,7 @@ public class MessageController {
 //        return messageService.sendMessage(chatId, message);
 //    }
     public CompletableFuture<String> sendMessage(@PathVariable("chatId") String chatId, @RequestBody Message message) {
-        return messageService.sendMessage(chatId, message);
+        return messageService.sendMessage( message);
     }
 
     @GetMapping("{chatId}")

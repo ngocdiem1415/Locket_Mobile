@@ -19,8 +19,8 @@ public class MessageService {
         this.database = database;
     }
 //just write data on database
-    public CompletableFuture<String> sendMessage(String chatId, Message message) {
-        DatabaseReference ref = database.getReference("messages").child(chatId).push();
+    public CompletableFuture<String> sendMessage(Message message) {
+        DatabaseReference ref = database.getReference("messages").push();
         message.setTimestamp(System.currentTimeMillis());
         message.setMessageId(ref.getKey());
         CompletableFuture<String> future = new CompletableFuture<>();
