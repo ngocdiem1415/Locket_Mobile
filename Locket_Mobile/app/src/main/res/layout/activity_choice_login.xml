@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="24dp"
+    android:background="@drawable/gradient_background">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="364dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="-40dp">
+
+        <ImageView
+            android:layout_width="350dp"
+            android:layout_height="314dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/logo_trongsuot" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="228dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="-10dp"
+            android:gravity="center"
+            android:text="Modis"
+            android:textColor="#2E099E"
+            android:textSize="50sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:text="Kết nối mọi nơi!\nXem ảnh trực tiếp của bạn bè"
+            android:textColor="#403F3F"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="90dp" />
+
+    <Button
+        android:id="@+id/signup"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:text="Tạo tài khoản mới"
+        android:textSize="20sp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginHorizontal="32dp"/>
+
+    <Button
+        android:id="@+id/signin"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:textSize="20sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginHorizontal="32dp"
+        android:text="Đăng nhập" />
+</LinearLayout>
