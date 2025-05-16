@@ -106,4 +106,6 @@ public class MainActivity extends AppCompatActivity {
         Reaction reaction = new Reaction("u2", imageId, "❤️", System.currentTimeMillis());
         reactionsRef.child("u2").setValue(reaction);
     }
+
 }
+
