@@ -12,7 +12,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.hucmuaf.locket_mobile.model.ItemFriend;
 import com.hucmuaf.locket_mobile.model.ItemFriendAdapter;
@@ -24,6 +26,7 @@ import java.util.List;
 
 public class ReactActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
+    private ViewPager2 imageView;
     private ItemFriendAdapter itemAdapter;
 
     @Override
@@ -69,6 +72,16 @@ public class ReactActivity extends AppCompatActivity {
             maskView.setVisibility(View.GONE);
             layout.setVisibility(View.GONE);
         });
+
+        imageView = findViewById(R.id.list_image_react);
+        List<Image> pages = Arrays.asList(
+                new Image("1", "", "Check-in metro", 1, "5", Arrays.asList("1","3")),
+                new Image("2", "", "Dạo một vòng quanh metro", 1, "5", Arrays.asList("1","3")),
+                new Image("3", "", "Metro buổi tối", 1, "5", Arrays.asList("1","3"))
+        );
+        PhotoAdapter adapter = new PhotoAdapter(this, pages);
+
+        imageView.setAdapter(adapter);
 
 
     }
