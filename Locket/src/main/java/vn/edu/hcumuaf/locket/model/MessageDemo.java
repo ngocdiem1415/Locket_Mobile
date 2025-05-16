@@ -1,23 +1,21 @@
-package com.hucmuaf.locket_mobile;
+package vn.edu.hcumuaf.locket.model;
 
-import java.time.LocalDateTime;
-
-public class Message {
+public class MessageDemo {
     private String messageId;
     private String senderId;
     private String receiverId;
     private String content;
-    private String type;
+    private String imageId; //Có thể có hoặc không, thể hiện đang reply img nào
     private long timestamp;
-    public Message() {
+    public MessageDemo() {
     }
 
-    public Message(String messageId, String senderId, String receiverId, String content, String type, long timestamp) {
+    public MessageDemo(String messageId, String senderId, String receiverId, String content, String imageId, long timestamp) {
         this.messageId = messageId;
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.content = content;
-        this.type = type;
+        this.imageId = imageId;
         this.timestamp = timestamp;
     }
 
@@ -53,19 +51,19 @@ public class Message {
         this.content = content;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public long getTimestamp() {
         return timestamp;
     }
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(String imageId) {
+        this.imageId = imageId;
     }
 }

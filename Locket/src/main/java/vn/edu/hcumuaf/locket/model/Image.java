@@ -1,6 +1,5 @@
-package com.hucmuaf.locket_mobile;
+package vn.edu.hcumuaf.locket.model;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class Image {
