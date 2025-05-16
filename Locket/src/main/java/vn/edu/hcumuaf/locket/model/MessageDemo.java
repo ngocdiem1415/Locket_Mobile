@@ -1,16 +1,16 @@
 package com.hucmuaf.locket_mobile;
 
-public class Message {
+public class MessageDemo {
     private String messageId;
     private String senderId;
     private String receiverId;
     private String content;
     private String imageId; //Có thể có hoặc không, thể hiện đang reply img nào
     private long timestamp;
-    public Message() {
+    public MessageDemo() {
     }
 
-    public Message(String messageId, String senderId, String receiverId, String content, String imageId, long timestamp) {
+    public MessageDemo(String messageId, String senderId, String receiverId, String content, String imageId, long timestamp) {
         this.messageId = messageId;
         this.senderId = senderId;
         this.receiverId = receiverId;

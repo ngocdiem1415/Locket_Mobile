@@ -49,6 +49,7 @@
         android:layout_height="90dp" />
 
     <Button
+        android:id="@+id/signup"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:text="Tạo tài khoản mới"
@@ -58,6 +59,7 @@
         android:layout_marginHorizontal="32dp"/>
 
     <Button
+        android:id="@+id/signin"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:textSize="20sp"
