@@ -1,37 +1,29 @@
-# Default ignored files
-/shelf/
-/workspace.xml
-# Thư mục build
-/build/
-/app/build/
+.gradle/
+build/
+app/build/
+*/build/
 
-# File hệ thống của Android Studio
 .idea/
 *.iml
-*.ipr
-*.iws
 
-# File hệ thống của macOS hoặc Windows
+local.properties
+
 .DS_Store
 Thumbs.db
 
-# Thư viện cài bằng Gradle
-.gradle/
-*/.gradle/
+*.apk
+*.ap_
 
-# Các file log, tạm thời
 *.log
-*.tmp
 
-# Tệp cấu hình cá nhân
-local.properties
+.idea/caches/
+.idea/workspace.xml
 
-# Tệp môi trường (nếu có dùng)
-.env
+*.lock
+*.bin
+*.class
+*.jar
+*.war
+*.dex
 
-# Thư mục của test coverage
-coverage/
-
-# Thư mục chứa font đã generate
-/caches/
-
+/app/google-services.json
