@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#222222">
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#121212"
+    android:background="#222222"
     android:fitsSystemWindows="true"
+    android:layout_margin="16dp"
     android:padding="16dp">
 
     <!-- Tiêu đề -->
@@ -237,6 +242,7 @@
 
             <!-- Nút xóa -->
             <ImageView
+                android:id="@+id/btnRemove"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
@@ -376,10 +382,12 @@
                 android:layout_weight="1" />
 
             <ImageView
+                android:id="@+id/facebook_chevron"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
-                android:src="@drawable/chevron_right" />
+                android:src="@drawable/chevron_right"
+                tools:ignore="ContentDescription" />
         </LinearLayout>
 
         <!-- Messenger -->
@@ -409,10 +417,12 @@
                 android:layout_weight="1" />
 
             <ImageView
+                android:id="@+id/messenger_chevron"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
-                android:src="@drawable/chevron_right" />
+                android:src="@drawable/chevron_right"
+                tools:ignore="ContentDescription" />
         </LinearLayout>
 
         <!-- Instagram -->
@@ -426,7 +436,8 @@
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@drawable/ic_instagram" />
+                android:src="@drawable/ic_instagram"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -442,10 +453,12 @@
                 android:layout_weight="1" />
 
             <ImageView
+                android:id="@+id/instagram_chevron"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
-                android:src="@drawable/chevron_right" />
+                android:src="@drawable/chevron_right"
+                tools:ignore="ContentDescription" />
         </LinearLayout>
         <!-- Share -->
         <LinearLayout
@@ -459,7 +472,8 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:background="@drawable/circle_bg"
-                android:src="@drawable/ic_share" />
+                android:src="@drawable/ic_share"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -475,11 +489,14 @@
                 android:layout_weight="1" />
 
             <ImageView
+                android:id="@+id/share_chevron"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
-                android:src="@drawable/chevron_right" />
+                android:src="@drawable/chevron_right"
+                tools:ignore="ContentDescription" />
         </LinearLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
