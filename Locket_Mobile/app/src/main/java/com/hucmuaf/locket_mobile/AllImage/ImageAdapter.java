@@ -1,35 +1,37 @@
 package com.hucmuaf.locket_mobile.AllImage;
 
-import vn.edu.hcumuaf.locket.model.Image;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import com.hucmuaf.locket_mobile.ModelDB.Image;
 import com.hucmuaf.locket_mobile.R;
 import com.bumptech.glide.Glide;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
+import java.util.List;
+
+public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.PhotoViewHolder> {
 
     private List<Image> photoList;
     private Context context;
     private OnPhotoClickListener listener;
 
     public interface OnPhotoClickListener {
-        void onPhotoClick(Photo photo);
+        void onPhotoClick(Image image);
     }
 
-    public PhotoAdapter(Context context, List<Photo> photoList, OnPhotoClickListener listener) {
+    public ImageAdapter(Context context, List<Image> photoList, OnPhotoClickListener listener) {
         this.context = context;
         this.photoList = photoList;
         this.listener = listener;
     }
 
-    public void updateList(List<Photo> newList) {
+    public void updateList(List<Image> newList) {
         photoList = newList;
         notifyDataSetChanged();
     }
@@ -43,10 +45,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
 
     @Override
     public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
-        Photo photo = photoList.get(position);
+        Image photo = photoList.get(position);
         Glide.with(context)
                 .load(photo.getUrlImage())
-                .placeholder(R.drawable.placeholder)
+                .placeholder(R.drawable.image1)
                 .into(holder.imageView);
 
         holder.imageView.setOnClickListener(v -> {
