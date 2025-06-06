@@ -11,13 +11,6 @@ import java.util.List;
 
 public class AllImageActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private List<Integer> imageList = Arrays.asList(
-            R.drawable.image1,
-            R.drawable.image2,
-            R.drawable.image3,
-            R.drawable.image4,
-            R.drawable.image5
-    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
