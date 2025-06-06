@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat WebSocket</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        #conversationDiv { margin-top: 20px; }
+        #response { margin-top: 10px; border: 1px solid #ccc; padding: 10px; min-height: 100px; }
+        button { margin-right: 10px; }
+    </style>
+</head>
+<body>
+<div>
+    <div>
+        <input type="text" id="from" placeholder="Choose a nickname" value="luc"/>
+    </div>
+    <br/>
+    <div>
+        <button id="connect" onclick="connect()">Connect</button>
+        <button id="disconnect" disabled="disabled" onclick="disconnect()">Disconnect</button>
+    </div>
+    <br/>
+    <div id="conversationDiv">
+        <input type="text" id="text" placeholder="Write a message..."/>
+        <button id="sendMessage" onclick="sendMessage()">Send</button>
+        <p id="response"></p>
+    </div>
+</div>
+
+<script>
+    let stompClient = null;
+    const connectButton = document.getElementById("connect");
+    const disconnectButton = document.getElementById("disconnect");
+    const sendButton = document.getElementById("sendMessage");
+    const responseDiv = document.getElementById("response");
+
+    function connect() {
+        const socket = new SockJS("http://localhost:8080/ws");
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function (frame) {
+            console.log("Connected: " + frame);
+            connectButton.disabled = true;
+            disconnectButton.disabled = false;
+            sendButton.disabled = false;
+
+            stompClient.subscribe("/topic/public", function (msg) {
+                showMessage(JSON.parse(msg.body).content);
+            });
+
+            sendMessage("Connected to chat!");
+        }, function (error) {
+            console.error("STOMP error: " + error);
+            showMessage("Connection failed: " + error);
+        });
+    }
+
+    function disconnect() {
+        if (stompClient !== null) {
+            stompClient.disconnect();
+            console.log("Disconnected");
+            showMessage("Disconnected from chat.");
+        }
+        connectButton.disabled = false;
+        disconnectButton.disabled = true;
+        sendButton.disabled = true;
+    }
+
+    function sendMessage(message) {
+        const nickname = document.getElementById("from").value;
+        const text = message || document.getElementById("text").value;
+        if (stompClient && text && nickname) {
+            const chatMessage = {
+                senderId: nickname,
+                content: text,
+                timestamp: new Date().toISOString(),
+                type: "CHAT"
+            };
+            stompClient.send("/app/chat.send", {}, JSON.stringify(chatMessage));
+            document.getElementById("text").value = "";
+        } else {
+            showMessage("Please enter a nickname and message, and ensure you're connected.");
+        }
+    }
+
+    function showMessage(message) {
+        responseDiv.innerHTML += `<p>${message}</p>`;
+    }
+</script>
+</body>
+</html>
