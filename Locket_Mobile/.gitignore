@@ -3,7 +3,10 @@ build/
 app/build/
 */build/
 
+/.idea/
+
 .idea/
+
 *.iml
 
 local.properties
@@ -27,3 +30,4 @@ Thumbs.db
 *.dex
 
 /app/google-services.json
+
