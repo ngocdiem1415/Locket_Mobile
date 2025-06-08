@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.hucmuaf.locket_mobile.model.Image;
+
 import java.util.List;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
@@ -31,8 +33,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
     @Override
     public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
         Image item = listImage.get(position);
-        String url = item.getUrlImage();
-        String caption = item.getCaption();
+//        String url = item.getUrlImage();
+        String caption = "item.getCaption()";
         String avatar = "";
         String accName = "duize";
         long timestamp = item.getTimestamp();

@@ -43,8 +43,8 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="380dp"
-            android:layout_marginTop="15dp">
+            android:layout_height="400dp"
+            android:layout_marginTop="30dp">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -58,14 +58,13 @@
                 <ImageView
                     android:id="@+id/camera_preview"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@mipmap/metro" />
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerCrop"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="325dp"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="340dp"
                     android:gravity="center_horizontal">
 
                     <EditText
@@ -76,6 +75,7 @@
                         android:padding="5dp"
                         android:paddingStart="15dp"
                         android:paddingEnd="15dp"
+                        android:maxLength="32"
                         android:hint="Thêm một tin nhắn"
                         android:textColorHint="@color/white"
                         android:textColor="@color/white"
@@ -87,20 +87,20 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="160dp"
             android:gravity="center"
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/flash"
+                android:id="@+id/close"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginStart="20dp"
                 android:src="@mipmap/close" />
 
             <LinearLayout
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
                 android:layout_marginStart="60dp"
                 android:layout_marginEnd="60dp"
                 android:background="@drawable/circle_bg">
@@ -109,8 +109,8 @@
                     android:id="@+id/take"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="27dp"
+                    android:layout_marginStart="29dp"
+                    android:layout_marginTop="30dp"
                     android:src="@mipmap/send" />
             </LinearLayout>
 
@@ -130,8 +130,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
                 android:background="@color/black"
                 android:gravity="center"
                 android:orientation="vertical">
@@ -184,8 +184,8 @@
                 <LinearLayout
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
                     android:background="@drawable/circle_border_gray"
                     android:gravity="center">
 
@@ -231,8 +231,8 @@
                 <LinearLayout
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
                     android:background="@drawable/circle_border_gray"
                     android:gravity="center">
 
@@ -277,15 +277,17 @@
         android:background="#80000000"
         android:visibility="gone" /> <!-- màu đen với độ mờ 50% -->
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/decor_caption"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:gravity="bottom|center"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="565dp"
         android:visibility="gone">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="280dp"
+            android:layout_height="300dp"
             android:layout_marginBottom="-20dp"
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
@@ -343,6 +345,7 @@
 
                 <!-- Nút Văn bản -->
                 <TextView
+                    android:id="@+id/defaultText"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
                     android:background="@drawable/bg_dark_chip"
@@ -356,18 +359,19 @@
 
                 <!-- Nút giờ -->
                 <TextView
+                    android:id="@+id/clock"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
                     android:layout_marginStart="8dp"
                     android:background="@drawable/bg_dark_chip"
-                    android:drawableStart="@drawable/ic_clock"
                     android:drawablePadding="8dp"
                     android:gravity="center_vertical"
                     android:paddingHorizontal="12dp"
                     android:textStyle="bold"
                     android:text="10:27"
                     android:textSize="18sp"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/white"
+                    app:drawableStartCompat="@drawable/ic_clock" />
             </LinearLayout>
 
             <!-- Nhãn Decorative -->
@@ -381,7 +385,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/general_buttons" />
+                app:layout_constraintTop_toBottomOf="@id/general_buttons"/>
 
             <!-- Các nút Decorative -->
             <LinearLayout
@@ -395,6 +399,7 @@
 
                 <!-- Nút Party Time -->
                 <TextView
+                    android:id="@+id/partyTime"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
                     android:background="@drawable/bg_green_chip"
@@ -407,6 +412,7 @@
 
                 <!-- Nút OOTD -->
                 <TextView
+                    android:id="@+id/ootd"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
                     android:layout_marginStart="8dp"
@@ -420,6 +426,7 @@
 
                 <!-- Nút Miss you -->
                 <TextView
+                    android:id="@+id/missYou"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
                     android:layout_marginStart="8dp"
@@ -434,5 +441,5 @@
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </FrameLayout>
