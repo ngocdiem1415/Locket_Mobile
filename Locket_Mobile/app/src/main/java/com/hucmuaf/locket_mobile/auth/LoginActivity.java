@@ -83,13 +83,13 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        txtSignup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent in = new Intent(LoginActivity.this, SignupActivity.class);
-                startActivity(in);
-            }
-        });
+//        txtSignup.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent in = new Intent(LoginActivity.this, SignupActivity.class);
+//                startActivity(in);
+//            }
+//        });
 
         txtForgerPass.setOnClickListener(new View.OnClickListener() {
             @Override

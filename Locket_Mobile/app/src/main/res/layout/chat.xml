@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <ImageView
+        android:id="@+id/account6"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/circle_border"
+        android:src="@mipmap/account_icon"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="48dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <ImageView
+        android:id="@+id/account14"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:background="@drawable/circle_border"
+        android:src="@mipmap/account_icon"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="584dp" />
+
+    <TextView
+        android:id="@+id/textView17"
+        android:layout_width="124dp"
+        android:layout_height="29dp"
+        android:fontFamily="serif-monospace"
+        android:text="Messages"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        tools:fontFamily="casual"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="80dp"
+        tools:layout_editor_absoluteY="591dp" />
+
+    <TextView
+        android:id="@+id/textView18"
+        android:layout_width="154dp"
+        android:layout_height="55dp"
+        android:fontFamily="serif-monospace"
+        android:text="Messages"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        tools:fontFamily="casual"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="214dp"
+        tools:layout_editor_absoluteY="629dp" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="140dp"
+        android:layout_height="24dp"
+        android:text="Today, 6:16 PM"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="135dp"
+        tools:layout_editor_absoluteY="90dp" />
+
+    <ImageView
+        android:id="@+id/account13"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:rotationY="-176"
+        android:src="@mipmap/right_arrow"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="-1dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="100dp"
+        android:layout_height="24dp"
+        android:text="Em yêu❤️"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="114dp"
+        tools:layout_editor_absoluteY="29dp" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="430dp"
+        android:layout_gravity="center"
+        android:clipChildren="true"
+        android:clipToPadding="true"
+        app:cardCornerRadius="60dp"
+        app:cardElevation="4dp"
+        tools:layout_editor_absoluteX="10dp"
+        tools:layout_editor_absoluteY="133dp"
+        tools:ignore="MissingConstraints"/>
+
+    <EditText
+        android:id="@+id/editTextText"
+        android:layout_width="305dp"
+        android:layout_height="63dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="Please enter your text"
+        android:textColor="@color/white"
+        tools:layout_editor_absoluteX="30dp"
+        tools:layout_editor_absoluteY="795dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
