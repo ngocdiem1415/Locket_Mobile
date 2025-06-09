@@ -14,12 +14,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 @Configuration
 public class FirebaseConfig {
     @Bean
     public FirebaseDatabase firebaseDatabase() throws IOException {
         System.out.println("Firebase database intializing");
+
         FileInputStream serviceAccount = new FileInputStream("D://DangTranTanLuc//modis-8f5f6-firebase-adminsdk-fbsvc-f76bd29f1f.json");
+
+        InputStream serviceAccount = new ClassPathResource("Firebase/modis-admin-keys.json").getInputStream();
+
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                 .setDatabaseUrl("https://modis-8f5f6-default-rtdb.firebaseio.com")
@@ -34,6 +41,13 @@ public class FirebaseConfig {
 
         return FirebaseDatabase.getInstance();
 
+    }
+
+    // thực hiện các tác vụ bất đồng bộ (asynchronous)
+    //Không chặn luồng hoạt động chính của app
+    @Bean(name = "taskExecutor")
+    public Executor taskExecutor() {
+        return Executors.newCachedThreadPool();
     }
 
     public static void main(String[] args) throws IOException {
