@@ -2,9 +2,8 @@ package vn.edu.hcumuaf.locket.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.*;
-import vn.edu.hcumuaf.locket.model.Message;
+import vn.edu.hcumuaf.locket.model.entity.Message;
 import vn.edu.hcumuaf.locket.service.MessageService;
 
 import java.util.List;
