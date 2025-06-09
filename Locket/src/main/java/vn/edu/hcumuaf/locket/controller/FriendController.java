@@ -1,109 +1,43 @@
 package vn.edu.hcumuaf.locket.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import vn.edu.hcumuaf.locket.model.User;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import vn.edu.hcumuaf.locket.model.entity.User;
 import vn.edu.hcumuaf.locket.service.FriendService;
-import vn.edu.hcumuaf.locket.exception.ResourceNotFoundException;
-import vn.edu.hcumuaf.locket.exception.FriendRequestException;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/friends")
-@CrossOrigin(origins = "*")
 public class FriendController {
-    
+
     @Autowired
     private FriendService friendService;
-    
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<User>> getFriendsList(@PathVariable Long userId) {
-        try {
-            List<User> friends = friendService.getFriendsList(userId);
-            return ResponseEntity.ok(friends);
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+
+    @GetMapping("/list/user/{userId}")
+    public CompletableFuture<ResponseEntity<List<User>>> getListFriendByUserId(@PathVariable String userId) {
+        return friendService.getListFriendByUserId(userId)
+                .thenApply(ResponseEntity::ok)
+                .exceptionally(e -> {
+                    e.printStackTrace();
+                    return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+                });
     }
-    
-    @GetMapping("/{userId}/pending")
-    public ResponseEntity<List<User>> getPendingFriendRequests(@PathVariable Long userId) {
-        try {
-            List<User> pendingRequests = friendService.getPendingFriendRequests(userId);
-            return ResponseEntity.ok(pendingRequests);
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+
+    @GetMapping("/listID/user/{userId}")
+    public CompletableFuture<ResponseEntity<Set<String>>> getFriendIdsByUserId(@PathVariable String userId) {
+        return friendService.getFriendIdsByUserId(userId)
+                .thenApply(ResponseEntity::ok)
+                .exceptionally(ex -> {
+                    ex.printStackTrace();
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                });
     }
-    
-    @PostMapping("/request")
-    public ResponseEntity<?> sendFriendRequest(@RequestBody Map<String, Long> request) {
-        try {
-            Long userId = request.get("userId");
-            Long friendId = request.get("friendId");
-            friendService.sendFriendRequest(userId, friendId);
-            return ResponseEntity.ok().build();
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (FriendRequestException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-    
-    @PostMapping("/accept")
-    public ResponseEntity<?> acceptFriendRequest(@RequestBody Map<String, Long> request) {
-        try {
-            Long userId = request.get("userId");
-            Long friendId = request.get("friendId");
-            friendService.acceptFriendRequest(userId, friendId);
-            return ResponseEntity.ok().build();
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (FriendRequestException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-    
-    @PostMapping("/reject")
-    public ResponseEntity<?> rejectFriendRequest(@RequestBody Map<String, Long> request) {
-        try {
-            Long userId = request.get("userId");
-            Long friendId = request.get("friendId");
-            friendService.rejectFriendRequest(userId, friendId);
-            return ResponseEntity.ok().build();
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (FriendRequestException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-    
-    @DeleteMapping("/{userId}/{friendId}")
-    public ResponseEntity<?> removeFriend(@PathVariable Long userId, @PathVariable Long friendId) {
-        try {
-            friendService.removeFriend(userId, friendId);
-            return ResponseEntity.ok().build();
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (FriendRequestException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-    
-    @PostMapping("/block")
-    public ResponseEntity<?> blockUser(@RequestBody Map<String, Long> request) {
-        try {
-            Long userId = request.get("userId");
-            Long friendId = request.get("friendId");
-            friendService.blockUser(userId, friendId);
-            return ResponseEntity.ok().build();
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (FriendRequestException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-} 
+}
