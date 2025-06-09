@@ -31,8 +31,8 @@
         <activity android:name=".auth.LoginActivity" />
         <activity android:name=".model.TakeActivity" />
         <activity android:name=".ReactActivity" />
-        <activity android:name=".AllImageActivity" />
-        <activity android:name=".ListFriendActivity"/>
+<!--        <activity android:name=".AllImageActivity" />-->
+        <activity android:name=".ListFriendActivity" />
         <activity android:name=".HomeActivity" />
     </application>
 </manifest>
