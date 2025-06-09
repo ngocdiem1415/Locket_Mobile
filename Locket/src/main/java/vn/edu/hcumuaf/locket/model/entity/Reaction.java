@@ -1,4 +1,4 @@
-package vn.edu.hcumuaf.locket.model;
+package vn.edu.hcumuaf.locket.model.entity;
 
 public class Reaction {
    private String userId;
