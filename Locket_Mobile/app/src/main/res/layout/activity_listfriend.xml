@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#222222">
@@ -84,6 +85,7 @@
 
         <!-- First App: Messenger -->
         <LinearLayout
+            android:id="@+id/messenger_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -109,6 +111,7 @@
 
         <!-- Second App: Facebook -->
         <LinearLayout
+            android:id="@+id/facebook_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -133,6 +136,7 @@
 
         <!-- Third App: Instagram -->
         <LinearLayout
+            android:id="@+id/instagram_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -157,6 +161,7 @@
 
         <!-- Fourth App: Share -->
         <LinearLayout
+            android:id="@+id/share_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
