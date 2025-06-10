@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
+    <EditText
+        android:id="@+id/textName2"
+        android:layout_width="280dp"
+        android:layout_height="45dp"
+        android:background="@android:color/holo_red_dark"
+        android:gravity="center_vertical"
+        android:text="Họ và tên"
+        android:textColor="@color/pallet1"
+        android:textSize="25sp"
+        tools:layout_editor_absoluteX="77dp"
+        tools:layout_editor_absoluteY="670dp" />
+
     <ImageView
         android:id="@+id/account6"
         android:layout_width="50dp"
@@ -24,7 +36,17 @@
         android:src="@mipmap/account_icon"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="584dp" />
+        tools:layout_editor_absoluteY="563dp" />
+
+    <ImageView
+        android:id="@+id/account12"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:background="@drawable/circle_border"
+        android:src="@mipmap/account_icon"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="670dp" />
 
     <TextView
         android:id="@+id/textView17"
@@ -36,13 +58,13 @@
         android:textSize="20sp"
         tools:fontFamily="casual"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="80dp"
-        tools:layout_editor_absoluteY="591dp" />
+        tools:layout_editor_absoluteX="77dp"
+        tools:layout_editor_absoluteY="572dp" />
 
     <TextView
         android:id="@+id/textView18"
         android:layout_width="154dp"
-        android:layout_height="55dp"
+        android:layout_height="29dp"
         android:fontFamily="serif-monospace"
         android:text="Messages"
         android:textColor="@color/white"
@@ -50,7 +72,7 @@
         tools:fontFamily="casual"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="214dp"
-        tools:layout_editor_absoluteY="629dp" />
+        tools:layout_editor_absoluteY="601dp" />
 
     <TextView
         android:id="@+id/textView14"
@@ -61,7 +83,7 @@
         android:textSize="18sp"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="135dp"
-        tools:layout_editor_absoluteY="90dp" />
+        tools:layout_editor_absoluteY="77dp" />
 
     <ImageView
         android:id="@+id/account13"
@@ -92,9 +114,9 @@
         android:clipToPadding="true"
         app:cardCornerRadius="60dp"
         app:cardElevation="4dp"
-        tools:layout_editor_absoluteX="10dp"
-        tools:layout_editor_absoluteY="133dp"
-        tools:ignore="MissingConstraints"/>
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="118dp" />
 
     <EditText
         android:id="@+id/editTextText"
