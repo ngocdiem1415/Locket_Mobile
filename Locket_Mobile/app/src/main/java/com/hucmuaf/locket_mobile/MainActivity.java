@@ -19,7 +19,7 @@ import com.google.firebase.database.ValueEventListener;
 // import java.util.Arrays;
 // import java.util.List;
 
-// public class MainActivity extends AppCompatActivity {
+ public class MainActivity extends AppCompatActivity {
 
 //     @SuppressLint("ClickableViewAccessibility")
 //     @Override

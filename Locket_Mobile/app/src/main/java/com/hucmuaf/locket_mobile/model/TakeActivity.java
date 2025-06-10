@@ -2,6 +2,7 @@ package com.hucmuaf.locket_mobile.model;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -12,11 +13,13 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -24,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.hucmuaf.locket_mobile.ListFriendActivity;
 import com.hucmuaf.locket_mobile.MainActivity;
 import com.hucmuaf.locket_mobile.R;
 import com.hucmuaf.locket_mobile.SwipeGestureListener;
@@ -32,7 +36,7 @@ import java.util.Collections;
 
 public class TakeActivity  extends AppCompatActivity {
 
-
+    private static final String TAG = "TakeActivity";
     private TextureView textureView;
     private CameraDevice cameraDevice;
     private CaptureRequest.Builder captureRequestBuilder;
@@ -59,6 +63,30 @@ public class TakeActivity  extends AppCompatActivity {
         View main = findViewById(R.id.main_layout);
         gestureDetector = new GestureDetector(this, new SwipeGestureListener(this));
         main.setOnTouchListener((v, event) -> gestureDetector.onTouchEvent(event));
+
+        // Thêm xử lý click cho friends layout
+        LinearLayout friendsLayout = findViewById(R.id.friends);
+        if (friendsLayout != null) {
+            Log.d(TAG, "Found friends layout, setting click listener");
+            friendsLayout.setClickable(true);
+            friendsLayout.setFocusable(true);
+            
+            friendsLayout.setOnClickListener(v -> {
+                Log.d(TAG, "Friends layout clicked, starting ListFriendActivity");
+                Toast.makeText(this, "Đang chuyển đến danh sách bạn bè...", Toast.LENGTH_SHORT).show();
+                
+                try {
+                    Intent intent = new Intent(TakeActivity.this, ListFriendActivity.class);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Log.e(TAG, "Error starting ListFriendActivity", e);
+                    Toast.makeText(this, "Lỗi: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        } else {
+            Log.e(TAG, "Could not find LinearLayout with id 'friends'");
+            Toast.makeText(this, "Không tìm thấy LinearLayout friends", Toast.LENGTH_SHORT).show();
+        }
 
         ImageView cached = findViewById(R.id.cached);
         cached.setOnClickListener(new View.OnClickListener() {
