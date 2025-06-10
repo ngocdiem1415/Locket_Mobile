@@ -72,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.makeText(LoginActivity.this, "Đăng Nhập Thành công", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(LoginActivity.this, TakeActivity.class);
                                     startActivity(intent);
-
+                                    finish();
                                 } else {
                                     Log.w(TAG, "signInWithEmail:failure", task.getException());
                                     Toast.makeText(LoginActivity.this, "Sai Tài Khoản" + email+ "Hoặc Mật khẩu!" + password,
@@ -86,8 +86,8 @@ public class LoginActivity extends AppCompatActivity {
         txtSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent in = new Intent(LoginActivity.this, SignupActivity.class);
-                startActivity(in);
+//                Intent in = new Intent(LoginActivity.this, SignupActivity.class);
+//                startActivity(in);
             }
         });
 
@@ -96,6 +96,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent in = new Intent(LoginActivity.this, ForgotPassActivity.class);
                 startActivity(in);
+                finish();
             }
         });
     }
