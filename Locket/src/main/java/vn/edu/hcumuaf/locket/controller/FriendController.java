@@ -31,7 +31,7 @@ public class FriendController {
                 });
     }
 
-    @GetMapping("/listID/user/{userId}")
+    @GetMapping("/listFriendId/{userId}")
     public CompletableFuture<ResponseEntity<Set<String>>> getFriendIdsByUserId(@PathVariable String userId) {
         return friendService.getFriendIdsByUserId(userId)
                 .thenApply(ResponseEntity::ok)

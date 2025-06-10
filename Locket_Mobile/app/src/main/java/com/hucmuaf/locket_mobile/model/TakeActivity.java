@@ -24,7 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.hucmuaf.locket_mobile.MainActivity;
+//import com.hucmuaf.locket_mobile.MainActivity;
 import com.hucmuaf.locket_mobile.R;
 import com.hucmuaf.locket_mobile.SwipeGestureListener;
 
