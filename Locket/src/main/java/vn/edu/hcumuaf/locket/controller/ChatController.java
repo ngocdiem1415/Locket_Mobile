@@ -7,6 +7,9 @@ import vn.edu.hcumuaf.locket.model.ChatMessage;
 
 @Controller
 public class ChatController {
+
+
+
     @MessageMapping("/chat.register")
     @SendTo("/topic/public")
     public ChatMessage register(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
