@@ -481,6 +481,17 @@ public class ListFriendActivity extends AppCompatActivity {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.show();
 
+        // ===== CẬP NHẬT TÊN USER ĐỘNG =====
+        // Thay vì hardcode "Đăng Trần", giờ lấy tên thực từ user object
+        TextView titleText = dialogView.findViewById(R.id.dialogTitle);
+        if (titleText != null) {
+            String userName = user.getFullName() != null ? user.getFullName() : user.getUserName();
+            if (userName == null || userName.isEmpty()) {
+                userName = "người bạn này";
+            }
+            titleText.setText("Xóa " + userName + " khỏi Modis của bạn?");
+        }
+
         // Ánh xạ các nút
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
         Button btnDelete = dialogView.findViewById(R.id.btnDelete);
