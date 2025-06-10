@@ -12,6 +12,7 @@ import com.hucmuaf.locket_mobile.ModelDB.Image;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class ImageResponsitory {
     private DatabaseReference imagesRef = FirebaseDatabase.getInstance().getReference("images");
@@ -22,7 +23,7 @@ public class ImageResponsitory {
     }
 
     //lấy toàn bộ ảnh của user và ảnh từ bạn bè gửi tới user
-    public void getAllImagesByUserId(String userId, List<String> friendIds, onImageLoaded callback){
+    public void getAllImagesByUserId(String userId, Set<String> friendIds, onImageLoaded callback){
         imagesRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
