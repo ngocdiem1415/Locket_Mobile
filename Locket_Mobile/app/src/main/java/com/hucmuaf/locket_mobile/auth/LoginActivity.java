@@ -20,7 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 import com.hucmuaf.locket_mobile.R;
-import com.hucmuaf.locket_mobile.model.TakeActivity;
+import com.hucmuaf.locket_mobile.TakeActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 
 public class LoginActivity extends AppCompatActivity {
@@ -83,13 +83,13 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        txtSignup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+//        txtSignup.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
 //                Intent in = new Intent(LoginActivity.this, SignupActivity.class);
 //                startActivity(in);
-            }
-        });
+//            }
+//        });
 
         txtForgerPass.setOnClickListener(new View.OnClickListener() {
             @Override
