@@ -5,8 +5,11 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
+    <uses-feature android:name="android.hardware.camera.flash"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -41,5 +44,7 @@
         <activity android:name=".ReactActivity" />
         <activity android:name=".AllImageActivity" />
         <activity android:name=".auth.InfoActivity" />
+        <activity android:name=".ShowImageActivity"/>
+
     </application>
 </manifest>

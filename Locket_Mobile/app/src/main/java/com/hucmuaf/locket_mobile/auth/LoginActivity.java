@@ -20,6 +20,7 @@ import com.hucmuaf.locket_mobile.R;
 import com.hucmuaf.locket_mobile.model.TakeActivity;
 import com.hucmuaf.locket_mobile.service.FirebaseService;
 
+
 public class LoginActivity extends AppCompatActivity {
 
     private TextInputEditText edEmail, edPassword;
