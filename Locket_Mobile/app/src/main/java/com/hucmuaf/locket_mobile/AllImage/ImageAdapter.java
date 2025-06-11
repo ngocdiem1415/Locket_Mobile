@@ -15,27 +15,30 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.PhotoViewHolder> {
+public class ImageAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
 
-    private List<Image> photoList;
+    private List<Image> imageList;
     private Context context;
-    private OnPhotoClickListener listener;
+    private OnImageClickListener listener;
 
-    public interface OnPhotoClickListener {
-        void onPhotoClick(Image image);
+    //Xử lý sự kiện khu người dùng nhấn vào một ảnh
+    public interface OnImageClickListener {
+        void onImageClick(Image image);
     }
 
-    public ImageAdapter(Context context, List<Image> photoList, OnPhotoClickListener listener) {
+    public ImageAdapter(Context context, List<Image> photoList, OnImageClickListener listener) {
         this.context = context;
-        this.photoList = photoList;
+        this.imageList = photoList;
         this.listener = listener;
     }
 
+    //Cập nhật danh sách hình ảnh mới
     public void updateList(List<Image> newList) {
-        photoList = newList;
-        notifyDataSetChanged();
+        imageList = newList;
+        notifyDataSetChanged(); //Cập nhật giao diện
     }
 
+    //
     @NonNull
     @Override
     public PhotoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -43,30 +46,25 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.PhotoViewHol
         return new PhotoViewHolder(view);
     }
 
+    //Sử dụng Glide để tải hình ảnh từ URL và hiển thị trong ImageView.
     @Override
     public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
-        Image photo = photoList.get(position);
+        Image photo = imageList.get(position);
         Glide.with(context)
                 .load(photo.getUrlImage())
-                .placeholder(R.drawable.image1)
+                .placeholder(R.drawable.image1) //ảnh mặc định hiển thị trước khi ảnh chính được tải xong
                 .into(holder.imageView);
 
         holder.imageView.setOnClickListener(v -> {
-            if (listener != null) listener.onPhotoClick(photo);
-        });
+        if (listener != null) listener.onImageClick(photo);
+    });
     }
 
+    //Đếm số lượng phần tử trong danh sách ảnh
     @Override
     public int getItemCount() {
-        return photoList != null ? photoList.size() : 0;
+        return imageList != null ? imageList.size() : 0;
     }
 
-    public static class PhotoViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
 
-        public PhotoViewHolder(@NonNull View itemView) {
-            super(itemView);
-            imageView = itemView.findViewById(R.id.imageView);
-        }
-    }
 }
