@@ -1,6 +1,6 @@
 # Default ignored files
 /shelf/
-/workspace.xml
+/.idea/workspace.xml
 # Editor-based HTTP Client requests
 /httpRequests/
 # Datasource local storage ignored files
@@ -9,4 +9,9 @@
 
 src/main/resources/firebase/modis-admin-keys.json
 
+*.iml
 .idea/
+Locket/.idea/
+../.idea/
+
+target/
