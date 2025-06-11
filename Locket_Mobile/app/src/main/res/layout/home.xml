@@ -139,7 +139,8 @@
                 android:layout_height="wrap_content"
                 android:text="Lịch sử"
                 android:textColor="@color/white"
-                android:textSize="26dp" />
+                android:textSize="23dp"
+                android:textStyle="bold"/>
 
             <ImageView
                 android:id="@+id/down_toggle"

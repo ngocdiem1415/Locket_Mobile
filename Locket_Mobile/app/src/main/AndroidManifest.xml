@@ -34,7 +34,7 @@
         <activity android:name=".auth.LoginActivity" />
         <activity android:name=".TakeActivity" />
         <activity android:name=".ReactActivity" />
-        <activity android:name=".AllImageActivity" />
+        <activity android:name=".AllImage.AllImageActivity" />
         <activity android:name=".ShowImageActivity"/>
     </application>
 </manifest>

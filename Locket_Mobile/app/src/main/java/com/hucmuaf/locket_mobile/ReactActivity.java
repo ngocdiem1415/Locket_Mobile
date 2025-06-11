@@ -5,10 +5,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
@@ -21,9 +19,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.hucmuaf.locket_mobile.model.Image;
+import com.hucmuaf.locket_mobile.ModelDB.Image;
 import com.hucmuaf.locket_mobile.model.ItemFriend;
 import com.hucmuaf.locket_mobile.model.ItemFriendAdapter;
+import com.hucmuaf.locket_mobile.model.PhotoAdapter;
 
 import java.util.Arrays;
 import java.util.List;
