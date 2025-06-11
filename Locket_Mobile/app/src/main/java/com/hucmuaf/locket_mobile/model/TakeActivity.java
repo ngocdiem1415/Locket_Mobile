@@ -30,7 +30,7 @@ import androidx.core.app.ActivityCompat;
 import com.hucmuaf.locket_mobile.ListFriendActivity;
 import com.hucmuaf.locket_mobile.MainActivity;
 import com.hucmuaf.locket_mobile.R;
-import com.hucmuaf.locket_mobile.SwipeGestureListener;
+import com.hucmuaf.locket_mobile.SwipeGestureListenerDown;
 
 import java.util.Collections;
 
@@ -61,7 +61,7 @@ public class TakeActivity  extends AppCompatActivity {
 //        });
 
         View main = findViewById(R.id.main_layout);
-        gestureDetector = new GestureDetector(this, new SwipeGestureListener(this));
+        gestureDetector = new GestureDetector(this, new SwipeGestureListenerDown(this));
         main.setOnTouchListener((v, event) -> gestureDetector.onTouchEvent(event));
 
         // Thêm xử lý click cho friends layout
