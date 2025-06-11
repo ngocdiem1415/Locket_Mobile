@@ -516,7 +516,30 @@ public class ListFriendActivity extends AppCompatActivity {
      * Xóa bạn bè - hiển thị dialog xác nhận
      */
     private void removeFriend(User user) {
-        showConfirmationDialog(user);
+        // Gọi API để xóa bạn bè
+        Call<String> call = apiService.removeFriend(currentUserId, user.getUserId());
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    // Cập nhật giao diện ngay lập tức
+                    int position = friendsList.indexOf(user);
+                    if (position != -1) {
+                        friendsList.remove(position);
+                        friendAdapter.notifyItemRemoved(position);
+                    }
+                    // Sau đó load lại danh sách từ backend để đảm bảo đồng bộ
+                    loadFriendList();
+                } else {
+                    Toast.makeText(ListFriendActivity.this, "Không thể xóa bạn bè", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(ListFriendActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**
