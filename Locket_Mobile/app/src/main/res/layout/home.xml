@@ -95,7 +95,7 @@
             android:id="@+id/flash"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@mipmap/flash" />
+            android:src="@mipmap/no_flash" />
 
         <LinearLayout
             android:id="@+id/take_layout"

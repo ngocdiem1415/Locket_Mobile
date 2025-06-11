@@ -17,6 +17,7 @@ import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
@@ -24,6 +25,7 @@ import android.media.ImageReader;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
@@ -62,6 +64,7 @@ public class TakeActivity extends AppCompatActivity {
     private CaptureRequest.Builder captureRequestBuilder;
     private CameraCaptureSession cameraCaptureSession;
     private String cameraId;
+    private CameraCaptureSession captureSession;
     private CameraManager cameraManager;
     private LinearLayout take_layout;
 
@@ -74,8 +77,9 @@ public class TakeActivity extends AppCompatActivity {
     private HandlerThread mBackgroundThread;
     private int width;
     private int height;
-
+    private ImageReader reader;
     private Size previewSize;
+    private boolean isFlashEnabled = false;
 
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 0);
@@ -135,8 +139,19 @@ public class TakeActivity extends AppCompatActivity {
                 }
             });
             LinearLayout history = findViewById(R.id.history);
-            history.setOnClickListener(v ->{
+            history.setOnClickListener(v -> {
                 startActivityWithAnimation(this, ReactActivity.class, R.anim.slide_up);
+            });
+
+            ImageView flash = findViewById(R.id.flash);
+            flash.setOnClickListener(v -> {
+                if (isFlashEnabled) {
+                    isFlashEnabled = false;
+                    flash.setImageResource(R.mipmap.no_flash);
+                } else {
+                    isFlashEnabled = true;
+                    flash.setImageResource(R.mipmap.has_flash);
+                }
             });
         });
     }
@@ -326,13 +341,16 @@ public class TakeActivity extends AppCompatActivity {
         try {
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraDevice.getId());
             Size[] jpegSizes = null;
+
+            //Chọn size ảnh
             if (characteristics != null) {
-                jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputSizes(ImageFormat.JPEG);
+                jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
+                        .getOutputSizes(ImageFormat.JPEG);
                 Size selectedSize = null;
                 for (Size size : jpegSizes) {
                     float ratio = (float) size.getWidth() / size.getHeight();
                     float viewRatio = (float) textureView.getWidth() / textureView.getHeight();
-                    if (Math.abs(ratio - viewRatio) < 0.1) {
+                    if (Math.abs(ratio - viewRatio) < 0.1f) {
                         selectedSize = size;
                         break;
                     }
@@ -341,94 +359,155 @@ public class TakeActivity extends AppCompatActivity {
                 width = selectedSize.getWidth();
                 height = selectedSize.getHeight();
             }
-            final ImageReader reader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);
-            List<Surface> outputSurfaces = new ArrayList<>(2);
+            //Tạo imageReader và Surface
+            reader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);
+            List<Surface> outputSurfaces = new ArrayList<>();
             outputSurfaces.add(reader.getSurface());
             outputSurfaces.add(new Surface(textureView.getSurfaceTexture()));
+
             final CaptureRequest.Builder captureBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             captureBuilder.addTarget(reader.getSurface());
-            captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
-            //Hướng ảnh
+            captureBuilder.set(CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER, CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER_START);
+
+            // Hướng ảnh
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             int jpegOrientation = getJpegOrientation(characteristics, rotation);
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, jpegOrientation);
-            //Lưu ảnh
+
+            // Lưu ảnh
             final File file = new File(getExternalFilesDir(null), "pic.jpg");
-            ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
-                @Override
-                public void onImageAvailable(ImageReader reader) {
-                    Image image = null;
-                    try {
-                        image = reader.acquireLatestImage();
-                        ByteBuffer buffer = image.getPlanes()[0].getBuffer();
-                        byte[] bytes = new byte[buffer.remaining()];
-                        buffer.get(bytes);
+            ImageReader.OnImageAvailableListener readerListener = reader1 -> {
+                Image image = null;
+                try {
+                    image = reader1.acquireLatestImage();
+                    ByteBuffer buffer = image.getPlanes()[0].getBuffer();
+                    byte[] bytes = new byte[buffer.remaining()];
+                    buffer.get(bytes);
 
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    int actualRotation = getJpegOrientation(characteristics, getWindowManager().getDefaultDisplay().getRotation());
 
-                        // Lấy orientation chính xác
-                        int rotation = getJpegOrientation(characteristics, getWindowManager().getDefaultDisplay().getRotation());
-
-                        // Xoay bitmap theo orientation
-                        Matrix matrix = new Matrix();
-                        if (rotation != 0) {
-                            matrix.postRotate(rotation);
-                        }
-
-                        // Nếu camera trước, lật ngang thêm vào matrix
-                        if (isFrontCamera) {
-                            matrix.postScale(-1, 1);
-                        }
-
-                        bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-
-                        // Lưu bitmap đã xử lý
-                        saveBitmapToFile(bitmap, file);
-
-                        runOnUiThread(() -> {
-                            Intent intent = new Intent(TakeActivity.this, ShowImageActivity.class);
-                            intent.putExtra("imagePath", file.getAbsolutePath());
-                            startActivity(intent);
-                        });
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } finally {
-                        if (image != null) {
-                            image.close();
-                        }
+                    Matrix matrix = new Matrix();
+                    if (actualRotation != 0) {
+                        matrix.postRotate(actualRotation);
                     }
-                }
-
-                private void saveBitmapToFile(Bitmap bitmap, File file) throws IOException {
-                    try (FileOutputStream out = new FileOutputStream(file)) {
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                    if (isFrontCamera) {
+                        matrix.postScale(-1, 1);
                     }
+
+                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                    saveBitmapToFile(bitmap, file);
+
+                    runOnUiThread(() -> {
+                        cameraDevice.close();
+                        Intent intent = new Intent(TakeActivity.this, ShowImageActivity.class);
+                        intent.putExtra("imagePath", file.getAbsolutePath());
+                        startActivity(intent);
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (image != null) image.close();
                 }
             };
+
             reader.setOnImageAvailableListener(readerListener, mBackgroundHandler);
-            final CameraCaptureSession.CaptureCallback captureListener = new CameraCaptureSession.CaptureCallback() {
-                @Override
-                public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
-                    super.onCaptureCompleted(session, request, result);
-                }
-            };
+
             cameraDevice.createCaptureSession(outputSurfaces, new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigured(@NonNull CameraCaptureSession session) {
+                    captureSession = session;
+                    Log.e("Cấu hình", "Cau hình thành công " + (captureSession != null));
                     try {
-                        session.capture(captureBuilder.build(), captureListener, mBackgroundHandler);
-                    } catch (CameraAccessException e) {
+                        // Xử lý bật flash nếu có
+                        Boolean hasFlash = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
+                        Log.e("Bat Flash", "Flash da bat: " + isFlashEnabled);
+                        if (isFlashEnabled) {
+                            if (hasFlash != null && hasFlash) {
+                                CaptureRequest.Builder precaptureBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
+                                precaptureBuilder.addTarget(reader.getSurface());
+                                precaptureBuilder.set(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_ON_AUTO_FLASH);
+                                precaptureBuilder.set(CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER, CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER_START);
+                                Log.e("Cấu hình", "CaptureSession đã được tạo " + (captureSession != null));
+
+                                session.capture(precaptureBuilder.build(), new CameraCaptureSession.CaptureCallback() {
+                                    @Override
+                                    public void onCaptureCompleted(@NonNull CameraCaptureSession session,
+                                                                   @NonNull CaptureRequest request,
+                                                                   @NonNull TotalCaptureResult result) {
+
+                                        captureBuilder.set(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_ON_AUTO_FLASH);
+                                        captureBuilder.set(CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER, CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER_START);
+                                        Integer aeState = result.get(CaptureResult.CONTROL_AE_STATE);
+                                        if (aeState == null || aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED) {
+                                            // AE đã ổn định, tiến hành chụp
+                                            captureStillPicture(session, captureBuilder, characteristics);
+                                        } else {
+                                            // Nếu chưa ổn định, đợi thêm bằng cách gửi lại capture hoặc dùng handler delay
+                                            if (mBackgroundHandler != null) {
+                                                mBackgroundHandler.postDelayed(() -> {
+                                                    captureStillPicture(session, captureBuilder, characteristics);
+                                                }, 300);
+                                            } else {
+                                                // fallback: gọi trực tiếp (ít an toàn hơn)
+                                                captureStillPicture(session, captureBuilder, characteristics);
+                                            }
+                                        }
+                                    }
+                                }, mBackgroundHandler);
+                                captureStillPicture(session, captureBuilder, characteristics);
+                            } else {
+                                Toast.makeText(TakeActivity.this, "Camera không hỗ trợ flash!", Toast.LENGTH_SHORT).show();
+                                captureBuilder.set(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_ON);
+                                captureStillPicture(session, captureBuilder, characteristics);
+                            }
+                        } else {
+                            captureBuilder.set(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_ON);
+                            captureStillPicture(session, captureBuilder, characteristics);
+                        }
+//                    } catch (CameraAccessException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
                 @Override
                 public void onConfigureFailed(@NonNull CameraCaptureSession session) {
+                    Toast.makeText(TakeActivity.this, "Cấu hình chụp ảnh thất bại", Toast.LENGTH_SHORT).show();
                 }
             }, mBackgroundHandler);
         } catch (CameraAccessException e) {
             throw new RuntimeException(e);
         }
     }
+
+    private void captureStillPicture(CameraCaptureSession session, CaptureRequest.Builder captureBuilder, CameraCharacteristics characteristics) {
+        if (cameraDevice == null || session == null) {
+            Log.e("Camera", "Không thể chụp vì camera đã đóng");
+            return;
+        }
+        try {
+            session.capture(captureBuilder.build(), new CameraCaptureSession.CaptureCallback() {
+                @Override
+                public void onCaptureCompleted(@NonNull CameraCaptureSession session,
+                                               @NonNull CaptureRequest request,
+                                               @NonNull TotalCaptureResult result) {
+                    Log.d("Camera", "Capture completed");
+                }
+            }, mBackgroundHandler);
+
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Hàm hỗ trợ lưu ảnh
+    private void saveBitmapToFile(Bitmap bitmap, File file) throws IOException {
+        try (FileOutputStream out = new FileOutputStream(file)) {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+        }
+    }
+
+
     private int getJpegOrientation(CameraCharacteristics c, int deviceRotation) {
         int sensorOrientation = c.get(CameraCharacteristics.SENSOR_ORIENTATION);
         int rotation = ORIENTATIONS.get(deviceRotation);
@@ -439,7 +518,7 @@ public class TakeActivity extends AppCompatActivity {
         int jpegOrientation;
         if (lensFacing == CameraCharacteristics.LENS_FACING_FRONT) {
             jpegOrientation = (sensorOrientation + rotation) % 360;  // Chỉ tính cộng thôi
-            Log.e("Xoay ảnh này", "Giá trị khi xoay ảnh camera trước: "+ jpegOrientation);
+            Log.e("Xoay ảnh này", "Giá trị khi xoay ảnh camera trước: " + jpegOrientation);
 
         } else {
             jpegOrientation = (sensorOrientation - rotation + 360) % 360;
