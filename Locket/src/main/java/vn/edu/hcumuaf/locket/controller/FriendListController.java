@@ -31,7 +31,6 @@ public class FriendListController {
 
     /**
      * Lấy danh sách bạn bè của user
-     * 
      *  userId ID của user cần lấy danh sách bạn bè
      *  CompletableFuture<ResponseEntity<FriendListResponse>> - Danh sách bạn bè và gợi ý
      */
@@ -44,7 +43,6 @@ public class FriendListController {
 
     /**
      * Tìm kiếm bạn bè theo tên hoặc username
-     * 
      *  request SearchUserRequest chứa query và currentUserId
      *  CompletableFuture<ResponseEntity<List<User>>> - Danh sách users phù hợp
      */
@@ -57,7 +55,6 @@ public class FriendListController {
 
     /**
      * Gửi lời mời kết bạn
-     * 
      *  request FriendRequestDto chứa senderId và receiverId
      *  CompletableFuture<ResponseEntity<String>> - Kết quả gửi lời mời
      */
@@ -70,7 +67,6 @@ public class FriendListController {
 
     /**
      * Chấp nhận lời mời kết bạn
-     * 
      *  requestId ID của lời mời cần chấp nhận
      *  CompletableFuture<ResponseEntity<String>> - Kết quả chấp nhận
      */
@@ -83,7 +79,6 @@ public class FriendListController {
 
     /**
      * Từ chối lời mời kết bạn
-     * 
      *  requestId ID của lời mời cần từ chối
      *  CompletableFuture<ResponseEntity<String>> - Kết quả từ chối
      */
@@ -96,7 +91,6 @@ public class FriendListController {
 
     /**
      * Xóa bạn bè
-     * 
      *  userId ID của user thực hiện xóa
      *  friendId ID của bạn bè cần xóa
      *  CompletableFuture<ResponseEntity<String>> - Kết quả xóa bạn bè
@@ -110,7 +104,6 @@ public class FriendListController {
 
     /**
      * Lấy danh sách gợi ý bạn bè
-     * 
      *  userId ID của user cần lấy gợi ý
      *  CompletableFuture<ResponseEntity<List<User>>> - Danh sách gợi ý
      */
@@ -123,7 +116,6 @@ public class FriendListController {
 
     /**
      * Lấy danh sách lời mời kết bạn đang chờ
-     * 
      *  userId ID của user cần lấy lời mời
      *  CompletableFuture<ResponseEntity<List<FriendRequest>>> - Danh sách lời mời
      */
@@ -136,7 +128,6 @@ public class FriendListController {
 
     /**
      * Chia sẻ qua social media
-     * 
      *  platform Platform để share (facebook, instagram, etc.)
      *  request ShareRequest chứa userId và message
      *  CompletableFuture<ResponseEntity<String>> - Kết quả share
@@ -150,7 +141,6 @@ public class FriendListController {
 
     /**
      * Import bạn bè từ ứng dụng khác
-     * 
      *  platform Platform để import (facebook, contacts, etc.)
      *  request ImportRequest chứa userId và danh sách contacts
      *  CompletableFuture<ResponseEntity<List<User>>> - Danh sách users có thể thêm
@@ -164,8 +154,7 @@ public class FriendListController {
     
     /**
      * Lấy user theo email
-     * THÊM MỚI: Để lấy data user với email camt91990@gmail.com
-     * 
+     * THÊM MỚI: Để lấy data user với
      *  email Email của user cần tìm
      *  CompletableFuture<ResponseEntity<User>> - User object hoặc 404 nếu không tìm thấy
      */
@@ -185,7 +174,6 @@ public class FriendListController {
     /**
      * Lấy user ID từ email
      * THÊM MỚI: Để app có thể lấy đúng user ID từ email đăng nhập
-     * 
      *  email Email của user cần tìm
      *  CompletableFuture<ResponseEntity<String>> - User ID hoặc 404 nếu không tìm thấy
      */

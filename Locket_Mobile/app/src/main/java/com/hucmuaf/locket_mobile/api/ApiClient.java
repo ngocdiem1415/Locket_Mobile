@@ -6,8 +6,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-     private static final String BASE_URL = "http://10.50.0.1:8080/"; // For Android emulator
-//     private static final String BASE_URL = "http://10.0.208.94:8080/"; // For real device, your computer's IP
+//     private static final String BASE_URL = "http://10.50.0.1:8080/"; // For Android emulator
+     private static final String BASE_URL = "http://10.0.100.23:8080/"; // For real device, your computer's IP
     // private static final String BASE_URL = "http://localhost:8080/"; // For testing
     
     private static Retrofit retrofit = null;

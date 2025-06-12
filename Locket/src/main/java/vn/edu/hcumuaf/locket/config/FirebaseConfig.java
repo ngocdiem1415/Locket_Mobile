@@ -35,7 +35,6 @@ public class FirebaseConfig {
 
             return FirebaseDatabase.getInstance();
         } catch (IOException e) {
-            // Fallback: Initialize with default options for development
             System.out.println("Warning: Could not load Firebase service account. Using default configuration.");
             
             FirebaseOptions options = FirebaseOptions.builder()

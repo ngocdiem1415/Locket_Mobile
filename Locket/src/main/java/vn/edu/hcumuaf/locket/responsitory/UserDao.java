@@ -23,20 +23,16 @@ public class UserDao {
     @Autowired
     private Executor taskExecutor;
 
-    /**
-     * Constructor - khởi tạo reference đến node "users" trên Firebase
-     */
+//    Constructor - khởi tạo reference đến node "users" trên Firebase
     @Autowired
     public UserDao(FirebaseDatabase firebaseDatabase) {
         this.dbRef = firebaseDatabase.getReference("users");
     }
 
-    /**
-     * Tìm user bằng userId
-     * 
-     * @param userId ID của user cần tìm
-     * @return CompletableFuture<User> - User object hoặc null nếu không tìm thấy
-     */
+
+//    Tìm user bằng userId
+//     userId ID của user cần tìm
+//     CompletableFuture<User> - User object hoặc null nếu không tìm thấy
     public CompletableFuture<User> findUserById(String userId) {
         CompletableFuture<User> future = new CompletableFuture<>();
 
@@ -65,10 +61,8 @@ public class UserDao {
 
     /**
      * Tìm user bằng email
-     * THÊM MỚI: Để lấy data user với email camt91990@gmail.com
-     * 
-     * @param email Email của user cần tìm
-     * @return CompletableFuture<User> - User object hoặc null nếu không tìm thấy
+     * THÊM MỚI: Để lấy data user với email Email của user cần tìm
+     *  CompletableFuture<User> - User object hoặc null nếu không tìm thấy
      */
     public CompletableFuture<User> findUserByEmail(String email) {
         CompletableFuture<User> future = new CompletableFuture<>();
@@ -98,9 +92,8 @@ public class UserDao {
 
     /**
      * Tìm kiếm users theo tên hoặc username
-     * 
-     * @param query Từ khóa tìm kiếm (có thể là tên hoặc username)
-     * @return CompletableFuture<List<User>> - Danh sách users phù hợp
+     * query Từ khóa tìm kiếm (có thể là tên hoặc username)
+     *  CompletableFuture<List<User>> - Danh sách users phù hợp
      */
     public CompletableFuture<List<User>> searchUsers(String query) {
         CompletableFuture<List<User>> future = new CompletableFuture<>();

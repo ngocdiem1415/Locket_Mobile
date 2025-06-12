@@ -1,4 +1,4 @@
-package com.hucmuaf.locket_mobile;
+package vn.edu.hcumuaf.locket.model;
 
 public class MessageDemo {
     private String messageId;

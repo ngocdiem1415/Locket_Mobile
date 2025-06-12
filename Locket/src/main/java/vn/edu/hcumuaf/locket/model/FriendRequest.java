@@ -6,7 +6,7 @@ public class FriendRequest {
     private String friendRequestId;
     private String senderId;
     private String receiverId;
-    private String status; // "pending", "ACCEPTED", "REJECTED"
+    private String status; // "PENDING", "ACCEPTED", "REJECTED"
     private long timestamp;
     private String senderName;
     private User sender;
