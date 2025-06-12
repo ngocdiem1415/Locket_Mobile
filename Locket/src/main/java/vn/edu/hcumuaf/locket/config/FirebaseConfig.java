@@ -15,14 +15,14 @@ import java.io.InputStream;
 @Configuration
 public class FirebaseConfig {
 
-    @Value("${firebase.database.url:https://your-project-id.firebaseio.com}")
+    @Value("${firebase.database.url:https://modis-8f5f6-default-rtdb.firebaseio.com}")
     private String databaseUrl;
 
     @Bean
     public FirebaseDatabase firebaseDatabase() throws IOException {
         try {
             // Load Firebase service account key
-            InputStream serviceAccount = new ClassPathResource("firebase-service-account.json").getInputStream();
+            InputStream serviceAccount = new ClassPathResource("modis-admin-keys.json").getInputStream();
             
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))

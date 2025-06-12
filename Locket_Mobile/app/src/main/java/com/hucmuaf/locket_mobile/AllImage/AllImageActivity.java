@@ -20,7 +20,6 @@ import com.hucmuaf.locket_mobile.ReactActivity;
 import com.hucmuaf.locket_mobile.Service.APIClient;
 import com.hucmuaf.locket_mobile.Service.FriendRequestService;
 import com.hucmuaf.locket_mobile.model.ItemFriend;
-import com.hucmuaf.locket_mobile.model.ItemFriendAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;

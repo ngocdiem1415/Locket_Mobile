@@ -7,7 +7,7 @@
 /dataSources/
 /dataSources.local.xml
 
-src/main/resources/firebase/modis-admin-keys.json
+src/main/resources/modis-admin-keys.json
 
 *.iml
 .idea/
