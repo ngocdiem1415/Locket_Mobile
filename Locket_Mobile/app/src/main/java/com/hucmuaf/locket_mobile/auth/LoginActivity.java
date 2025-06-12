@@ -17,7 +17,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.hucmuaf.locket_mobile.R;
-import com.hucmuaf.locket_mobile.model.TakeActivity;
+import com.hucmuaf.locket_mobile.TakeActivity;
 import com.hucmuaf.locket_mobile.service.FirebaseService;
 
 
