@@ -15,7 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.hucmuaf.locket_mobile.R;
-import com.hucmuaf.locket_mobile.Service.FirebaseService;
+import com.hucmuaf.locket_mobile.service.FirebaseService;
 
 import java.security.MessageDigest;
 import java.util.HashMap;

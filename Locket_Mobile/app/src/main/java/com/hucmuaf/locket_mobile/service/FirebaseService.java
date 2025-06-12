@@ -1,4 +1,4 @@
-package com.hucmuaf.locket_mobile.Service;
+package com.hucmuaf.locket_mobile.service;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;

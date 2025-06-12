@@ -1,5 +1,6 @@
 package com.hucmuaf.locket_mobile.auth;
 
+import static android.content.Intent.getIntent;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.content.Intent;
@@ -18,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.hucmuaf.locket_mobile.R;
 import com.hucmuaf.locket_mobile.TakeActivity;
-import com.hucmuaf.locket_mobile.Service.FirebaseService;
+import com.hucmuaf.locket_mobile.service.FirebaseService;
 
 
 public class LoginActivity extends AppCompatActivity {

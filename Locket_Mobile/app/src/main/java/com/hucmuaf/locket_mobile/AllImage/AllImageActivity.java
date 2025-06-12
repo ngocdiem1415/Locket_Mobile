@@ -17,8 +17,8 @@ import com.hucmuaf.locket_mobile.Firebase.ImageResponsitory;
 import com.hucmuaf.locket_mobile.ModelDB.Image;
 import com.hucmuaf.locket_mobile.R;
 import com.hucmuaf.locket_mobile.ReactActivity;
-import com.hucmuaf.locket_mobile.Service.APIClient;
-import com.hucmuaf.locket_mobile.Service.FriendRequestService;
+import com.hucmuaf.locket_mobile.service.APIClient;
+import com.hucmuaf.locket_mobile.service.FriendRequestService;
 import com.hucmuaf.locket_mobile.model.ItemFriend;
 
 import java.util.ArrayList;
