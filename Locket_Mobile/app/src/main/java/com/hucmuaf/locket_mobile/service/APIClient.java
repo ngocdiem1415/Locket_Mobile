@@ -4,7 +4,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIClient {
 
-    private static final String BASE_URL = "http://192.168.1.101:8080/api/";
+    private static final String BASE_URL = "http://localhost:8080/api/";
 
     //Kết nối Android với API RESTful
     private static Retrofit retrofit;
