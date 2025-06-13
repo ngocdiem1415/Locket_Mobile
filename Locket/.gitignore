@@ -8,9 +8,9 @@
 /dataSources.local.xml
 
 src/main/resources/firebase/modis-admin-keys.json
-
+s
 *.iml
-.idea/
+.idea/s
 Locket/.idea/
 ../.idea/
 
