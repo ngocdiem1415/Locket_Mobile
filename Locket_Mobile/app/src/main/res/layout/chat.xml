@@ -5,18 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black">
-
-    <EditText
-        android:id="@+id/textName2"
-        android:layout_width="280dp"
-        android:layout_height="45dp"
-        android:background="@android:color/holo_red_dark"
-        android:gravity="center_vertical"
-        android:text="Họ và tên"
-        android:textColor="@color/pallet1"
-        android:textSize="25sp"
-        tools:layout_editor_absoluteX="77dp"
-        tools:layout_editor_absoluteY="670dp" />
+    <!--    android:background="@drawable/send.xml"-->
 
     <ImageView
         android:id="@+id/account6"
@@ -38,15 +27,26 @@
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="563dp" />
 
+
     <ImageView
         android:id="@+id/account12"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:background="@drawable/circle_border"
         android:src="@mipmap/account_icon"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="670dp" />
+        tools:layout_editor_absoluteY="780dp" />
+
+    <ImageView
+        android:id="@+id/account15"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="136dp"
+        android:src="@drawable/send"
+        app:layout_constraintTop_toBottomOf="@+id/textView18"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="345dp" />
 
     <TextView
         android:id="@+id/textView17"
@@ -71,8 +71,8 @@
         android:textSize="20sp"
         tools:fontFamily="casual"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="214dp"
-        tools:layout_editor_absoluteY="601dp" />
+        tools:layout_editor_absoluteX="258dp"
+        tools:layout_editor_absoluteY="615dp" />
 
     <TextView
         android:id="@+id/textView14"
@@ -120,13 +120,14 @@
 
     <EditText
         android:id="@+id/editTextText"
-        android:layout_width="305dp"
-        android:layout_height="63dp"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
         android:ems="10"
         android:inputType="text"
         android:text="Please enter your text"
         android:textColor="@color/white"
-        tools:layout_editor_absoluteX="30dp"
-        tools:layout_editor_absoluteY="795dp" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="77dp"
+        tools:layout_editor_absoluteY="780dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

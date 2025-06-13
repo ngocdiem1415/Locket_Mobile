@@ -25,7 +25,7 @@ public class FirebaseConfig {
 
         FileInputStream serviceAccount = new FileInputStream("D://DangTranTanLuc//modis-8f5f6-firebase-adminsdk-fbsvc-f76bd29f1f.json");
 
-        InputStream serviceAccount = new ClassPathResource("Firebase/modis-admin-keys.json").getInputStream();
+//        InputStream serviceAccount = new ClassPathResource("Firebase/modis-admin-keys.json").getInputStream();
 
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
@@ -35,7 +35,7 @@ public class FirebaseConfig {
         if (FirebaseApp.getApps().isEmpty()) {
             FirebaseApp.initializeApp(options);
             System.out.println("Firebase app initialized successfully");
-        }else{
+        } else {
             System.out.println("Firebase app initialization failed");
         }
 
@@ -51,7 +51,7 @@ public class FirebaseConfig {
     }
 
     public static void main(String[] args) throws IOException {
-        FirebaseConfig  firebaseConfig = new FirebaseConfig();
+        FirebaseConfig firebaseConfig = new FirebaseConfig();
         System.out.println(firebaseConfig.firebaseDatabase());
     }
 }
