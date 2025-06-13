@@ -17,4 +17,5 @@ public interface ImageService {
 
     @GET("images/user/{userId}")
     Call<List<Image>> getImageOfUser(@Path("userId") String userId);
+
 }
