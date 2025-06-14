@@ -31,7 +31,7 @@
         tools:targetApi="31">
 
         <activity
-            android:name=".auth.LoadingActivity"
+            android:name=".activity.auth.LoadingActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,23 +39,29 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".auth.ChoiceLoginActivity" />
-        <activity android:name=".auth.SignupActivity"
+        <activity android:name=".activity.auth.ChoiceLoginActivity" />
+        <activity android:name=".activity.auth.SignupActivity"
             android:windowSoftInputMode="adjustResize|stateVisible"/>
-        <activity android:name=".auth.ForgotPassActivity"
+        <activity android:name=".activity.auth.ForgotPassActivity"
             android:windowSoftInputMode="adjustResize|stateVisible"/>
-        <activity android:name=".auth.LoginActivity"
+        <activity android:name=".activity.auth.LoginActivity"
             android:windowSoftInputMode="adjustResize|stateVisible"/>
-        <!--adjustResize: giúp layout điều chỉnh để không che bàn phím.
-            stateVisible: bàn phím sẽ hiển thị nếu có EditText được focus.-->
 
-        <activity android:name=".TakeActivity" />
-        <activity android:name=".ReactActivity" />
-        <activity android:name=".AllImage.AllImageActivity" />
-        <activity android:name=".auth.InfoActivity" />
-        <activity android:name=".ShowImageActivity"/>
-        <activity android:name=".ListFriendActivity" />
-        <activity android:name=".HomeActivity" />
+        <activity android:name=".activity.MessageActivity"
+            android:windowSoftInputMode="adjustResize|stateVisible"/>
+
+            <!--adjustResize: giúp layout điều chỉnh để không che bàn phím.
+                stateVisible: bàn phím sẽ hiển thị nếu có EditText được focus.-->
+
+
+        <activity android:name=".activity.TakeActivity" />
+        <activity android:name=".activity.ReactActivity" />
+        <activity android:name=".activity.auth.AllImageActivity" />
+        <activity android:name=".activity.auth.InfoActivity" />
+        <activity android:name=".activity.ShowImageActivity"/>
+        <activity android:name=".activity.ListFriendActivity" />
+        <activity android:name=".activity.HomeActivity" />
+<!--        <activity android:name=".MessageActivity"/>-->
 
     </application>
 </manifest>

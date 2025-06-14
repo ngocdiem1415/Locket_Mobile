@@ -1,22 +1,25 @@
 package com.hucmuaf.locket_mobile.model;
 
 import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
+//total friend, max friend, friends, suggestions???
 public class FriendListResponse {
     @SerializedName("friends")
     private List<User> friends;
-    
+
     @SerializedName("totalFriends")
     private int totalFriends;
-    
+
     @SerializedName("maxFriends")
     private int maxFriends;
-    
+
     @SerializedName("suggestions")
     private List<User> suggestions;
 
-    public FriendListResponse() {}
+    public FriendListResponse() {
+    }
 
     public FriendListResponse(List<User> friends, int totalFriends, int maxFriends, List<User> suggestions) {
         this.friends = friends;
