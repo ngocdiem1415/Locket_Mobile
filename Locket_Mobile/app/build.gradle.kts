@@ -44,6 +44,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    // Firestore
 
     // Camera dependencies
     implementation("androidx.camera:camera-core:1.3.0")
@@ -62,6 +63,7 @@ dependencies {
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
     implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore:24.11.0")
 
     // Glide for image loading
     implementation("com.github.bumptech.glide:glide:4.16.0")

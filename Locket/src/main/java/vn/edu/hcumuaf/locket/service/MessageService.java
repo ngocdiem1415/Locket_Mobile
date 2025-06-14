@@ -44,5 +44,9 @@ public class MessageService {
                 });
     }
 
+    public CompletableFuture<List<Message>> getAllMessages() {
+        return messageDao.getAllMessage();
+    }
+
 }
 

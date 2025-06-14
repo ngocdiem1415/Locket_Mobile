@@ -12,19 +12,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.hucmuaf.locket_mobile.R;
+import com.hucmuaf.locket_mobile.inteface.OnFriendActionListener;
 import com.hucmuaf.locket_mobile.model.User;
 
 import java.util.List;
 
 public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendViewHolder> {
-    
+
     private List<User> friendsList;
     private OnFriendActionListener listener;
 
-    public interface OnFriendActionListener {
-        void onRemoveFriend(User user);
-    }
-
+    //Why create an interface class here?
+//    public interface OnFriendActionListener {
+//        void onRemoveFriend(User user);
+//    }
+//check in android can not create contructor with parameter here
     public FriendAdapter(List<User> friendsList, OnFriendActionListener listener) {
         this.friendsList = friendsList;
         this.listener = listener;
@@ -53,6 +55,7 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendView
         return friendsList != null ? friendsList.size() : 0;
     }
 
+    //why use inner class here
     public class FriendViewHolder extends RecyclerView.ViewHolder {
         private ImageView avatar;
         private TextView name;
@@ -67,11 +70,11 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendView
 
         public void bind(User friend) {
             if (friend == null) return;
-            
+
             if (name != null) {
                 name.setText(friend.getFullName() != null ? friend.getFullName() : friend.getUserName());
             }
-            
+
             // Load avatar image using Glide
             if (avatar != null) {
                 if (friend.getUrlAvatar() != null && !friend.getUrlAvatar().isEmpty()) {
@@ -86,7 +89,7 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendView
                     avatar.setImageResource(R.drawable.avt);
                 }
             }
-            
+
             if (removeButton != null) {
                 removeButton.setOnClickListener(v -> {
                     if (listener != null) {

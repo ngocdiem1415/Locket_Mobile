@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".auth.LoadingActivity"
+    tools:context=".activity.auth.LoadingActivity"
     android:padding="24dp"
     android:background="@drawable/gradient_background">
 
