@@ -2,6 +2,7 @@ package com.hucmuaf.locket_mobile.model;
 
 import com.google.gson.annotations.SerializedName;
 
+//update database
 public class FriendRequest {
     @SerializedName("friendRequestId")
     private String friendRequestId;

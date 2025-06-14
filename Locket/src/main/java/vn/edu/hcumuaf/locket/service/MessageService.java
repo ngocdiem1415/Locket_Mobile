@@ -1,85 +1,52 @@
 package vn.edu.hcumuaf.locket.service;
 
 import com.google.firebase.database.*;
-import vn.edu.hcumuaf.locket.model.entity.Message;
+import org.springframework.beans.factory.annotation.Autowired;
+import vn.edu.hcumuaf.locket.model.Message;
+//import vn.edu.hcumuaf.locket.model.Message;
 import org.springframework.stereotype.Service;
-import org.springframework.lang.NonNull;
+import vn.edu.hcumuaf.locket.responsitory.MessageDao;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 @Service
 public class MessageService {
-
+    @Autowired
+    private MessageDao messageDao;
     private FirebaseDatabase database;
+    private Random random;
 
     public MessageService(FirebaseDatabase database) {
         this.database = database;
+        random = new Random();
     }
-//just write data on database
-    public CompletableFuture<String> sendMessage(Message message) {
+
+    //just write data on database
+    public void saveMessage(Message message) {
         DatabaseReference ref = database.getReference("messages").push();
+        Map<String, Object> messageData = new HashMap<>();
+        message.setId(message.getSenderId() + "_" + message.getReceiverId() + ":" + random.nextInt());
         message.setTimestamp(System.currentTimeMillis());
-        message.setMessageId(ref.getKey());
-        CompletableFuture<String> future = new CompletableFuture<>();
-        ref.setValue(message, (error, ref1) -> {
-            if (error == null) {
-                future.complete(message.getMessageId());
-            } else {
-                future.completeExceptionally(new RuntimeException("Failed to send message: " + error.getMessage()));
-            }
-        });
-        return future;
+        messageData.put("id", message.getId());
+        messageData.put("senderId", message.getSenderId());
+        messageData.put("content", message.getContent());
+        messageData.put("timestamp", message.getTimestamp());
+        ref.setValueAsync(message);
     }
 
-    public CompletableFuture<List<Message>> getMessages(String chatId) {
-        DatabaseReference ref = database.getReference("messages").child(chatId);
-        CompletableFuture<List<Message>> future = new CompletableFuture<>();
 
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                List<Message> messages = new ArrayList<>();
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    Message message = child.getValue(Message.class);
-                    if (message != null) {
-                        messages.add(message);
-                    }
-                }
-                future.complete(messages);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                future.completeExceptionally(new RuntimeException("Error fetching messages: " + error.getMessage()));
-            }
-        });
-
-        return future;
+    public CompletableFuture<List<Message>> getMessagesByReceiverId(String senderId) {
+        return messageDao.getMessagesByUserId(senderId)
+                .thenApply(messages -> {
+                    messages.sort(Comparator.comparingLong(Message::getTimestamp).reversed());
+                    return messages;
+                });
     }
 
-    public void listenForMessages(String chatId, Consumer<List<Message>> onUpdate) {
-        DatabaseReference ref = database.getReference("messages").child(chatId);
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<Message> messages = new ArrayList<>();
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    Message message = child.getValue(Message.class);
-                    if (message != null) {
-                        messages.add(message);
-                    }
-                }
-                onUpdate.accept(messages);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                throw new RuntimeException("Error listening for messages: " + error.getMessage());
-            }
-        });
+    public CompletableFuture<List<Message>> getAllMessages() {
+        return messageDao.getAllMessage();
     }
+
 }
 

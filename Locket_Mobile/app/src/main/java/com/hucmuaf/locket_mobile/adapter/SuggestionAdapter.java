@@ -13,18 +13,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.hucmuaf.locket_mobile.R;
+import com.hucmuaf.locket_mobile.holder.SuggestionViewHolder;
+import com.hucmuaf.locket_mobile.inteface.OnSuggestionActionListener;
 import com.hucmuaf.locket_mobile.model.User;
 
 import java.util.List;
 
-public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.SuggestionViewHolder> {
-    
+public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionViewHolder> {
+
     private List<User> suggestionsList;
     private OnSuggestionActionListener listener;
 
-    public interface OnSuggestionActionListener {
-        void onAddFriend(User user);
-    }
+    //??????????? an interface class here?
+//    public interface OnSuggestionActionListener {
+//        void onAddFriend(User user);
+//    }
 
     public SuggestionAdapter(List<User> suggestionsList, OnSuggestionActionListener listener) {
         this.suggestionsList = suggestionsList;
@@ -50,39 +53,41 @@ public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.Su
         return suggestionsList.size();
     }
 
-    public class SuggestionViewHolder extends RecyclerView.ViewHolder {
-        private ImageView avatar;
-        private TextView name;
-        private Button addButton;
 
-        public SuggestionViewHolder(@NonNull View itemView) {
-            super(itemView);
-            avatar = itemView.findViewById(R.id.suggestionAvatar);
-            name = itemView.findViewById(R.id.suggestionName);
-            addButton = itemView.findViewById(R.id.btnAdd);
-        }
-
-        public void bind(User suggestion) {
-            name.setText(suggestion.getFullName() != null ? suggestion.getFullName() : suggestion.getUserName());
-            
-            // Load avatar image using Glide
-            if (suggestion.getUrlAvatar() != null && !suggestion.getUrlAvatar().isEmpty()) {
-                Glide.with(itemView.getContext())
-                        .load(suggestion.getUrlAvatar())
-                        .transform(new CircleCrop())
-                        .placeholder(R.drawable.avt)
-                        .error(R.drawable.avt)
-                        .into(avatar);
-            } else {
-                // Set default avatar
-                avatar.setImageResource(R.drawable.avt);
-            }
-            
-            addButton.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onAddFriend(suggestion);
-                }
-            });
-        }
-    }
+    //use inner class here ???
+//    public class SuggestionViewHolder extends RecyclerView.ViewHolder {
+//        private ImageView avatar;
+//        private TextView name;
+//        private Button addButton;
+//
+//        public SuggestionViewHolder(@NonNull View itemView) {
+//            super(itemView);
+//            avatar = itemView.findViewById(R.id.suggestionAvatar);
+//            name = itemView.findViewById(R.id.suggestionName);
+//            addButton = itemView.findViewById(R.id.btnAdd);
+//        }
+//
+//        public void bind(User suggestion) {
+//            name.setText(suggestion.getFullName() != null ? suggestion.getFullName() : suggestion.getUserName());
+//
+//            // Load avatar image using Glide
+//            if (suggestion.getUrlAvatar() != null && !suggestion.getUrlAvatar().isEmpty()) {
+//                Glide.with(itemView.getContext())
+//                        .load(suggestion.getUrlAvatar())
+//                        .transform(new CircleCrop())
+//                        .placeholder(R.drawable.avt)
+//                        .error(R.drawable.avt)
+//                        .into(avatar);
+//            } else {
+//                // Set default avatar
+//                avatar.setImageResource(R.drawable.avt);
+//            }
+//
+//            addButton.setOnClickListener(v -> {
+//                if (listener != null) {
+//                    listener.onAddFriend(suggestion);
+//                }
+//            });
+//        }
+//    }
 } 
