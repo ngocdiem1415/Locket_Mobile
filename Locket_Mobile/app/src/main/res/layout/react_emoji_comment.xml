@@ -232,8 +232,8 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:background="@color/black" />
 
             <com.hucmuaf.locket_mobile.custom.MaxHeightRecyclerView

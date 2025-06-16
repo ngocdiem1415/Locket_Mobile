@@ -10,9 +10,9 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 
 public interface FriendRequestService {
-    @GET("friends/listFriendId/{userId}")
+    @GET("api/friends/listFriendId/{userId}")
     Call<Set<String>> getFriendIdsByUserId(@Path("userId") String userId);
 
-    @GET("friends/list/user/{userId}")
+    @GET("api/friends/list/user/{userId}")
     Call<List<User>> getListFriendByUserId (@Path("userId") String userId);
 }
