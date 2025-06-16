@@ -4,11 +4,13 @@ import com.cloudinary.Cloudinary;
 import com.google.api.client.util.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@PropertySource("classpath:cloudinary.properties")
 public class CloudinaryConfig {
 
     @Value("${cloudinary.cloud_name}")
