@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="10 / 20 người bạn đã được bổ sung"
+                android:text="0 / 20 người bạn đã được bổ sung"
                 android:textColor="#CCCCCC"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -88,7 +88,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/friendApp">
 
-                <!-- First App: Messenger -->
                 <LinearLayout
                     android:id="@+id/messenger_layout"
                     android:layout_width="wrap_content"
@@ -114,7 +113,6 @@
                         tools:ignore="HardcodedText" />
                 </LinearLayout>
 
-                <!-- Second App: Facebook -->
                 <LinearLayout
                     android:id="@+id/facebook_layout"
                     android:layout_width="wrap_content"
@@ -139,7 +137,6 @@
                         android:textSize="14sp" />
                 </LinearLayout>
 
-                <!-- Third App: Instagram -->
                 <LinearLayout
                     android:id="@+id/instagram_layout"
                     android:layout_width="wrap_content"
@@ -164,7 +161,6 @@
                         android:textSize="14sp" />
                 </LinearLayout>
 
-                <!-- Fourth App: Share -->
                 <LinearLayout
                     android:id="@+id/share_layout"
                     android:layout_width="wrap_content"
