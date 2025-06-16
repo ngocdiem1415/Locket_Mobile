@@ -33,18 +33,7 @@ public class PendingRequestViewHolder extends RecyclerView.ViewHolder {
     public void bind(FriendRequest request) {
         if (request == null) return;
 
-        String senderName;
-        if (request.getSenderName() != null && !request.getSenderName().isEmpty()) {
-            senderName = request.getSenderName();
-        } else if (request.getSender() != null && request.getSender().getFullName() != null && !request.getSender().getFullName().isEmpty()) {
-            senderName = request.getSender().getFullName();
-        } else if (request.getSender() != null && request.getSender().getUserName() != null && !request.getSender().getUserName().isEmpty()) {
-            senderName = request.getSender().getUserName();
-        } else if (request.getSenderId() != null && !request.getSenderId().isEmpty()) {
-            senderName = request.getSenderId();
-        } else {
-            senderName = "Unknown User";
-        }
+        String senderName = getName(request);
 
         if (name != null) {
             name.setText(senderName);
@@ -77,5 +66,21 @@ public class PendingRequestViewHolder extends RecyclerView.ViewHolder {
                 }
             });
         }
+    }
+
+    private static String getName(FriendRequest request) {
+        String senderName;
+        if (request.getSenderName() != null && !request.getSenderName().isEmpty()) {
+            senderName = request.getSenderName();
+        } else if (request.getSender() != null && request.getSender().getFullName() != null && !request.getSender().getFullName().isEmpty()) {
+            senderName = request.getSender().getFullName();
+        } else if (request.getSender() != null && request.getSender().getUserName() != null && !request.getSender().getUserName().isEmpty()) {
+            senderName = request.getSender().getUserName();
+        } else if (request.getSenderId() != null && !request.getSenderId().isEmpty()) {
+            senderName = request.getSenderId();
+        } else {
+            senderName = "Unknown User";
+        }
+        return senderName;
     }
 }

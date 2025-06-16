@@ -32,7 +32,6 @@ import com.hucmuaf.locket_mobile.model.FriendListResponse;
 import com.hucmuaf.locket_mobile.model.User;
 import com.hucmuaf.locket_mobile.model.FriendRequest;
 import com.hucmuaf.locket_mobile.dto.SearchUserRequest;
-//import com.hucmuaf.locket_mobile.dto.FriendRequestDto;
 import com.hucmuaf.locket_mobile.dto.ShareRequest;
 import com.hucmuaf.locket_mobile.adapter.FriendAdapter;
 import com.hucmuaf.locket_mobile.adapter.PendingRequestAdapter;
@@ -83,7 +82,7 @@ public class ListFriendActivity extends AppCompatActivity {
         Call<String> call = apiService.getUserIdByEmail(email);
         call.enqueue(new Callback<String>() {
             @Override
-            public void onResponse(@NonNull Call<String> call, Response<String> response) {
+            public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
                 Log.d("ListFriendActivity", "API Response Code: " + response.code());
                 Log.d("ListFriendActivity", "API Response Body: " + response.body());
 

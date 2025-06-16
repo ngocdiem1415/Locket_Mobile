@@ -31,7 +31,8 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="HardcodedText" />
 
             <!-- Số lượng bạn đã thêm -->
             <TextView
@@ -44,14 +45,16 @@
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/title" />
+                app:layout_constraintTop_toBottomOf="@id/title"
+                tools:ignore="HardcodedText" />
 
             <!-- Thanh tìm kiếm -->
             <EditText
                 android:id="@+id/searchFriend"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_width="350dp"
+                android:layout_height="48dp"
                 android:layout_marginTop="12dp"
+                android:autofillHints="fullName"
                 android:background="@drawable/search_box"
                 android:hint="Tìm kiếm bạn bè"
                 android:paddingStart="12dp"
@@ -59,20 +62,22 @@
                 android:textColorHint="#888888"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/friendCount" />
+                app:layout_constraintTop_toBottomOf="@id/friendCount"
+                tools:ignore="HardcodedText,RtlSymmetry,TextFields" />
 
             <TextView
                 android:id="@+id/friendApp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:drawableStart="@drawable/ic_add_friend"
                 android:gravity="center_horizontal"
                 android:text="  Tìm bạn bè từ các ứng dụng khác"
                 android:textColor="#CCCCCC"
                 android:textSize="14sp"
+                app:drawableStartCompat="@drawable/ic_add_friend"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/searchFriend" />
+                app:layout_constraintTop_toBottomOf="@id/searchFriend"
+                tools:ignore="HardcodedText" />
 
             <!-- Gợi ý thêm từ app khác -->
             <LinearLayout
@@ -95,13 +100,15 @@
                     android:gravity="center"
                     android:minHeight="60dp"
                     android:orientation="vertical"
-                    android:padding="4dp">
+                    android:padding="4dp"
+                    tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:layout_marginEnd="8dp"
-                        android:src="@drawable/ic_messenger" />
+                        android:src="@drawable/ic_messenger"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -120,13 +127,15 @@
                     android:gravity="center"
                     android:minHeight="60dp"
                     android:orientation="vertical"
-                    android:padding="4dp">
+                    android:padding="4dp"
+                    tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:layout_marginEnd="8dp"
-                        android:src="@drawable/ic_facebook" />
+                        android:src="@drawable/ic_facebook"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -134,7 +143,8 @@
                         android:layout_marginTop="4dp"
                         android:text="Facebook"
                         android:textColor="#FFFFFF"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:ignore="HardcodedText" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -144,13 +154,15 @@
                     android:gravity="center"
                     android:minHeight="60dp"
                     android:orientation="vertical"
-                    android:padding="4dp">
+                    android:padding="4dp"
+                    tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:layout_marginEnd="8dp"
-                        android:src="@drawable/ic_instagram" />
+                        android:src="@drawable/ic_instagram"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -158,7 +170,8 @@
                         android:layout_marginTop="4dp"
                         android:text="Instagram"
                         android:textColor="#FFFFFF"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:ignore="HardcodedText" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -168,12 +181,14 @@
                     android:gravity="center"
                     android:minHeight="60dp"
                     android:orientation="vertical"
-                    android:padding="4dp">
+                    android:padding="4dp"
+                    tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/ic_share" />
+                        android:src="@drawable/ic_share"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -181,7 +196,8 @@
                         android:layout_marginTop="4dp"
                         android:text="Share"
                         android:textColor="#FFFFFF"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:ignore="HardcodedText" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -196,7 +212,8 @@
                 android:textColor="#CCCCCC"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/appSuggestions" />
+                app:layout_constraintTop_toBottomOf="@id/appSuggestions"
+                tools:ignore="HardcodedText,UseCompatTextViewDrawableXml" />
 
             <!-- RecyclerView cho danh sách bạn bè -->
             <androidx.recyclerview.widget.RecyclerView
@@ -220,7 +237,8 @@
                 android:textColor="#CCCCCC"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/friendsRecyclerView" />
+                app:layout_constraintTop_toBottomOf="@id/friendsRecyclerView"
+                tools:ignore="HardcodedText,UseCompatTextViewDrawableXml" />
 
             <!-- RecyclerView cho danh sách lời mời kết bạn đang chờ -->
             <androidx.recyclerview.widget.RecyclerView
@@ -247,7 +265,8 @@
                 android:textColor="#CCCCCC"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pendingRequestsRecyclerView" />
+                app:layout_constraintTop_toBottomOf="@+id/pendingRequestsRecyclerView"
+                tools:ignore="HardcodedText,UseCompatTextViewDrawableXml" />
 
             <LinearLayout
                 android:id="@+id/shareApps"
@@ -260,7 +279,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/invite_from_other_apps">
+                app:layout_constraintTop_toBottomOf="@id/invite_from_other_apps"
+                tools:ignore="RtlHardcoded">
 
                 <!-- Facebook -->
                 <LinearLayout
@@ -273,7 +293,8 @@
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/ic_facebook" />
+                        android:src="@drawable/ic_facebook"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -281,7 +302,8 @@
                         android:layout_marginTop="4dp"
                         android:text="   Facebook"
                         android:textColor="#FFFFFF"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:ignore="HardcodedText" />
 
                     <View
                         android:layout_width="0dp"
@@ -308,7 +330,8 @@
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/ic_messenger" />
+                        android:src="@drawable/ic_messenger"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -316,7 +339,8 @@
                         android:layout_marginTop="4dp"
                         android:text="   Messenger"
                         android:textColor="#FFFFFF"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:ignore="HardcodedText" />
 
                     <View
                         android:layout_width="0dp"
@@ -352,7 +376,8 @@
                         android:layout_marginTop="4dp"
                         android:text="   Instagram"
                         android:textColor="#FFFFFF"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:ignore="HardcodedText" />
 
                     <View
                         android:layout_width="0dp"
@@ -388,7 +413,8 @@
                         android:layout_marginTop="4dp"
                         android:text="   Các ứng dụng khác"
                         android:textColor="#FFFFFF"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:ignore="HardcodedText" />
 
                     <View
                         android:layout_width="0dp"
