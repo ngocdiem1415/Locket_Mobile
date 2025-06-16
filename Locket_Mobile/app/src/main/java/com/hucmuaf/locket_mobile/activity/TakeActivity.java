@@ -225,7 +225,6 @@ public class TakeActivity extends AppCompatActivity {
         }
     }
 
-
     private String getCameraId(boolean useFrontCamera, int width, int height) throws CameraAccessException {
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         for (String id : manager.getCameraIdList()) {
