@@ -41,7 +41,7 @@
         </activity>
         <activity android:name=".activity.auth.ChoiceLoginActivity" />
         <activity android:name=".activity.auth.SignupActivity"
-            android:windowSoftInputMode="adjustResize|stateVisible"/>
+            android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".activity.auth.ForgotPassActivity"
             android:windowSoftInputMode="adjustResize|stateVisible"/>
         <activity android:name=".activity.auth.LoginActivity"
