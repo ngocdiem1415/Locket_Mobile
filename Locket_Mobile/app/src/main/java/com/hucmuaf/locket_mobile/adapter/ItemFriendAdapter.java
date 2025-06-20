@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.hucmuaf.locket_mobile.R;
 import com.hucmuaf.locket_mobile.modedb.User;
 
@@ -45,7 +46,7 @@ public class ItemFriendAdapter extends RecyclerView.Adapter<ItemFriendViewHolder
     @Override
     public ItemFriendViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_friend, parent, false);
+                .inflate(R.layout.item_friend_dropdown, parent, false);
         return new ItemFriendViewHolder(view);
     }
 
@@ -54,14 +55,13 @@ public class ItemFriendAdapter extends RecyclerView.Adapter<ItemFriendViewHolder
         User u = itemList.get(position);
         holder.bind(u, listener);
         String imageName = u.getUrlAvatar();
-        @SuppressLint("DiscouragedApi")
-        int resId = context.getResources().getIdentifier(imageName, "mipmap", context.getPackageName());
-        if (resId != 0) {
-            holder.getIvIcon().setImageResource(resId);
-        } else {
-            // Xử lý khi không tìm thấy resource
-            Log.e("ImageError", "Không tìm thấy hình " + imageName);
-        }
+
+        // Load ảnh từ URL bằng Glide
+        Glide.with(context)
+                .load(imageName)
+                .placeholder(R.drawable.default_img) // ảnh tạm khi đang load
+                .error(R.drawable.default_img) // ảnh khi load lỗi
+                .into(holder.getIvIcon());
         holder.getTvName().setText(u.getFullName());
         Log.e("ImageError", u.getFullName());
     }

@@ -8,7 +8,8 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import com.hucmuaf.locket_mobile.R;
-import com.hucmuaf.locket_mobile.activity.ReactActivity;
+import com.hucmuaf.locket_mobile.activity.PageComponentActivity;
+//import com.hucmuaf.locket_mobile.activity.ReactActivity;
 
 public class SwipeGestureListenerUp extends GestureDetector.SimpleOnGestureListener {
     private static final int SWIPE_THRESHOLD = 100;
@@ -41,7 +42,7 @@ public class SwipeGestureListenerUp extends GestureDetector.SimpleOnGestureListe
         if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
             if (diffY < 0) { // Vuốt lên
                 Log.d("Gesture", "Vuốt lên được phát hiện!");
-                startActivityWithAnimation(context, ReactActivity.class, R.anim.slide_up);
+                startActivityWithAnimation(context, PageComponentActivity.class, R.anim.slide_up);
                 return true;
             }
         }
