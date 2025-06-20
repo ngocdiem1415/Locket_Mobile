@@ -51,7 +51,7 @@
             <!-- Thanh tìm kiếm -->
             <EditText
                 android:id="@+id/searchFriend"
-                android:layout_width="350dp"
+                android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_marginTop="12dp"
                 android:autofillHints="fullName"
@@ -60,6 +60,7 @@
                 android:paddingStart="12dp"
                 android:textColor="#FFFFFF"
                 android:textColorHint="#888888"
+                android:radius="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/friendCount"
@@ -131,7 +132,7 @@
                     tools:ignore="UseCompoundDrawables">
 
                     <ImageView
-                        android:layout_width="32dp"
+                        android:layout_width="27dp"
                         android:layout_height="32dp"
                         android:layout_marginEnd="8dp"
                         android:src="@drawable/ic_facebook"
@@ -312,7 +313,7 @@
 
                     <ImageView
                         android:id="@+id/facebook_chevron"
-                        android:layout_width="32dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="32dp"
                         android:layout_marginStart="8dp"
                         android:src="@drawable/chevron_right"
