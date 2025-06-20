@@ -8,7 +8,8 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import com.hucmuaf.locket_mobile.R;
-import com.hucmuaf.locket_mobile.activity.TakeActivity;
+import com.hucmuaf.locket_mobile.activity.PageComponentActivity;
+//import com.hucmuaf.locket_mobile.activity.TakeActivity;
 
 public class SwipeGestureListenerDown extends GestureDetector.SimpleOnGestureListener {
     private static final int SWIPE_THRESHOLD = 100;
@@ -42,7 +43,7 @@ public class SwipeGestureListenerDown extends GestureDetector.SimpleOnGestureLis
             if (diffY > 0) {
                 // Vuốt xuống
                 Log.d("Gesture", "Vuốt xuống được phát hiện!");
-                startActivityWithAnimation(context, TakeActivity.class, R.anim.slide_down);
+                startActivityWithAnimation(context, PageComponentActivity.class, R.anim.slide_down);
                 return true;
             }
         }
