@@ -1,3 +1,4 @@
+
 package vn.edu.hcumuaf.locket.dbo;
 
 import com.google.auth.oauth2.GoogleCredentials;

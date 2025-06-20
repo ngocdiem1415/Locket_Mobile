@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import vn.edu.hcumuaf.locket.model.entity.Image;
 import vn.edu.hcumuaf.locket.service.ImageService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -47,5 +49,20 @@ public class ImageController {
         return imageService.getAllImagesByUserId(userId)
                 .thenApply(ResponseEntity::ok)
                 .exceptionally(ex -> ResponseEntity.internalServerError().build());
+    }
+
+    @PostMapping("/save")
+    public CompletableFuture<ResponseEntity<Map<String, String>>> saveImage(@RequestBody Image image) {
+        return imageService.saveImage(image)
+                .thenApply(v -> {
+                    Map<String, String> response = new HashMap<>();
+                    response.put("message", "Lưu thành công");
+                    return ResponseEntity.ok(response);
+                })
+                .exceptionally(ex -> {
+                    Map<String, String> error = new HashMap<>();
+                    error.put("message", "Lỗi khi lưu: " + ex.getMessage());
+                    return ResponseEntity.status(500).body(error);
+                });
     }
 }
