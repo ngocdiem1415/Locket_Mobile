@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -182,6 +183,14 @@ public class ReactActivity extends AppCompatActivity {
         View take = findViewById(R.id.take);
         take.setOnClickListener(v -> {
             startActivityWithAnimation(this, TakeActivity.class, R.anim.slide_down);
+        });
+
+        //Hiển thị trang lưới ảnh khi bấm vào nút flash
+        ImageView flash = findViewById(R.id.flash);
+        flash.setOnClickListener(v -> {
+            Intent intent = new Intent(ReactActivity.this, AllImageActivity.class);
+            startActivity(intent);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         });
     }
 

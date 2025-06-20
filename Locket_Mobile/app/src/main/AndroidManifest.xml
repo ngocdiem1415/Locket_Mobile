@@ -56,7 +56,7 @@
 
         <activity android:name=".activity.TakeActivity" />
         <activity android:name=".activity.ReactActivity" />
-        <activity android:name=".activity.auth.AllImageActivity" />
+        <activity android:name=".activity.AllImageActivity" />
         <activity android:name=".activity.auth.InfoActivity" />
         <activity android:name=".activity.ShowImageActivity"/>
         <activity android:name=".activity.ListFriendActivity" />
