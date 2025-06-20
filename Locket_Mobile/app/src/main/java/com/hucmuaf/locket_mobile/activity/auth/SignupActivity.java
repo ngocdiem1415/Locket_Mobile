@@ -2,6 +2,8 @@ package com.hucmuaf.locket_mobile.activity.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.widget.Button;
@@ -18,11 +20,12 @@ import com.hucmuaf.locket_mobile.R;
 import com.hucmuaf.locket_mobile.service.FirebaseService;
 
 import java.security.MessageDigest;
+import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SignupActivity extends AppCompatActivity {
-    private EditText edEmail, edPassword, edConfirmPassword, edFullName, edPhoneNumber;
+    private EditText edEmail, edPassword, edConfirmPassword, edUserName, edPhoneNumber;
     private FirebaseAuth mAuth;
     private FirebaseDatabase database;
 
@@ -31,7 +34,7 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logup);
 
-        edFullName = findViewById(R.id.textName);
+        edUserName = findViewById(R.id.textUserName);
         edPhoneNumber = findViewById(R.id.textPhone);
         edEmail = findViewById(R.id.textEmail);
         edPassword = findViewById(R.id.textPassword);
@@ -48,20 +51,49 @@ public class SignupActivity extends AppCompatActivity {
             startActivity(new Intent(SignupActivity.this, ChoiceLoginActivity.class));
             finish();
         });
+
+        edUserName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String input = s.toString();
+
+                // Bỏ dấu và khoảng trắng
+                String normalized = removeDiacritics(input).replaceAll("\\s+", "");
+
+                if (!input.equals(normalized)) {
+                    edUserName.setText(normalized);
+                    edUserName.setSelection(normalized.length()); // Đưa con trỏ về cuối
+                }
+            }
+        });
+
+
+        String input = edUserName.getText().toString();
+        if (!input.matches("^[a-zA-Z0-9]+$")) {
+            edUserName.setError("Vui lòng nhập liền không dấu, không ký tự đặc biệt");
+        }
+
     }
 
     private void handleSignUp() {
-        String fullName = edFullName.getText().toString().trim();
+        String userName = edUserName.getText().toString().trim();
         String phoneNumber = edPhoneNumber.getText().toString().trim();
         String email = edEmail.getText().toString().trim();
         String password = edPassword.getText().toString().trim();
         String confirmPassword = edConfirmPassword.getText().toString().trim();
 
         // Kiểm tra hợp lệ
-        if (fullName.isEmpty() || phoneNumber.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+        if (userName.isEmpty() || phoneNumber.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             toast("Không thể để trống");
             return;
         }
+
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             toast("Email không hợp lệ!");
             return;
@@ -87,7 +119,7 @@ public class SignupActivity extends AppCompatActivity {
 
                         Map<String, String> user = new HashMap<>();
                         user.put("email", email);
-                        user.put("fullName", fullName);
+                        user.put("userName", userName);
                         user.put("password", hashPwd(password));
                         user.put("phoneNumber", phoneNumber);
                         user.put("userId", userId);
@@ -111,6 +143,12 @@ public class SignupActivity extends AppCompatActivity {
                         toast("Đăng kí thất bại" + task.getException().getMessage());
                     }
                 });
+    }
+
+    // Hàm để loại bỏ dấu và khoảng trắng trong chuỗi
+    private String removeDiacritics(String input) {
+        String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
+        return normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
     }
 
     private String hashPwd(String password) {
