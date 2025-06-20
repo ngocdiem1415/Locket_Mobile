@@ -207,6 +207,7 @@ public class TakeActivity extends AppCompatActivity {
     }
 
     private void startBackgroundThread() {
+        //???
         mBackgroundThread = new HandlerThread("CameraBackground");
         mBackgroundThread.start();
         mBackgroundHandler = new Handler(mBackgroundThread.getLooper());

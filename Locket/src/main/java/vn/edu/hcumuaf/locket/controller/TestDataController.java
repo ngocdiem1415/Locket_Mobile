@@ -45,8 +45,8 @@ public class TestDataController {
             User friend1 = new User(
                 "friend1", "ngocdiem", "Ngọc Diễm", "ngocdiem@gmail.com", "0379891777", "https://example.com/avatars/ngocdiem.jpg", "123"
             );
-            User friend2 = new User(
-                "friend2", "namnguyen", "Nguyễn Nam", "nam@gmail.com", "0987654321", "https://example.com/avatars/nam.jpg", "123"
+            User tanluc = new User(
+                "JsnmEU9dB0MKXXNzTzWL8gDZWJs1", "tanluc", "Đặng Trần Tấn Lực", "dttanluc2004@gmail.com", "0987654321", "https://cellphones.com.vn/sforum/wp-content/uploads/2024/01/avartar-anime-6.jpg", "123456"
             );
             User friend3 = new User(
                 "friend3", "linhphan", "Phan Linh", "linh@gmail.com", "0909123456", "https://example.com/avatars/linh.jpg", "123"
@@ -56,7 +56,7 @@ public class TestDataController {
             // Thêm từng user
             dataToAdd.put("users/camt91990", camtUser);
             dataToAdd.put("users/friend1", friend1);
-            dataToAdd.put("users/friend2", friend2);
+            dataToAdd.put("users/JsnmEU9dB0MKXXNzTzWL8gDZWJs1", tanluc);
             dataToAdd.put("users/friend3", friend3);
 
             // ===== 2. THÊM FRIEND REQUESTS (req1, req2 đã accept, req3 pending) =====
