@@ -23,13 +23,20 @@ public class UploadController {
     private Cloudinary cloudinary;
 
     @PostMapping
-    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
         try {
-            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            // Gửi tùy chọn folder khi upload
+            Map options = ObjectUtils.asMap("folder", "Modis");
+
+            // Kết quả trả về từ Cloudinary sau khi upload ảnh
+            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), options);
+
+            // Trả về secure_url (link ảnh công khai)
             return ResponseEntity.ok(uploadResult.get("secure_url"));
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Lỗi upload: " + e.getMessage());
         }
     }
+
 
 }
