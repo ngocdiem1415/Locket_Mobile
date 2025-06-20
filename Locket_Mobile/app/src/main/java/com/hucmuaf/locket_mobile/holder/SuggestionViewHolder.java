@@ -15,9 +15,9 @@ import com.hucmuaf.locket_mobile.inteface.OnSuggestionActionListener;
 import com.hucmuaf.locket_mobile.model.User;
 
 public class SuggestionViewHolder extends RecyclerView.ViewHolder {
-    private ImageView avatar;
-    private TextView name;
-    private Button addButton;
+    private final ImageView avatar;
+    private final TextView name;
+    private final Button addButton;
     private OnSuggestionActionListener listener;
 
     public SuggestionViewHolder(@NonNull View itemView) {
