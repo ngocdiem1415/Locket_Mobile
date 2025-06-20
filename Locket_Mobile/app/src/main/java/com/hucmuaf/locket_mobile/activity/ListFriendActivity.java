@@ -303,7 +303,7 @@ public class ListFriendActivity extends AppCompatActivity {
         Call<String> call = apiService.sendFriendRequest(request);
         call.enqueue(new Callback<String>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(ListFriendActivity.this, "Friend request sent!", Toast.LENGTH_SHORT).show();
                 } else {
@@ -322,10 +322,11 @@ public class ListFriendActivity extends AppCompatActivity {
     private void removeFriend(User user) {
         Call<String> call = apiService.removeFriend(currentUserId, user.getUserId());
         call.enqueue(new Callback<String>() {
-            @SuppressLint("NotifyDataSetChanged")
+            @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
                 if (response.isSuccessful()) {
+                    Toast.makeText(ListFriendActivity.this, "Đã xóa bạn thành công", Toast.LENGTH_SHORT).show();
                     friendsList.remove(user);
                     friendAdapter.notifyDataSetChanged();
                     friendCount.setText(friendsList.size() + " / 20 người bạn đã được bổ sung");
@@ -343,8 +344,9 @@ public class ListFriendActivity extends AppCompatActivity {
                 }
             }
 
+            @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
                 Log.e("ListFriendActivity", "Remove friend failed: " + t.getMessage());
                 if (t.getMessage() != null && t.getMessage().contains("JSON document was not fully consumed")) {
                     friendsList.remove(user);
@@ -358,6 +360,7 @@ public class ListFriendActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void showConfirmationDialog(User user) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.confirmation_dialog, null);
@@ -392,7 +395,7 @@ public class ListFriendActivity extends AppCompatActivity {
         Call<String> call = apiService.shareToSocialMedia(platform, request);
         call.enqueue(new Callback<String>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(ListFriendActivity.this, "Shared to " + platform, Toast.LENGTH_SHORT).show();
                 } else {
@@ -401,7 +404,7 @@ public class ListFriendActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
                 Toast.makeText(ListFriendActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -414,7 +417,7 @@ public class ListFriendActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<FriendRequest>>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void onResponse(Call<List<FriendRequest>> call, Response<List<FriendRequest>> response) {
+            public void onResponse(@NonNull Call<List<FriendRequest>> call, @NonNull Response<List<FriendRequest>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<FriendRequest> pendingRequests = response.body();
                     Log.d("ListFriendActivity", "Pending Requests Count: " + pendingRequests.size());
@@ -431,7 +434,7 @@ public class ListFriendActivity extends AppCompatActivity {
 
             @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void onFailure(Call<List<FriendRequest>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<FriendRequest>> call, @NonNull Throwable t) {
                 Log.e("ListFriendActivity", "Pending Requests API call failed: " + t.getMessage());
                 if (t.getMessage() != null && t.getMessage().contains("JSON document was not fully consumed")) {
                     Log.d("ListFriendActivity", "JSON parsing error for pending requests - likely empty response, treating as success");
@@ -447,12 +450,14 @@ public class ListFriendActivity extends AppCompatActivity {
     // Chấp nhận lời mời kết bạn
     private void acceptFriendRequest(FriendRequest request) {
         Log.d("ListFriendActivity", "Accepting friend request: " + request.getFriendRequestId());
-        Call<String> call = apiService.acceptFriendRequest(request.getFriendRequestId());
-        call.enqueue(new Callback<String>() {
+        Call<Void> call = apiService.acceptFriendRequest(request.getFriendRequestId());
+        call.enqueue(new Callback<Void>() {
+            @SuppressLint("SetTextI18n")
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
                     Log.d("ListFriendActivity", "Friend request accepted successfully");
+                    Toast.makeText(ListFriendActivity.this, "Đã chấp nhận lời mời kết bạn", Toast.LENGTH_SHORT).show();
                     int position = pendingRequestsList.indexOf(request);
                     if (position != -1) {
                         pendingRequestsList.remove(position);
@@ -469,7 +474,7 @@ public class ListFriendActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                 Log.e("ListFriendActivity", "Accept friend request failed: " + t.getMessage());
                 Toast.makeText(ListFriendActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -479,10 +484,10 @@ public class ListFriendActivity extends AppCompatActivity {
     // Từ chối lời mời kết bạn
     private void rejectFriendRequest(FriendRequest request) {
         Log.d("ListFriendActivity", "Rejecting friend request: " + request.getFriendRequestId());
-        Call<String> call = apiService.rejectFriendRequest(request.getFriendRequestId());
-        call.enqueue(new Callback<String>() {
+        Call<Void> call = apiService.rejectFriendRequest(request.getFriendRequestId());
+        call.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
                     Log.d("ListFriendActivity", "Friend request rejected successfully");
                     int position = pendingRequestsList.indexOf(request);
@@ -498,7 +503,7 @@ public class ListFriendActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                 Log.e("ListFriendActivity", "Reject friend request failed: " + t.getMessage());
                 Toast.makeText(ListFriendActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }

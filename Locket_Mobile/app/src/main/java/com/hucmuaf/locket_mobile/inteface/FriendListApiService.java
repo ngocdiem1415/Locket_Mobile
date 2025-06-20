@@ -31,14 +31,14 @@ public interface FriendListApiService {
     // Gửi lời mời kết bạn
     @POST("api/friend-list/send-request")
     Call<String> sendFriendRequest(@Body FriendRequest request);
-    
+
     // Chấp nhận lời mời kết bạn
     @PUT("api/friend-list/accept-request/{requestId}")
-    Call<String> acceptFriendRequest(@Path("requestId") String requestId);
-    
+    Call<Void> acceptFriendRequest(@Path("requestId") String requestId);
+
     // Từ chối lời mời kết bạn
     @PUT("api/friend-list/reject-request/{requestId}")
-    Call<String> rejectFriendRequest(@Path("requestId") String requestId);
+    Call<Void> rejectFriendRequest(@Path("requestId") String requestId);
     
     // Xóa bạn bè
     @DELETE("api/friend-list/remove-friend/{userId}/{friendId}")

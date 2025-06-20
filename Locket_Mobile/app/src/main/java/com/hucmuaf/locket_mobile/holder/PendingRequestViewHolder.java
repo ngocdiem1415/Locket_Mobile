@@ -17,17 +17,16 @@ import com.hucmuaf.locket_mobile.model.FriendRequest;
 public class PendingRequestViewHolder extends RecyclerView.ViewHolder {
     public ImageView avatar;
     private final TextView name;
-    private final ImageButton acceptButton;
-    private final ImageButton rejectButton;
-    private OnPendingRequestActionListener listener;
+    public ImageButton btnAccept;
+    public ImageButton btnReject;
 
     public PendingRequestViewHolder(@NonNull View itemView) {
         super(itemView);
         // Ánh xạ các view từ layout item_pending_request.xml
         avatar = itemView.findViewById(R.id.pendingRequestAvatar);
         name = itemView.findViewById(R.id.pendingRequestName);
-        acceptButton = itemView.findViewById(R.id.btnAccept);
-        rejectButton = itemView.findViewById(R.id.btnReject);
+        btnAccept = itemView.findViewById(R.id.btnAccept);
+        btnReject = itemView.findViewById(R.id.btnReject);
     }
 
     public void bind(FriendRequest request) {
@@ -50,21 +49,6 @@ public class PendingRequestViewHolder extends RecyclerView.ViewHolder {
             } else {
                 avatar.setImageResource(R.drawable.avt);
             }
-        }
-
-        if (acceptButton != null) {
-            acceptButton.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onAcceptRequest(request);
-                }
-            });
-        }
-        if (rejectButton != null) {
-            rejectButton.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onRejectRequest(request);
-                }
-            });
         }
     }
 

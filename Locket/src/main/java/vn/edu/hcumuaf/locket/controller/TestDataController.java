@@ -130,9 +130,6 @@ public class TestDataController {
         return messageData;
     }
     
-    /**
-     * Tạo dữ liệu reaction theo cấu trúc yêu cầu
-     */
     private Map<String, Object> createReactionData(String userId, String imageId, String icon, long timestamp) {
         Map<String, Object> reactionData = new HashMap<>();
         reactionData.put("userId", userId);
@@ -142,9 +139,6 @@ public class TestDataController {
         return reactionData;
     }
 
-    /**
-     * Thêm user mới đang gửi lời mời kết bạn cho camt91990
-     */
     @PostMapping("/add-pending-request-for-camt")
     public CompletableFuture<ResponseEntity<String>> addPendingRequestForCamt() {
         CompletableFuture<ResponseEntity<String>> future = new CompletableFuture<>();
@@ -153,7 +147,6 @@ public class TestDataController {
             DatabaseReference dbRef = firebaseDatabase.getReference();
             long currentTime = System.currentTimeMillis();
             
-            // ===== 1. THÊM USER MỚI ĐANG GỬI LỜI MỜI =====
             User newUser = new User(
                 "newuser123", // userId
                 "newuser123", // userName  
@@ -164,7 +157,6 @@ public class TestDataController {
                 "123456" // password
             );
             
-            // ===== 2. TẠO MAP DỮ LIỆU =====
             Map<String, Object> dataToAdd = new HashMap<>();
             
             // Thêm user mới vào users node - SỬA: sử dụng đường dẫn cụ thể để không ghi đè
@@ -173,7 +165,6 @@ public class TestDataController {
             // Thêm lời mời kết bạn với status "pending" - SỬA: sử dụng đường dẫn cụ thể
             dataToAdd.put("friendRequests/req4", createFriendRequest("newuser123", "camt91990", "PENDING", currentTime));
             
-            // ===== 3. WRITE TO FIREBASE =====
             dbRef.updateChildren(dataToAdd, (error, ref) -> {
                 if (error == null) {
                     future.complete(ResponseEntity.ok("Đã thêm thành công user Lam đang gửi lời mời kết bạn cho camt91990!"));
@@ -189,9 +180,6 @@ public class TestDataController {
         return future;
     }
 
-    /**
-     * Sửa status của req3 từ ACCEPTED thành PENDING để có lời mời kết bạn
-     */
     @PostMapping("/modify-req3-to-pending")
     public CompletableFuture<ResponseEntity<String>> modifyReq3ToPending() {
         CompletableFuture<ResponseEntity<String>> future = new CompletableFuture<>();
@@ -218,10 +206,6 @@ public class TestDataController {
         return future;
     }
 
-    /**
-     * Thêm lại các request và tạo thêm nhiều request mới
-     * Bao gồm: req1, req2, req3 và thêm req4, req5, req6, req7
-     */
     @PostMapping("/add-multiple-requests")
     public CompletableFuture<ResponseEntity<String>> addMultipleRequests() {
         CompletableFuture<ResponseEntity<String>> future = new CompletableFuture<>();
@@ -244,7 +228,6 @@ public class TestDataController {
                 "user7", "user7", "Hoàng Văn E", "user7@gmail.com", "0123456783", "https://example.com/avatars/user7.jpg", "123456"
             );
             
-            // ===== 2. TẠO MAP DỮ LIỆU =====
             Map<String, Object> dataToAdd = new HashMap<>();
             
             // Thêm các user mới
@@ -253,7 +236,6 @@ public class TestDataController {
             dataToAdd.put("users/user6", user6);
             dataToAdd.put("users/user7", user7);
             
-            // ===== 3. THÊM LẠI CÁC REQUEST CŨ VÀ MỚI =====
             // req1: camt91990 -> friend1 (ACCEPTED)
             dataToAdd.put("friendRequests/req1", createFriendRequest("camt91990", "friend1", "ACCEPTED", currentTime - 100000));
             
@@ -284,7 +266,6 @@ public class TestDataController {
             // req10: friend2 -> user6 (PENDING) - friend2 gửi lời mời
             dataToAdd.put("friendRequests/req10", createFriendRequest("friend2", "user6", "PENDING", currentTime - 1000000));
             
-            // ===== 4. GHI DỮ LIỆU LÊN FIREBASE =====
             dbRef.updateChildren(dataToAdd, (error, ref) -> {
                 if (error == null) {
                     future.complete(ResponseEntity.ok("Đã thêm thành công 10 friend requests! " +
@@ -301,9 +282,6 @@ public class TestDataController {
         return future;
     }
 
-    /**
-     * Thêm request đơn giản cho camt91990
-     */
     @PostMapping("/add-simple-requests")
     public CompletableFuture<ResponseEntity<String>> addSimpleRequests() {
         CompletableFuture<ResponseEntity<String>> future = new CompletableFuture<>();
@@ -312,7 +290,6 @@ public class TestDataController {
             DatabaseReference dbRef = firebaseDatabase.getReference();
             long currentTime = System.currentTimeMillis();
             
-            // ===== TẠO MAP DỮ LIỆU =====
             Map<String, Object> dataToAdd = new HashMap<>();
             
             // Thêm lại req1 và req2 (ACCEPTED)
@@ -322,7 +299,6 @@ public class TestDataController {
             // Thêm req3 (PENDING) - friend3 gửi lời mời cho camt91990
             dataToAdd.put("friendRequests/req3", createFriendRequest("friend3", "camt91990", "PENDING", currentTime - 300000));
             
-            // ===== GHI DỮ LIỆU LÊN FIREBASE =====
             dbRef.updateChildren(dataToAdd, (error, ref) -> {
                 if (error == null) {
                     future.complete(ResponseEntity.ok("Đã thêm thành công req1, req2 (ACCEPTED) và req3 (PENDING) cho camt91990!"));
