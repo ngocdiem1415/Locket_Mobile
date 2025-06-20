@@ -23,12 +23,12 @@
         android:id="@+id/currentUserAvatar"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="64dp"
         android:background="@drawable/circle_border"
         android:src="@mipmap/account_icon"
-        app:layout_constraintStart_toEndOf="@id/backButton"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="32dp" />
 
     <TextView
         android:id="@+id/currentUsername"
@@ -42,19 +42,20 @@
         app:layout_constraintTop_toTopOf="@id/currentUserAvatar" />
 
     <!-- RecyclerView for Message/User List -->
+
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:fontFamily="sans-serif-medium"
         android:text="Messages"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@id/currentUsername"
+        app:layout_constraintHorizontal_bias="0.392"
+        app:layout_constraintStart_toEndOf="@id/backButton"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView

@@ -28,6 +28,7 @@ public class MessageService {
         Map<String, Object> messageData = new HashMap<>();
         message.setId(message.getSenderId() + "_" + message.getReceiverId() + ":" + random.nextInt());
         message.setTimestamp(System.currentTimeMillis());
+
         messageData.put("id", message.getId());
         messageData.put("senderId", message.getSenderId());
         messageData.put("content", message.getContent());
@@ -36,7 +37,7 @@ public class MessageService {
     }
 
 
-    public CompletableFuture<List<Message>> getMessagesByReceiverId(String senderId) {
+    public CompletableFuture<List<Message>> getMessagesByUserId(String senderId) {
         return messageDao.getMessagesByUserId(senderId)
                 .thenApply(messages -> {
                     messages.sort(Comparator.comparingLong(Message::getTimestamp).reversed());
