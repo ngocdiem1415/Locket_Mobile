@@ -13,10 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
+import com.hucmuaf.locket_mobile.activity.PageComponentActivity;
 import com.hucmuaf.locket_mobile.repo.ImageResponsitory;
 import com.hucmuaf.locket_mobile.modedb.Image;
 import com.hucmuaf.locket_mobile.R;
-import com.hucmuaf.locket_mobile.activity.ReactActivity;
+//import com.hucmuaf.locket_mobile.activity.ReactActivity;
 import com.hucmuaf.locket_mobile.adapter.ImageAdapter;
 import com.hucmuaf.locket_mobile.service.ApiClient;
 import com.hucmuaf.locket_mobile.service.FriendRequestService;
@@ -90,7 +91,7 @@ public class AllImageActivity extends AppCompatActivity {
         });
 
         adapter = new ImageAdapter(this, allPhotos, photo -> {
-            Intent intent = new Intent(AllImageActivity.this, ReactActivity.class);
+            Intent intent = new Intent(AllImageActivity.this, PageComponentActivity.class);
             intent.putExtra("photo", new Gson().toJson(photo)); // Truyền sang chi tiết
             startActivity(intent);
         });

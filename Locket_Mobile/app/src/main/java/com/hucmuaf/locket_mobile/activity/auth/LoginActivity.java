@@ -20,7 +20,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.hucmuaf.locket_mobile.R;
-import com.hucmuaf.locket_mobile.activity.TakeActivity;
+import com.hucmuaf.locket_mobile.activity.PageComponentActivity;
+//import com.hucmuaf.locket_mobile.activity.TakeActivity;
 import com.hucmuaf.locket_mobile.service.FirebaseService;
 
 
@@ -122,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(this, "Không thể lấy UID người dùng.", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        Intent intent = new Intent(LoginActivity.this, TakeActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, PageComponentActivity.class);
                         intent.putExtra("userId", userId);
                         startActivity(intent);
                         finish();

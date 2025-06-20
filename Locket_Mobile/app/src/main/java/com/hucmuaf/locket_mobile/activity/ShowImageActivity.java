@@ -33,21 +33,33 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.FieldValue;
 import com.hucmuaf.locket_mobile.R;
 import com.hucmuaf.locket_mobile.adapter.ItemFriendToSendPhotoAdapter;
 import com.hucmuaf.locket_mobile.inteface.OnFriendToSendListenter;
+import com.hucmuaf.locket_mobile.modedb.Image;
+import com.hucmuaf.locket_mobile.modedb.SaveImageResponse;
+import com.hucmuaf.locket_mobile.modedb.UploadImageResponse;
 import com.hucmuaf.locket_mobile.modedb.User;
 import com.hucmuaf.locket_mobile.service.ApiClient;
 import com.hucmuaf.locket_mobile.service.FriendRequestService;
+import com.hucmuaf.locket_mobile.service.ImageService;
 import com.hucmuaf.locket_mobile.service.OnFriendLoadedListener;
+import com.hucmuaf.locket_mobile.service.UploadImageService;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.Random;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -65,8 +77,7 @@ public class ShowImageActivity extends AppCompatActivity {
     private ItemFriendToSendPhotoAdapter itemFriendToSendPhotoAdapter;
     private LinearLayout allFriends;
     private boolean sendAll;
-
-    private final String userID = "camt91990";
+    private String userId;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -81,6 +92,7 @@ public class ShowImageActivity extends AppCompatActivity {
         });
 
         sendAll = false;
+        userId = getIntent().getStringExtra("userId");
 
         ImageView imageView = findViewById(R.id.camera_preview);
         String imagePath = getIntent().getStringExtra("imagePath");
@@ -98,7 +110,7 @@ public class ShowImageActivity extends AppCompatActivity {
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ShowImageActivity.this, TakeActivity.class);
+                Intent intent = new Intent(ShowImageActivity.this, PageComponentActivity.class);
                 startActivity(intent);
             }
         });
@@ -128,9 +140,6 @@ public class ShowImageActivity extends AppCompatActivity {
             saveBitmapToGallery(this, rotatedBitmap, "captured_" + System.currentTimeMillis() + ".jpg");
         });
 
-        // Lưu thời gian hiện tại
-//        Map<String, Object> data = new HashMap<>();
-//        data.put("createdAt", FieldValue.serverTimestamp());
         listFriendToSend = new ArrayList<>();
         listAllFriend = new ArrayList<>();
         listFriendRV = findViewById(R.id.friends_to_send_photo);
@@ -139,7 +148,7 @@ public class ShowImageActivity extends AppCompatActivity {
         allFriends = findViewById(R.id.all_friends);
         LinearLayout borderAllFriend = findViewById(R.id.border_all_friends);
 
-        getFriends(userID, new OnFriendLoadedListener() {
+        getFriends(userId, new OnFriendLoadedListener() {
             @Override
             public void onSuccess(List<User> users) {
                 listFriend = users;
@@ -154,7 +163,7 @@ public class ShowImageActivity extends AppCompatActivity {
                         } else {
                             listFriendToSend.remove(user.getUserId());
                         }
-                        if (sendAll){
+                        if (sendAll) {
                             sendAll = false;
                             borderAllFriend.setBackground(ContextCompat.getDrawable(ShowImageActivity.this, R.drawable.circle_border_gray));
                         }
@@ -170,8 +179,8 @@ public class ShowImageActivity extends AppCompatActivity {
                         borderAllFriend.setBackground(ContextCompat.getDrawable(ShowImageActivity.this, R.drawable.circle_border_blue));
                     }
                     itemFriendToSendPhotoAdapter.setSelected(true);
+                    listFriendToSend = listAllFriend;
                 });
-
             }
 
             @Override
@@ -179,6 +188,77 @@ public class ShowImageActivity extends AppCompatActivity {
             }
         });
 
+        LinearLayout sendLayout = findViewById(R.id.send);
+        sendLayout.setOnClickListener(v -> {
+            assert imagePath != null;
+            File file = new File(imagePath);
+            Log.e("Image Path", imagePath);
+            RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+            uploadImage(body);
+        });
+    }
+
+    public void uploadImage(MultipartBody.Part part) {
+        final String[] path = {""};
+        UploadImageService uploadImageService = ApiClient.getClient().create(UploadImageService.class);
+        Call<UploadImageResponse> imagePathCall = uploadImageService.uploadImage(part);
+        imagePathCall.enqueue(new Callback<UploadImageResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<UploadImageResponse> call, @NonNull Response<UploadImageResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String imageUrl = response.body().getUrl(); // 🔥 Đây là link ảnh từ Cloudinary
+                    Log.d("UPLOAD", "Ảnh đã upload: " + imageUrl);
+                    // Bạn có thể hiển thị ảnh:
+
+                    Timestamp timestamp = Timestamp.now();
+                    long currentTime = timestamp.toDate().getTime();
+                    String timeString = currentTime + "";
+                    Random random = new Random(2000);
+                    int a = random.nextInt();
+                    String imageId = userId + a + timeString.substring(0, 3);
+                    @SuppressLint("CutPasteId") EditText captionEt = findViewById(R.id.caption);
+                    String caption = captionEt.getText().toString();
+
+                    Image newImage = new Image(imageId, imageUrl, caption, currentTime, userId, listFriendToSend);
+
+                    saveImage(newImage);
+                } else {
+                    Log.e("UPLOAD", "Lỗi: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UploadImageResponse> call, @NonNull Throwable t) {
+                Log.e("UPLOAD", "Upload thất bại", t);
+            }
+        });
+    }
+
+    public void saveImage(Image image) {
+        ImageService imageService = ApiClient.getClient().create(ImageService.class);
+        Call<SaveImageResponse> call = imageService.saveImage(image);
+
+        call.enqueue(new Callback<SaveImageResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<SaveImageResponse> call, @NonNull Response<SaveImageResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String message = response.body().getMessage();
+                    Intent intent = new Intent(ShowImageActivity.this, PageComponentActivity.class);
+                    intent.putExtra("userId", userId);
+                    startActivity(intent);
+                    Toast.makeText(ShowImageActivity.this, message, Toast.LENGTH_SHORT).show();
+                    Log.d("UPLOAD", "Kết quả: " + message);
+                } else {
+                    Log.e("UPLOAD", "Lỗi backend: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<SaveImageResponse> call, @NonNull Throwable t) {
+                Log.e("UPLOAD", "Lỗi kết nối", t);
+            }
+        });
     }
 
     public void getFriends(String userId, OnFriendLoadedListener listener) {

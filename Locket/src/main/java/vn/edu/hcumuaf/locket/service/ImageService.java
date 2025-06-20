@@ -65,4 +65,7 @@ public class ImageService {
                                     .collect(Collectors.toList()));
                 });
     }
+    public CompletableFuture<Void> saveImage(Image image){
+        return imageDao.saveImage(image);
+    }
 }
