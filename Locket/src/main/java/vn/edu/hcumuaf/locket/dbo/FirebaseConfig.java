@@ -23,8 +23,8 @@ public class FirebaseConfig {
     public FirebaseDatabase firebaseDatabase() throws IOException {
         System.out.println("Firebase database intializing");
 
-        FileInputStream serviceAccount = new FileInputStream("..//..//modis-admin-keys.json");
-
+//        FileInputStream serviceAccount = new FileInputStream("..//..//modis-8f5f6-firebase-adminsdk-fbsvc-f76bd29f1f.json");
+        InputStream serviceAccount = new ClassPathResource("modis-admin-keys.json").getInputStream();
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                 .setDatabaseUrl("https://modis-8f5f6-default-rtdb.firebaseio.com")
