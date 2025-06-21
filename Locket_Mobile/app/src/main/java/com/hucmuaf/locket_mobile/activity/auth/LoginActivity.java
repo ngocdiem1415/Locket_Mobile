@@ -29,8 +29,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private TextInputEditText edEmail, edPassword;
     private FirebaseAuth mAuth;
-
     private String password, email;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,13 +46,13 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseService.getInstance().getAuth();
 
-        // Nhận dữ liệu đăng nhập từ intent nếu có
-        Intent intent = getIntent();
-        if (intent != null && intent.getExtras() != null) {
-            Bundle extras = intent.getExtras();
+        Intent receivedIntent = getIntent();
+        if (receivedIntent != null && receivedIntent.getExtras() != null) {
+            Bundle extras = receivedIntent.getExtras();
             edEmail.setText(extras.getString("email", ""));
             edPassword.setText(extras.getString("password", ""));
         }
+
 
         // Ban đầu disable nút login và set màu nhạt
         btnLogin.setEnabled(false);
@@ -86,9 +86,11 @@ public class LoginActivity extends AppCompatActivity {
 
         btnLogin.setOnClickListener(view -> attemptLogin());
 
-        imgBack.setOnClickListener(view ->
-                startActivity(new Intent(LoginActivity.this, ChoiceLoginActivity.class))
-        );
+        imgBack.setOnClickListener(view -> {
+            intent = new Intent(LoginActivity.this, ChoiceLoginActivity.class);
+            startActivity(intent);
+            finish(); // Đóng LoginActivity khi quay lại
+        });
 
         txtSignup.setOnClickListener(view ->
                 startActivity(new Intent(LoginActivity.this, SignupActivity.class))
@@ -132,5 +134,6 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(this, "Sai tài khoản hoặc mật khẩu!", Toast.LENGTH_SHORT).show();
                     }
                 });
+
     }
 }
