@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -109,6 +110,7 @@ public class ListFriendActivity extends AppCompatActivity {
         setupClickListeners();
         loadFriendList();
         loadPendingRequests();
+        setupAppIconClickListeners();
     }
 
     // Test kết nối API để kiểm tra backend có hoạt động không
@@ -221,6 +223,69 @@ public class ListFriendActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(shareIntent, "Chia sẻ qua"));
     }
 
+    private void setupAppIconClickListeners() {
+        String shareText = "Tôi muốn thêm bạn vào Màn hình chính của tôi qua Modis. Chạm vào liên kết để chấp nhận 💛 https://modis.app/invite/" + currentUserId;
+
+        LinearLayout messengerLayout = findViewById(R.id.messenger_layout);
+        LinearLayout facebookLayout = findViewById(R.id.facebook_layout);
+        LinearLayout instagramLayout = findViewById(R.id.instagram_layout);
+        LinearLayout shareLayout = findViewById(R.id.share_layout);
+
+        messengerLayout.setOnClickListener(new View.OnClickListener() {
+            private boolean isClicked = false;
+
+            @Override
+            public void onClick(View v) {
+                if (isClicked) return; // Ngăn click liên tiếp
+                isClicked = true;
+                v.postDelayed(() -> isClicked = false, 1000); // Reset sau 1 giây
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+                shareIntent.setPackage("com.facebook.orca");
+                Intent chooser = Intent.createChooser(shareIntent, "Chia sẻ qua Messenger");
+                startActivity(chooser);
+                shareIntent.setPackage("com.facebook.orca");
+                try {
+                    startActivity(shareIntent);
+                } catch (Exception e) {
+                    Toast.makeText(v.getContext(), "Messenger chưa được cài đặt!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        facebookLayout.setOnClickListener(v -> {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+            shareIntent.setPackage("com.facebook.katana");
+            try {
+                startActivity(shareIntent);
+            } catch (Exception e) {
+                Toast.makeText(this, "Facebook chưa được cài đặt!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        instagramLayout.setOnClickListener(v -> {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+            shareIntent.setPackage("com.instagram.android");
+            try {
+                startActivity(shareIntent);
+            } catch (Exception e) {
+                Toast.makeText(this, "Instagram chưa được cài đặt!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        shareLayout.setOnClickListener(v -> {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+            startActivity(Intent.createChooser(shareIntent, "Chia sẻ qua"));
+        });
+    }
+
     private void loadFriendList() {
         Log.d("ListFriendActivity", "Loading friend list for user ID: " + currentUserId);
         // Gọi API để lấy danh sách bạn bè từ Firebase
@@ -232,10 +297,8 @@ public class ListFriendActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     FriendListResponse friendListResponse = response.body();
                     Log.d("ListFriendActivity", "Total Friends: " + friendListResponse.getTotalFriends());
-                    Log.d("ListFriendActivity", "Max Friends: " + friendListResponse.getMaxFriends());
                     Log.d("ListFriendActivity", "Friends List Size: " + friendListResponse.getFriends().size());
-                    friendCount.setText(friendListResponse.getTotalFriends() + " / " +
-                            friendListResponse.getMaxFriends() + " người bạn đã được bổ sung");
+                    friendCount.setText(friendListResponse.getTotalFriends() + " người bạn đã được bổ sung");
 // Hiển thị đúng danh sách bạn bè hiện có trên Firebase
                     friendsList.clear();
                     friendsList.addAll(friendListResponse.getFriends());
@@ -245,7 +308,7 @@ public class ListFriendActivity extends AppCompatActivity {
                     Log.e("ListFriendActivity", "Failed to load friend list - Response not successful or null");
                     friendsList.clear();
                     friendAdapter.notifyDataSetChanged();
-                    friendCount.setText("0 / 20 người bạn đã được bổ sung");
+                    friendCount.setText("0 người bạn đã được bổ sung");
                 }
             }
 
@@ -258,7 +321,7 @@ public class ListFriendActivity extends AppCompatActivity {
                     Log.d("ListFriendActivity", "JSON parsing error - likely empty response, treating as success");
                     friendsList.clear();
                     friendAdapter.notifyDataSetChanged();
-                    friendCount.setText("0 / 20 người bạn đã được bổ sung");
+                    friendCount.setText("0 người bạn đã được bổ sung");
                 } else {
                     Toast.makeText(ListFriendActivity.this, "Không thể tải danh sách bạn bè", Toast.LENGTH_SHORT).show();
                 }
@@ -329,7 +392,7 @@ public class ListFriendActivity extends AppCompatActivity {
                     Toast.makeText(ListFriendActivity.this, "Đã xóa bạn thành công", Toast.LENGTH_SHORT).show();
                     friendsList.remove(user);
                     friendAdapter.notifyDataSetChanged();
-                    friendCount.setText(friendsList.size() + " / 20 người bạn đã được bổ sung");
+                    friendCount.setText(friendsList.size() + " người bạn đã được bổ sung");
                     Toast.makeText(ListFriendActivity.this, "Đã xóa bạn thành công", Toast.LENGTH_SHORT).show();
                 } else {
                     String errorMessage = "Không thể xóa bạn bè";
@@ -351,7 +414,7 @@ public class ListFriendActivity extends AppCompatActivity {
                 if (t.getMessage() != null && t.getMessage().contains("JSON document was not fully consumed")) {
                     friendsList.remove(user);
                     friendAdapter.notifyDataSetChanged();
-                    friendCount.setText(friendsList.size() + " / 20 người bạn đã được bổ sung");
+                    friendCount.setText(friendsList.size() + " người bạn đã được bổ sung");
                     Toast.makeText(ListFriendActivity.this, "Đã xóa bạn thành công", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(ListFriendActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -374,7 +437,7 @@ public class ListFriendActivity extends AppCompatActivity {
         if (titleText != null) {
             String userName = user.getFullName() != null ? user.getFullName() : user.getUserName();
             if (userName == null || userName.isEmpty()) {
-                userName = "người bạn này";
+                userName = " người bạn này";
             }
             titleText.setText("Xóa " + userName + " khỏi Modis của bạn?");
         }
@@ -389,7 +452,7 @@ public class ListFriendActivity extends AppCompatActivity {
         });
     }
 
-    // share qua app khác ( khi người dùng chưa có tài khoản)
+    // share qua app khác (khi người dùng chưa có tài khoản)
     private void shareToSocialMedia(String platform) {
         ShareRequest request = new ShareRequest(currentUserId, "Join me on Locket!");
         Call<String> call = apiService.shareToSocialMedia(platform, request);
@@ -464,7 +527,7 @@ public class ListFriendActivity extends AppCompatActivity {
                         pendingRequestAdapter.notifyItemRemoved(position);
                     }
 // Cập nhật số lượng bạn bè
-                    friendCount.setText((friendsList.size() + 1) + " / 20 người bạn đã được bổ sung");
+                    friendCount.setText((friendsList.size() + 1) + " người bạn đã được bổ sung");
                     loadPendingRequests();
                     loadFriendList();
                 } else {

@@ -22,24 +22,24 @@ public class FriendListService {
     public CompletableFuture<FriendListResponse> getFriendList(String userId) {
         CompletableFuture<FriendListResponse> future = new CompletableFuture<>();
         
-        System.out.println("=== DEBUG: Getting friend list for userId: " + userId + " ===");
+        System.out.println("Getting friend list for userId: " + userId + " ===");
         
         try {
             // Lấy danh sách bạn bè từ friendRequests với status ACCEPTED
             getAcceptedFriendsFromFirebase(userId).thenCompose(friends -> {
-                System.out.println("=== DEBUG: Found " + friends.size() + " accepted friends for user " + userId + " ===");
+                System.out.println("Found " + friends.size() + " accepted friends for user " + userId + " ===");
                 return getFriendSuggestions(userId).thenApply(suggestions -> {
-                    System.out.println("=== DEBUG: Found " + suggestions.size() + " suggestions for user " + userId + " ===");
+                    System.out.println("Found " + suggestions.size() + " suggestions for user " + userId + " ===");
                     return new FriendListResponse(friends, friends.size(), MAX_FRIENDS, suggestions);
                 });
             }).thenAccept(future::complete)
             .exceptionally(ex -> {
-                System.out.println("=== DEBUG: Error getting friend list: " + ex.getMessage() + " ===");
+                System.out.println("Error getting friend list: " + ex.getMessage() + " ===");
                 future.completeExceptionally(ex);
                 return null;
             });
         } catch (Exception e) {
-            System.out.println("=== DEBUG: Exception in getFriendList: " + e.getMessage() + " ===");
+            System.out.println("Exception in getFriendList: " + e.getMessage() + " ===");
             future.completeExceptionally(new RuntimeException("Failed to get friend list: " + e.getMessage()));
         }
         
@@ -165,9 +165,10 @@ public class FriendListService {
                             for (DataSnapshot child : snapshot.getChildren()) {
                                 String receiverId = child.child("receiverId").getValue(String.class);
                                 if (friendId.equals(receiverId)) {
-                                    child.getRef().removeValue((error, ref) -> {
+                                    // Update status to CANCELLED instead of removing
+                                    child.getRef().child("status").setValue("CANCELLED", (error, ref) -> {
                                         if (error != null) {
-                                            System.out.println("=== DEBUG: Error removing friend request: " + error.getMessage() + " ===");
+                                            System.out.println("Error removing friend request: " + error.getMessage() + " ===");
                                         }
                                     });
                                 }
@@ -181,9 +182,10 @@ public class FriendListService {
                                             for (DataSnapshot child : snapshot2.getChildren()) {
                                                 String receiverId = child.child("receiverId").getValue(String.class);
                                                 if (userId.equals(receiverId)) {
-                                                    child.getRef().removeValue((error, ref) -> {
+                                                    // Update status to CANCELLED instead of removing
+                                                    child.getRef().child("status").setValue("CANCELLED", (error, ref) -> {
                                                         if (error != null) {
-                                                            System.out.println("=== DEBUG: Error removing friend request: " + error.getMessage() + " ===");
+                                                            System.out.println("Error removing friend request: " + error.getMessage() + " ===");
                                                         }
                                                     });
                                                 }
@@ -363,7 +365,7 @@ public class FriendListService {
     private CompletableFuture<List<User>> getAcceptedFriendsFromFirebase(String userId) {
         CompletableFuture<List<User>> future = new CompletableFuture<>();
         
-        System.out.println("=== DEBUG: Getting accepted friends from Firebase for userId: " + userId + " ===");
+        System.out.println("Getting accepted friends from Firebase for userId: " + userId + " ===");
         
         DatabaseReference requestsRef = firebaseDatabase.getReference("friendRequests");
         List<User> friends = new ArrayList<>();
@@ -379,7 +381,7 @@ public class FriendListService {
                             String status = child.child("status").getValue(String.class);
                             if ("ACCEPTED".equals(status)) {
                                 String receiverId = child.child("receiverId").getValue(String.class);
-                                System.out.println("=== DEBUG: Found accepted friend ID: " + receiverId + " ===");
+                                System.out.println("Found accepted friend ID: " + receiverId + " ===");
                                 userFutures.add(getUserFromFirebase(receiverId));
                             }
                         }
@@ -393,13 +395,13 @@ public class FriendListService {
                                             String status = child.child("status").getValue(String.class);
                                             if ("ACCEPTED".equals(status)) {
                                                 String senderId = child.child("senderId").getValue(String.class);
-                                                System.out.println("=== DEBUG: Found accepted friend ID: " + senderId + " ===");
+                                                System.out.println("Found accepted friend ID: " + senderId + " ===");
                                                 userFutures.add(getUserFromFirebase(senderId));
                                             }
                                         }
                                         
                                         if (userFutures.isEmpty()) {
-                                            System.out.println("=== DEBUG: No accepted friends found ===");
+                                            System.out.println("No accepted friends found ===");
                                             future.complete(new ArrayList<>());
                                         } else {
                                             CompletableFuture.allOf(userFutures.toArray(new CompletableFuture[0]))
@@ -408,11 +410,11 @@ public class FriendListService {
                                                             .filter(Objects::nonNull)
                                                             .collect(Collectors.toList()))
                                                     .thenAccept(friendsList -> {
-                                                        System.out.println("=== DEBUG: Successfully loaded " + friendsList.size() + " accepted friends ===");
+                                                        System.out.println("Successfully loaded " + friendsList.size() + " accepted friends ===");
                                                         future.complete(friendsList);
                                                     })
                                                     .exceptionally(ex -> {
-                                                        System.out.println("=== DEBUG: Error loading friends: " + ex.getMessage() + " ===");
+                                                        System.out.println("Error loading friends: " + ex.getMessage() + " ===");
                                                         future.completeExceptionally(ex);
                                                         return null;
                                                     });
@@ -421,7 +423,7 @@ public class FriendListService {
 
                                     @Override
                                     public void onCancelled(DatabaseError error) {
-                                        System.out.println("=== DEBUG: Firebase friends query cancelled: " + error.getMessage() + " ===");
+                                        System.out.println("Firebase friends query cancelled: " + error.getMessage() + " ===");
                                         future.completeExceptionally(new RuntimeException("Error getting friends: " + error.getMessage()));
                                     }
                                 });
@@ -429,7 +431,7 @@ public class FriendListService {
 
                     @Override
                     public void onCancelled(DatabaseError error) {
-                        System.out.println("=== DEBUG: Firebase friends query cancelled: " + error.getMessage() + " ===");
+                        System.out.println("Firebase friends query cancelled: " + error.getMessage() + " ===");
                         future.completeExceptionally(new RuntimeException("Error getting friends: " + error.getMessage()));
                     }
                 });
