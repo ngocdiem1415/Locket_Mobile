@@ -1,45 +1,45 @@
 
-package vn.edu.hcumuaf.locket.dbo;
+package vn.edu.hcumuaf.locket.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
-import javax.annotation.PostConstruct;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
 @Configuration
 public class FirebaseConfig {
+
+
     @Bean
     public FirebaseDatabase firebaseDatabase() throws IOException {
-        System.out.println("Firebase database intializing");
+        initializeFirebaseApp();
+        return FirebaseDatabase.getInstance();
+    }
 
-//        FileInputStream serviceAccount = new FileInputStream("..//..//modis-8f5f6-firebase-adminsdk-fbsvc-f76bd29f1f.json");
-        InputStream serviceAccount = new ClassPathResource("modis-admin-keys.json").getInputStream();
-        FirebaseOptions options = new FirebaseOptions.Builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl("https://modis-8f5f6-default-rtdb.firebaseio.com")
-                .build();
+    @Bean
+    public FirebaseAuth firebaseAuth() throws IOException {
+        initializeFirebaseApp();
+        return FirebaseAuth.getInstance();
+    }
 
+    private void initializeFirebaseApp() throws IOException {
         if (FirebaseApp.getApps().isEmpty()) {
+            InputStream serviceAccount = new ClassPathResource("modis-admin-keys.json").getInputStream();
+            FirebaseOptions options = new FirebaseOptions.Builder()
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setDatabaseUrl("https://modis-8f5f6-default-rtdb.firebaseio.com")
+                    .build();
+
             FirebaseApp.initializeApp(options);
             System.out.println("Firebase app initialized successfully");
-        } else {
-            System.out.println("Firebase app initialization failed");
         }
-
-        return FirebaseDatabase.getInstance();
-
     }
 
     // thực hiện các tác vụ bất đồng bộ (asynchronous)
