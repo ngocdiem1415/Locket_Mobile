@@ -3,8 +3,8 @@ package com.hucmuaf.locket_mobile.model;
 import com.google.gson.annotations.SerializedName;
 
 public class Message {
-//    @SerializedName("id")
-//    private String id;
+    @SerializedName("id")
+    private String id;
 
     @SerializedName("senderId")
     private String senderId;
@@ -31,13 +31,13 @@ public class Message {
         this.type = type;
     }
 
-//    public String getId() {
-//        return id;
-//    }
+    public String getId() {
+        return id;
+    }
 
-//    public void setId(String id) {
-//        this.id = id;
-//    }
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getSenderId() {
         return senderId;

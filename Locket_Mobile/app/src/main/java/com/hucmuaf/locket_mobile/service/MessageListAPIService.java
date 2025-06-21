@@ -16,6 +16,9 @@ public interface MessageListAPIService {
     @GET("app/api/messages/{userId}")
     Call<List<Message>> getMessageWithUserId(@Path("userId") String userId);
 
+    @GET("/api/chat.send")
+    Call<Void> sendMessage(@Body String userId, String receiverId, String content);
+
     @GET("app/api/messages/{senderId}/{receiverId}")
-    Call<Void> sendMessage(@Body Message message);
+    Call<List<Message>> getMessagesBetweenUsers(@Path("senderId") String senderId, @Path("receiverId") String receiverId);
 }

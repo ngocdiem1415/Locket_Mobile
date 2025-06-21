@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,10 +17,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.annotations.NotNull;
 import com.hucmuaf.locket_mobile.R;
 import com.hucmuaf.locket_mobile.adapter.ChatMessageAdapter;
+import com.hucmuaf.locket_mobile.inteface.onMessageLoaded;
 import com.hucmuaf.locket_mobile.model.Message;
 import com.hucmuaf.locket_mobile.model.MessageType;
+import com.hucmuaf.locket_mobile.repo.MessageRepository;
 import com.hucmuaf.locket_mobile.service.MessageListAPIService;
 
 import org.json.JSONException;
@@ -35,70 +45,94 @@ import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 
 public class ChatActivity extends AppCompatActivity {
+    private static final String TAG = "ChatActivity";
     private FirebaseAuth mAuth;
     private MessageListAPIService apiService;
     private ImageView avt;
     private TextView name;
     private TextView timestamp;
     private EditText editTextMessage;
+    private ImageView backbutton;
+    private ChatMessageAdapter chatMessageAdapter;
     private ImageView sendButton;
     private RecyclerView recyclerViewMessages;
     private ChatMessageAdapter messageAdapter;
     private List<Message> messageList;
     private String currentUserId;
     private String otherUserId;
+    private MessageListAPIService api;
+    private DatabaseReference db;
     private ActivityResultLauncher<Intent> pickImageLauncher;
     private WebSocket webSocket;
     private OkHttpClient client;
+    private MessageRepository messageRepository;
+
+//    private static final String WS_SERVER_URL = "ws://192.168.181.190:8080/ws"; // Fixed URL format
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        db = FirebaseDatabase.getInstance().getReference();
 
-        // Initialize views
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null && currentUser.getUid() != null) {
+            currentUserId = currentUser.getUid();
+            otherUserId = getIntent().getStringExtra("otherUserId");
+
+            if (otherUserId == null || otherUserId.isEmpty()) {
+                Log.e(TAG, "otherUserId not provided or empty");
+                Toast.makeText(this, "User ID not found", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
+
+            Log.d(TAG, "Current user: " + currentUserId + ", Other user: " + otherUserId);
+            initializeViews();
+            loadUserProfile(otherUserId);
+            setupRecyclerView();
+            loadInitialMessages();
+            new android.os.Handler().postDelayed(this::connectWebSocket, 1000);
+
+        } else {
+            currentUserId = "";
+            Log.w(TAG, "No user logged in");
+            Toast.makeText(this, "Please log in first", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        setupClickListeners();
+    }
+
+    private void initializeViews() {
+        backbutton = findViewById(R.id.account13);
         avt = findViewById(R.id.account6);
         name = findViewById(R.id.textView16);
-        timestamp = findViewById(R.id.textView14);
         editTextMessage = findViewById(R.id.editTextText);
         sendButton = findViewById(R.id.account15);
         recyclerViewMessages = findViewById(R.id.recyclerViewMessages);
 
-        // Initialize RecyclerView
-        messageList = new ArrayList<>();
-        messageAdapter = new ChatMessageAdapter(messageList, currentUserId);
-        recyclerViewMessages.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewMessages.setAdapter(messageAdapter);
-
-        // Get current user ID
-        if (currentUser != null && currentUser.getUid() != null) {
-            currentUserId = currentUser.getUid();
-            otherUserId = getIntent().getStringExtra("otherUserId");
-            if (otherUserId == null) {
-                otherUserId = "";
-                Log.w("ChatActivity", "otherUserId not provided");
-            }
-            loadInitialMessages();
-            connectWebSocket();
-        } else {
-            currentUserId = "";
-            Log.w("ChatActivity", "No user logged in");
+        if (name != null) {
+            name.setText("Unknown");
         }
 
-        // Set up image picker
-//        pickImageLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-//                result -> {
-//                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-//                        Uri imageUri = result.getData().getData();
-//                        sendImageMessage(imageUri);
-//                    }
-//                });
+        backbutton.setOnClickListener(v -> onBackPressed());
 
-        // Handle send button click
+        Log.d(TAG, "Views initialized");
+    }
+
+    private void setupRecyclerView() {
+        messageList = new ArrayList<>();
+        messageAdapter = new ChatMessageAdapter(this, messageList, currentUserId, recyclerViewMessages);
+        recyclerViewMessages.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewMessages.setAdapter(messageAdapter);
+        Log.d(TAG, "RecyclerView initialized");
+    }
+
+    private void setupClickListeners() {
         sendButton.setOnClickListener(v -> {
             String messageContent = editTextMessage.getText().toString().trim();
             if (!messageContent.isEmpty()) {
@@ -107,19 +141,97 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        // Handle image selection (long press)
         editTextMessage.setOnLongClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            pickImageLauncher.launch(intent);
+            if (pickImageLauncher != null) {
+                pickImageLauncher.launch(intent);
+            }
             return true;
         });
     }
 
     private void loadInitialMessages() {
-        // Load initial messages from REST API
-        // Note: Adjust the API call based on your backend endpoint
-        // For now, using WebSocket for real-time, initial load can be from REST
-        // Example: Call apiService.getMessageWithUserId(otherUserId) if available
+        messageRepository = new MessageRepository();
+        messageRepository.getMessageBetweenUserWithReceiver(currentUserId, otherUserId, new onMessageLoaded() {
+            @Override
+            public void onSuccess(List<Message> mess) {
+                runOnUiThread(() -> {
+                    if (!mess.isEmpty()) {
+                        messageList.clear();
+                        messageList.addAll(mess);
+                        messageList.sort((m1, m2) -> Long.compare(m1.getTimestamp(), m2.getTimestamp()));
+                        messageAdapter.notifyDataSetChanged();
+                        if (!messageList.isEmpty()) {
+                            recyclerViewMessages.scrollToPosition(messageList.size() - 1);
+                        }
+                        Log.d(TAG, "Load initial messages successfully: " + messageList.size() + " between " + currentUserId + " and " + otherUserId);
+                    } else {
+                        Log.d(TAG, "No messages found between " + currentUserId + " and " + otherUserId);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e(TAG, "Failed to load initial messages: " + e.getMessage());
+                runOnUiThread(() -> {
+                    Toast.makeText(ChatActivity.this, "Failed to load messages", Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+    }
+
+    private void loadUserProfile(String userId) {
+        if (db == null) {
+            Log.e(TAG, "Database is not initialized");
+            return;
+        }
+
+        if (userId == null || userId.isEmpty()) {
+            Log.e(TAG, "userId is null or empty");
+            return;
+        }
+
+        Log.d(TAG, "Loading user profile for: " + userId);
+
+        db.child("users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String userName = dataSnapshot.child("fullName").getValue(String.class);
+                    String avtUrl = dataSnapshot.child("urlAvatar").getValue(String.class);
+
+                    Log.d(TAG, "User data found - Name: " + userName + ", Avatar: " + avtUrl);
+
+                    if (ChatActivity.this.name != null) {
+                        String displayName = (userName != null && !userName.isEmpty()) ? userName : "Unknown User";
+                        ChatActivity.this.name.setText(displayName);
+                        Log.d(TAG, "Set username to: " + displayName);
+                    } else {
+                        Log.e(TAG, "Name TextView is null");
+                    }
+
+                    if (avtUrl != null && !avtUrl.isEmpty() && avt != null) {
+                        Log.d(TAG, "Avatar URL available: " + avtUrl);
+                    }
+
+                    Log.d(TAG, "Loaded user profile successfully for: " + userId);
+                } else {
+                    Log.w(TAG, "User not found in database: " + userId);
+                    if (ChatActivity.this.name != null) {
+                        ChatActivity.this.name.setText("User Not Found");
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NotNull DatabaseError databaseError) {
+                Log.e(TAG, "Error getting user profile: " + databaseError.getMessage());
+                if (ChatActivity.this.name != null) {
+                    ChatActivity.this.name.setText("Error Loading User");
+                }
+            }
+        });
     }
 
     private void connectWebSocket() {
@@ -128,7 +240,7 @@ public class ChatActivity extends AppCompatActivity {
                 .build();
 
         Request request = new Request.Builder()
-                .url("ws://http://localhost:8080/ws")
+                .url("ws://localhost:8080/ws")
                 .build();
 
         webSocket = client.newWebSocket(request, new WebSocketListener() {
@@ -183,24 +295,38 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendWebSocketMessage(Message message) {
+        String content = editTextMessage.getText().toString().trim();
         try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("senderId", message.getSenderId());
-            jsonObject.put("receiverId", message.getReceiverId());
-            jsonObject.put("content", message.getContent());
-//            jsonObject.put("imageUrl", message.getImageUrl());
-//            jsonObject.put("caption", message.getCaption());
-            jsonObject.put("timestamp", message.getTimestamp());
-            jsonObject.put("type", message.getType().toString());
-
-            if (webSocket != null) {
-                webSocket.send(jsonObject.toString());
-                Log.d("WebSocket", "Sent: " + jsonObject.toString());
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+            sendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    api.sendMessage(currentUserId, otherUserId, content);
+                }
+            });
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
+
+//    private void sendWebSocketMessage(Message message) {
+//        try {
+//            JSONObject jsonObject = new JSONObject();
+//            jsonObject.put("senderId", message.getSenderId());
+//            jsonObject.put("receiverId", message.getReceiverId());
+//            jsonObject.put("content", message.getContent());
+////            jsonObject.put("imageUrl", message.getImageUrl());
+////            jsonObject.put("caption", message.getCaption());
+//            jsonObject.put("timestamp", message.getTimestamp());
+//            jsonObject.put("type", message.getType().toString());
+//
+//            if (webSocket != null) {
+//                webSocket.send(jsonObject.toString());
+//                Log.d("WebSocket", "Sent: " + jsonObject.toString());
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void sendMessage(String content) {
         Message newMessage = new Message(currentUserId, otherUserId, content, System.currentTimeMillis(), "JOIN");

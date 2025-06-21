@@ -6,55 +6,27 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <!-- Header: Back Button, Current User Avatar, Username, and Title -->
-
+    <!-- Header: Back Button and Title -->
     <ImageView
         android:id="@+id/backButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
-        android:rotationY="-176"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:src="@mipmap/right_arrow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/currentUserAvatar"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="64dp"
-        android:background="@drawable/circle_border"
-        android:src="@mipmap/account_icon"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="32dp" />
-
-    <TextView
-        android:id="@+id/currentUsername"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="Unknown User"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@id/currentUserAvatar"
-        app:layout_constraintTop_toTopOf="@id/currentUserAvatar" />
-
     <!-- RecyclerView for Message/User List -->
-
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="88dp"
         android:layout_marginTop="16dp"
-        android:fontFamily="sans-serif-medium"
         android:text="Messages"
         android:textColor="@color/white"
-        android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.392"
+        android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@id/backButton"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -62,11 +34,10 @@
         android:id="@+id/recyclerViewMessages"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/currentUserAvatar"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

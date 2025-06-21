@@ -40,7 +40,7 @@ public class TestDataController {
 
             // ===== 1. THÊM USER CAMT91990 VÀ 3 BẠN BÈ =====
             User camtUser = new User(
-                "camt91990", "camt91990", "Camt User", "camt91990@gmail.com", "0123456789", "https://example.com/avatars/camt.jpg", "1234567890CTu@"
+                "camt91990", "camt91990", "Camt User", "camt91990@gmail.com", "0123456789", "https://www.meliawedding.com.vn/wp-content/uploads/2022/03/avatar-gai-xinh-28.jpg", "1234567890CTu@"
             );
             User friend1 = new User(
                 "friend1", "ngocdiem", "Ngọc Diễm", "ngocdiem@gmail.com", "0379891777", "https://example.com/avatars/ngocdiem.jpg", "123"
@@ -51,6 +51,9 @@ public class TestDataController {
             User friend3 = new User(
                 "friend3", "linhphan", "Phan Linh", "linh@gmail.com", "0909123456", "https://example.com/avatars/linh.jpg", "123"
             );
+            User luc = new User(
+                "luc", "luc", "Lực đẹp trai", "luc@gmail.com", "0909123456", "https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/482740ReE/anh-mo-ta.png", "123456"
+            );
 
             Map<String, Object> dataToAdd = new HashMap<>();
             // Thêm từng user
@@ -58,6 +61,7 @@ public class TestDataController {
             dataToAdd.put("users/friend1", friend1);
             dataToAdd.put("users/JsnmEU9dB0MKXXNzTzWL8gDZWJs1", tanluc);
             dataToAdd.put("users/friend3", friend3);
+            dataToAdd.put("users/luc", luc);
 
             // ===== 2. THÊM FRIEND REQUESTS (req1, req2 đã accept, req3 pending) =====
             dataToAdd.put("friendRequests/req1", createFriendRequest("camt91990", "friend1", "ACCEPTED", currentTime - 100000));
