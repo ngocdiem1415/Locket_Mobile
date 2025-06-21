@@ -9,14 +9,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
     //     private static final String BASE_URL = "http://10.50.0.1:8080/"; // For Android emulator
-    private static final String BASE_URL = "http://10.0.100.23:8080/"; // For real device, your computer's IP
+    private static final String BASE_URL = "http://172.16.1.63:8080/"; // For real device, your computer's IP
 //     private static final String BASE_URL = "http://localhost:8080/"; // For testing
 
     private static Retrofit retrofit = null;
     private static FriendListApiService friendListApiService = null;
     private static MessageListAPIService messageListAPIService;
-    ;
+    private static ImageService imageService;
 
+    private static UserService userService;
     public static Retrofit getClient() {
         if (retrofit == null) {
             // Cấu hình Gson với lenient mode để xử lý JSON malformed
@@ -46,5 +47,19 @@ public class ApiClient {
         }
         return messageListAPIService;
 
+    }
+
+    public static ImageService getImageApiService() {
+        if (imageService == null) {
+            imageService = getClient().create(ImageService.class);
+        }
+        return imageService;
+    }
+
+    public static UserService getUserService() {
+        if (userService == null) {
+            userService = getClient().create(UserService.class);
+        }
+        return userService;
     }
 }
