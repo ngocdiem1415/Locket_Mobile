@@ -29,6 +29,7 @@ import com.hucmuaf.locket_mobile.inteface.onMessageLoaded;
 import com.hucmuaf.locket_mobile.model.Message;
 import com.hucmuaf.locket_mobile.model.MessageType;
 import com.hucmuaf.locket_mobile.repo.MessageRepository;
+import com.hucmuaf.locket_mobile.service.ApiClient;
 import com.hucmuaf.locket_mobile.service.MessageListAPIService;
 
 import org.json.JSONException;
@@ -76,7 +77,7 @@ public class ChatActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance().getReference();
-
+        api = ApiClient.getMessageListApiService();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null && currentUser.getUid() != null) {
             currentUserId = currentUser.getUid();
@@ -240,7 +241,7 @@ public class ChatActivity extends AppCompatActivity {
                 .build();
 
         Request request = new Request.Builder()
-                .url("ws://localhost:8080/ws")
+                .url("ws://192.168.0.112:8080/ws")
                 .build();
 
         webSocket = client.newWebSocket(request, new WebSocketListener() {
@@ -295,18 +296,37 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendWebSocketMessage(Message message) {
-        String content = editTextMessage.getText().toString().trim();
         try {
-            sendButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    api.sendMessage(currentUserId, otherUserId, content);
-                }
-            });
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("senderId", message.getSenderId());
+            jsonObject.put("receiverId", message.getReceiverId());
+            jsonObject.put("content", message.getContent());
+            jsonObject.put("timestamp", message.getTimestamp());
+            jsonObject.put("type", message.getType());
+
+            if (webSocket != null) {
+                webSocket.send(jsonObject.toString());
+                Log.d("WebSocket", "Sent: " + jsonObject.toString());
+            }
+            if (api != null) {
+                api.sendMessage(new Message(currentUserId, otherUserId, message.getContent(), System.currentTimeMillis(), "CHAT"))
+//                api.sendMessage(currentUserId, otherUserId, message.getContent())
+                        .enqueue(new retrofit2.Callback<Void>() {
+                            @Override
+                            public void onResponse(retrofit2.Call<Void> call, retrofit2.Response<Void> response) {
+                                Log.d("API", "Message sent successfully");
+                            }
+                            @Override
+                            public void onFailure(retrofit2.Call<Void> call, Throwable t) {
+                                Log.e("API", "Failed to send message: " + t.getMessage());
+                            }
+                        });
+            }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Log.e("WebSocket", "Error sending message", e);
         }
     }
+
 
 //    private void sendWebSocketMessage(Message message) {
 //        try {
