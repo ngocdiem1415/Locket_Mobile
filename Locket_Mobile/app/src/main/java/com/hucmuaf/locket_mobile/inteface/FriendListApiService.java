@@ -52,6 +52,14 @@ public interface FriendListApiService {
     @GET("api/friend-list/pending-requests/{userId}")
     Call<List<FriendRequest>> getPendingRequests(@Path("userId") String userId);
     
+    // Lấy danh sách lời mời đã gửi
+    @GET("api/friend-list/sent-requests/{userId}")
+    Call<List<FriendRequest>> getSentRequests(@Path("userId") String userId);
+    
+    // Hủy lời mời kết bạn
+    @PUT("api/friend-list/cancel-request/{requestId}")
+    Call<String> cancelFriendRequest(@Path("requestId") String requestId);
+    
     // Chia sẻ qua social media
     @POST("api/friend-list/share/{platform}")
     Call<String> shareToSocialMedia(@Path("platform") String platform, @Body ShareRequest request);
