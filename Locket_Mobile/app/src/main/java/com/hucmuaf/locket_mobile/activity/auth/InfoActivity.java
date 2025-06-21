@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.FileUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -20,9 +21,12 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputEditText;
 import com.hucmuaf.locket_mobile.R;
+import com.hucmuaf.locket_mobile.activity.PageComponentActivity;
+import com.hucmuaf.locket_mobile.model.UserProfileRequest;
 import com.hucmuaf.locket_mobile.repo.UploadResponse;
 import com.hucmuaf.locket_mobile.service.ApiClient;
 import com.hucmuaf.locket_mobile.service.ImageService;
+import com.hucmuaf.locket_mobile.service.UserService;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -53,7 +57,10 @@ public class InfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_info);
         ImageView rollback = findViewById(R.id.back);
         imgAvatar = findViewById(R.id.imgAvatar);
-        TextInputEditText signUp = findViewById(R.id.teName);
+        TextInputEditText fullName = findViewById(R.id.teName);
+        Button btnLogin = findViewById(R.id.btnLogin);
+
+        btnLogin.setOnClickListener(v -> updateProfile(fullName.getText().toString()));
 
         rollback.setOnClickListener(v -> {
             startActivity(new Intent(InfoActivity.this, ChoiceLoginActivity.class));
@@ -82,8 +89,6 @@ public class InfoActivity extends AppCompatActivity {
                     }
                 }
         );
-
-        signUp.setOnClickListener(v -> createProfile());
     }
 
     private void uploadImage(Uri url) {
@@ -175,8 +180,49 @@ public class InfoActivity extends AppCompatActivity {
     }
 
 
-    private void createProfile() {
-        
+    private void updateProfile(String fullname) {
+        String userId = getIntent().getStringExtra("userId");
+        if (userId == null || userId.isEmpty()) {
+            Toast.makeText(this, "Lỗi: Không tìm thấy userId", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
+        // Kiểm tra nếu fullname rỗng
+        if (fullname == null || fullname.trim().isEmpty()) {
+            Toast.makeText(this, "Vui lòng nhập tên đầy đủ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Tạo dữ liệu để gửi lên server
+        String name = fullname.trim();
+        String avatar = imageUrl != null ? imageUrl : "https://res.cloudinary.com/dwjztnzgv/image/upload/v1750495440/avatar_knqsmw.jpg";
+
+        UserProfileRequest dataRequest = new UserProfileRequest(name, avatar);
+        // Gọi API cập nhật thông tin người dùng
+        UserService userService = ApiClient.getUserService();
+        Call<ResponseBody> call = userService.updateUserProfile(userId, dataRequest);
+
+        // Gửi request
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(InfoActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+
+                    // Chuyển sang màn hình tiếp theo
+                    Intent intent = new Intent(InfoActivity.this, PageComponentActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(InfoActivity.this, "Cập nhật thất bại", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(InfoActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
 }
