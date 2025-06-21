@@ -122,7 +122,8 @@ public class SignupActivity extends AppCompatActivity {
                         user.put("userName", userName);
                         user.put("password", hashPwd(password));
                         user.put("phoneNumber", phoneNumber);
-                        user.put("userId", userId);
+                        user.put("avatar", "https://res.cloudinary.com/dwjztnzgv/image/upload/v1750495440/avatar_knqsmw.jpg");
+                        user.put("userId", userName);
 
                         database.getReference("users").child(userId)
                                 .setValue(user)
@@ -130,7 +131,7 @@ public class SignupActivity extends AppCompatActivity {
                                     if (dbTask.isSuccessful()) {
                                         toast("Đăng ký thành công");
                                         Intent intent = new Intent(SignupActivity.this, InfoActivity.class);
-                                        intent.putExtra("userId", userId);
+                                        intent.putExtra("userId", userName);
                                         startActivity(intent);
                                         finish();
                                     } else {
@@ -139,6 +140,7 @@ public class SignupActivity extends AppCompatActivity {
                                         toast("Lỗi lưu dữ liệu: " + dbTask.getException().getMessage());
                                     }
                                 });
+
                     } else {
                         toast("Đăng kí thất bại" + task.getException().getMessage());
                     }
