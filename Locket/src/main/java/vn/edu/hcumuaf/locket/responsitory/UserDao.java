@@ -19,9 +19,9 @@ public class UserDao {
     private final DatabaseReference dbRef;
 
     // Executor để xử lý async operations
-    @Qualifier("taskExecutor")
-    @Autowired
-    private Executor taskExecutor;
+//    @Qualifier("taskExecutor")
+//    @Autowired
+//    private Executor taskExecutor;
 
 //    Constructor - khởi tạo reference đến node "users" trên Firebase
     @Autowired

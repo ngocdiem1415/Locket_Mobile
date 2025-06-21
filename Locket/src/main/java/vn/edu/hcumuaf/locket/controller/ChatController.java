@@ -75,6 +75,6 @@ public class ChatController {
 
     @GetMapping("topic/{senderId}")
     public CompletableFuture<List<Message>> getMessage(@PathVariable("senderId") String senderId) {
-        return service.getMessagesByReceiverId(senderId);
+        return service.getMessagesByUserId(senderId);
     }
 }

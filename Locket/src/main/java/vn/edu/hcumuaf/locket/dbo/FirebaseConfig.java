@@ -44,10 +44,10 @@ public class FirebaseConfig {
 
     // thực hiện các tác vụ bất đồng bộ (asynchronous)
     //Không chặn luồng hoạt động chính của app
-    @Bean(name = "taskExecutor")
-    public Executor taskExecutor() {
-        return Executors.newCachedThreadPool();
-    }
+//    @Bean(name = "taskExecutor")
+//    public Executor taskExecutor() {
+//        return Executors.newCachedThreadPool();
+//    }
 
     public static void main(String[] args) throws IOException {
         FirebaseConfig firebaseConfig = new FirebaseConfig();
