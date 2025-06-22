@@ -12,8 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import vn.edu.hcumuaf.locket.model.entity.UploadImageResponse;
 import vn.edu.hcumuaf.locket.service.AuthService;
-
 import java.io.IOException;
 import java.util.Map;
 
@@ -51,6 +51,4 @@ public class UploadController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi không xác định: " + e.getMessage());
         }
     }
-
-
 }
