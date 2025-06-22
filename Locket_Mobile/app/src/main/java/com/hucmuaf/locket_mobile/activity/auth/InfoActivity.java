@@ -105,7 +105,7 @@ public class InfoActivity extends AppCompatActivity {
 
             // Gọi API upload ảnh
             ImageService imageService = ApiClient.getImageApiServiceToken(this);
-            Call<UploadResponse> call = imageService.uploadImage(token, body);
+            Call<UploadResponse> call = imageService.uploadImage(TokenManager.getUid(InfoActivity.this), token, body);
 
             call.enqueue(new Callback<UploadResponse>() {
                 @Override

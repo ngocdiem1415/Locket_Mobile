@@ -36,6 +36,7 @@ public interface ImageService {
     @Multipart
     @POST("api/upload")
     Call<UploadResponse> uploadImage(
+            @Path("userId") String userId,
             @Header("Authorization") String idToken,
             @Part MultipartBody.Part image);
 
