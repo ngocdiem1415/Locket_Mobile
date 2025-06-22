@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.util.StringUtils;
 
+import java.util.Map;
+
 @Configuration
 //@PropertySource("classpath:cloudinary.properties")
 public class CloudinaryConfig {
@@ -25,29 +27,29 @@ public class CloudinaryConfig {
 //    @Value("${cloudinary.api_secret}")
 //    private String apiSecret;
 
-    @Value("${CLOUDINARY_CLOUD_NAME}")
+    @Value("${CLOUDINARY_CLOUD_NAME:#{null}}")
     private String cloudName;
 
-    @Value("${CLOUDINARY_API_KEY}")
+    @Value("${CLOUDINARY_API_KEY:#{null}}")
     private String apiKey;
 
-    @Value("${CLOUDINARY_API_SECRET}")
+    @Value("${CLOUDINARY_API_SECRET:#{null}}")
     private String apiSecret;
-
 
     @Bean
     public Cloudinary cloudinary() {
-        // Kiểm tra các giá trị cấu hình
         if (!StringUtils.hasText(cloudName) || !StringUtils.hasText(apiKey) || !StringUtils.hasText(apiSecret)) {
-            logger.error("Cloudinary configuration is invalid: missing cloud_name, api_key, or api_secret");
-            throw new IllegalArgumentException("Invalid Cloudinary configuration. Please check cloudinary.properties.");
+            logger.error("Cloudinary config is invalid. Please check environment variables or properties.");
+            throw new IllegalArgumentException("Missing Cloudinary configuration");
         }
 
-        logger.info("Initializing Cloudinary with cloud_name: {}", cloudName);
-        return new Cloudinary(ObjectUtils.asMap(
+        Map<String, String> config = ObjectUtils.asMap(
                 "cloud_name", cloudName,
                 "api_key", apiKey,
                 "api_secret", apiSecret
-        ));
+        );
+
+        logger.info("Initialized Cloudinary with cloud_name: {}", cloudName);
+        return new Cloudinary(config);
     }
 }
