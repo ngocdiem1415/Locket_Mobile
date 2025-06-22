@@ -30,15 +30,15 @@ public interface FriendListApiService {
     
     // Gửi lời mời kết bạn
     @POST("api/friend-list/send-request")
-    Call<String> sendFriendRequest(@Body FriendRequest request);
-    
+    Call<Void> sendFriendRequest(@Body FriendRequest request);
+
     // Chấp nhận lời mời kết bạn
     @PUT("api/friend-list/accept-request/{requestId}")
-    Call<String> acceptFriendRequest(@Path("requestId") String requestId);
-    
+    Call<Void> acceptFriendRequest(@Path("requestId") String requestId);
+
     // Từ chối lời mời kết bạn
     @PUT("api/friend-list/reject-request/{requestId}")
-    Call<String> rejectFriendRequest(@Path("requestId") String requestId);
+    Call<Void> rejectFriendRequest(@Path("requestId") String requestId);
     
     // Xóa bạn bè
     @DELETE("api/friend-list/remove-friend/{userId}/{friendId}")
@@ -51,6 +51,14 @@ public interface FriendListApiService {
     // Lấy danh sách lời mời kết bạn đang chờ
     @GET("api/friend-list/pending-requests/{userId}")
     Call<List<FriendRequest>> getPendingRequests(@Path("userId") String userId);
+    
+    // Lấy danh sách lời mời đã gửi
+    @GET("api/friend-list/sent-requests/{userId}")
+    Call<List<FriendRequest>> getSentRequests(@Path("userId") String userId);
+    
+    // Hủy lời mời kết bạn
+    @PUT("api/friend-list/cancel-request/{requestId}")
+    Call<String> cancelFriendRequest(@Path("requestId") String requestId);
     
     // Chia sẻ qua social media
     @POST("api/friend-list/share/{platform}")

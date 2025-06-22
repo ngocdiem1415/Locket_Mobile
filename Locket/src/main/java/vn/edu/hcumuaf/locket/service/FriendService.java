@@ -8,6 +8,7 @@ import vn.edu.hcumuaf.locket.responsitory.FriendRequestDao;
 import vn.edu.hcumuaf.locket.responsitory.UserDao;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -30,6 +31,7 @@ public class FriendService {
                     return CompletableFuture.allOf(userFutures.toArray(new CompletableFuture[0]))
                             .thenApply(v -> userFutures.stream()
                                     .map(CompletableFuture::join)
+                                    .filter(Objects::nonNull)
                                     .toList());
                 });
     }

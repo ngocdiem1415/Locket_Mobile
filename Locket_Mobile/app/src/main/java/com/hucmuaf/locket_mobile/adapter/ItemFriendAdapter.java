@@ -53,6 +53,7 @@ public class ItemFriendAdapter extends RecyclerView.Adapter<ItemFriendViewHolder
     @Override
     public void onBindViewHolder(@NonNull ItemFriendViewHolder holder, int position) {
         User u = itemList.get(position);
+        Log.d("ITem Friend Adapter", itemList.toString());
         holder.bind(u, listener);
         String imageName = u.getUrlAvatar();
 
