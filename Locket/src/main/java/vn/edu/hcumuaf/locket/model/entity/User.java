@@ -3,17 +3,17 @@ package vn.edu.hcumuaf.locket.model.entity;
 
 public class User {
    private String userId;
-   
+
    private String userName;
-   
+
    private String fullName;
-   
+
    private String email;
-   
+
    private String phoneNumber;
-   
+
    private String urlAvatar;
-   
+
    private String password;
 
     public User() {

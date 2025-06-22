@@ -3,52 +3,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:gravity="center_vertical">
 
     <LinearLayout
-        android:layout_width="272dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/pendingRequestAvatar"
+            android:id="@+id/sentRequestAvatar"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/circle_border_yellow"
             android:src="@drawable/avt" />
 
-        <TextView
-            android:id="@+id/pendingRequestName"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pending Request Name"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/sentRequestName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sent Request Name"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
+
+        </LinearLayout>
     </LinearLayout>
-    <!--nút chấp nhận-->
+
     <ImageButton
-        android:id="@+id/btnAccept"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Accept"
-        android:src="@drawable/check_solid"
-        tools:ignore="HardcodedText" />
-    <!--nút từ chối-->
-    <ImageButton
-        android:id="@+id/btnReject"
+        android:id="@+id/btnCancel"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="4dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Reject"
+        android:contentDescription="Cancel"
         android:src="@drawable/xmark_solid"
         tools:ignore="HardcodedText" />
 

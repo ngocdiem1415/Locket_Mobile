@@ -12,8 +12,6 @@ public class FriendListResponse {
     @SerializedName("totalFriends")
     private int totalFriends;
 
-    @SerializedName("maxFriends")
-    private int maxFriends;
 
     @SerializedName("suggestions")
     private List<User> suggestions;
@@ -21,10 +19,9 @@ public class FriendListResponse {
     public FriendListResponse() {
     }
 
-    public FriendListResponse(List<User> friends, int totalFriends, int maxFriends, List<User> suggestions) {
+    public FriendListResponse(List<User> friends, int totalFriends, List<User> suggestions) {
         this.friends = friends;
         this.totalFriends = totalFriends;
-        this.maxFriends = maxFriends;
         this.suggestions = suggestions;
     }
 
@@ -44,13 +41,6 @@ public class FriendListResponse {
         this.totalFriends = totalFriends;
     }
 
-    public int getMaxFriends() {
-        return maxFriends;
-    }
-
-    public void setMaxFriends(int maxFriends) {
-        this.maxFriends = maxFriends;
-    }
 
     public List<User> getSuggestions() {
         return suggestions;

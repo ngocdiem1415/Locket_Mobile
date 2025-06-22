@@ -79,10 +79,6 @@ dependencies {
 
     implementation ("com.vanniktech:emoji-google:0.16.0")
     implementation ("com.vanniktech:emoji:0.16.0")
-    // glide load url from internet
-    implementation ("com.github.bumptech.glide:glide:4.15.1")
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
-
 
 }
 
