@@ -22,13 +22,21 @@ import com.google.firebase.database.annotations.NotNull;
 import com.hucmuaf.locket_mobile.R;
 import com.hucmuaf.locket_mobile.adapter.MessageAdapter;
 import com.hucmuaf.locket_mobile.inteface.onMessageLoaded;
+import com.hucmuaf.locket_mobile.model.FriendRequest;
 import com.hucmuaf.locket_mobile.model.Message;
+import com.hucmuaf.locket_mobile.modedb.User;
 import com.hucmuaf.locket_mobile.repo.MessageRepository;
+import com.hucmuaf.locket_mobile.service.ApiClient;
+import com.hucmuaf.locket_mobile.service.FriendRequestService;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MessageActivity extends AppCompatActivity {
     private MessageRepository messageRepository;
@@ -40,6 +48,9 @@ public class MessageActivity extends AppCompatActivity {
     private TextView title;
     private RecyclerView recyclerViewMessages;
     private MessageAdapter messageAdapter;
+    private Set<FriendRequest> listF = new HashSet<>();
+    private List<String> listFriend = new ArrayList<>();
+    private FriendRequestService apiFriend;
     private List<String> receiverIds = new ArrayList<>();
 
     @Override
@@ -50,6 +61,7 @@ public class MessageActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance().getReference();
         messageRepository = new MessageRepository();
+        apiFriend = ApiClient.getFriendRequestService();
 
         initializeViews();
 
@@ -58,6 +70,34 @@ public class MessageActivity extends AppCompatActivity {
             currentUserId = currentUser.getUid();
             Log.d("MessageActivity", "Current user ID: " + currentUserId);
 
+
+            //here call api get list friend of user
+            Call<List<User>> call = apiFriend.getListFriendByUserId(currentUserId);
+            call.enqueue(new Callback<List<User>>() {
+
+                @Override
+                public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        List<User> friendList = response.body();
+                        for (User user : friendList) {
+                            if (user != null) {
+                                listFriend.add(user.getUserId());
+                                Log.d("Friend", "Tên: " + user.getFullName());
+                            } else {
+                                Log.w("MessageActivity", "User is null");
+                            }
+                        }
+                    } else {
+                        Log.e("Friend", "Lỗi response: " + response.code());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<User>> call, Throwable t) {
+                    Log.e("Friend", "Lỗi mạng/API: " + t.getMessage());
+                }
+            });
+
             messageRepository.getReceiverByUserId(currentUserId, new onMessageLoaded() {
                 @Override
                 public void onSuccess(List<Message> messages) {
@@ -65,6 +105,11 @@ public class MessageActivity extends AppCompatActivity {
                     for (Message message : messages) {
                         if (message.getReceiverId() != null) {
                             tempReceiverIds.add(message.getReceiverId());
+                            tempReceiverIds.add(message.getSenderId());
+                            for (String id : listFriend) {
+                                tempReceiverIds.add(id);
+                            }
+                            tempReceiverIds.remove(currentUserId);
                         }
                     }
                     receiverIds.addAll(tempReceiverIds);
@@ -123,6 +168,7 @@ public class MessageActivity extends AppCompatActivity {
                     int position = receiverIds.indexOf(userId);
                     if (position != -1 && messageAdapter != null) {
                         messageAdapter.updateUserInfo(position, name, avtUrl);
+                        Log.d("MessageActivity", "Updated user info for position: " + position + ", Name: " + name + ", Avatar URL: " + avtUrl);
                         messageAdapter.notifyItemChanged(position);
                     }
                 } else {

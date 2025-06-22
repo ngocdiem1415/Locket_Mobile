@@ -2,9 +2,12 @@ package com.hucmuaf.locket_mobile.adapter;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -86,7 +89,6 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageViewHold
             Log.e(TAG, "Error binding message at position " + position, e);
         }
     }
-
     private void styleSentMessage(ChatMessageViewHolder holder) {
         try {
             RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(
@@ -102,9 +104,9 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageViewHold
                 Log.w(TAG, "Set sucessfully layout for this message");
             }
 
-//            if (holder.getMessageAvatar() != null) {
-//                holder.getMessageAvatar().setVisibility(View.GONE);
-//            }
+            if (holder.getMessageAvatar() != null) {
+                holder.getMessageAvatar().setVisibility(View.GONE);
+            }
 
             holder.itemView.setPadding(50, 8, 10, 8);
         } catch (Exception e) {
@@ -128,7 +130,6 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageViewHold
                 holder.getMessageAvatar().setVisibility(View.GONE);
             }
 //
-//            // Set padding
             holder.itemView.setPadding(400, 8, 20, 8);
         } catch (Exception e) {
             Log.e(TAG, "Error styling received message", e);
