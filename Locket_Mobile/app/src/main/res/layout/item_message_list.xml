@@ -8,33 +8,33 @@
     <!-- Avatar -->
     <ImageView
         android:id="@+id/messageAvatar"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:background="@drawable/circle_border"
-        android:src="@mipmap/account_icon"
+        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Username -->
     <TextView
         android:id="@+id/username"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Khanh Linh"
         android:textColor="@color/white"
-        android:textSize="18sp"
+        android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@id/messageAvatar"
         app:layout_constraintTop_toTopOf="@id/messageAvatar"
-        android:layout_marginStart="16dp" />
+        android:layout_marginStart="12dp"
+        android:maxLines="1"
+        android:ellipsize="end" />
 
     <!-- Last Message -->
     <TextView
         android:id="@+id/lastMessage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="babscasdcasadasdasdasdasd..."
         android:textColor="@color/neutral_light1"
-        android:textSize="16sp"
+        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="@id/username"
         app:layout_constraintTop_toBottomOf="@id/username"
         app:layout_constraintEnd_toStartOf="@id/timestamp"
@@ -47,9 +47,8 @@
         android:id="@+id/timestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1m"
         android:textColor="@color/neutral_light1"
-        android:textSize="14sp"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/username"
         android:layout_marginEnd="16dp" />
