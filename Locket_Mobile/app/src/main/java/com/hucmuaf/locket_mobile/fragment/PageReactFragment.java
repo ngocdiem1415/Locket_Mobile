@@ -615,6 +615,7 @@ public class PageReactFragment extends Fragment {
             public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     listener.onSuccess(response.body());
+                    Log.e("Ban be da tha emoji", response.body().toString());
                 } else {
                     listener.onFailure("Error code: " + response.code());
                 }
