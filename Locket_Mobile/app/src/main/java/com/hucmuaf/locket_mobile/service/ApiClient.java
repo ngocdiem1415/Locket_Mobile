@@ -12,7 +12,7 @@ public class ApiClient {
 //    private static final String BASE_URL = "http://10.0.100.23:8080/"; // For real device, your computer's IP
 //     private static final String BASE_URL = "http:/192.168.0.113:8080/"; // For testing
 //    private static final String BASE_URL = "http:/172.16.0.229:8080/"; // For testing
-    private static final String BASE_URL = "http:/192.168.0.112:8080/"; // For testing
+    private static final String BASE_URL = "http:/172.16.1.37:8080/"; // For testing
 
     private static Retrofit retrofit = null;
     private static FriendListApiService friendListApiService = null;

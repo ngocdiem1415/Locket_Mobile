@@ -241,7 +241,8 @@ public class ChatActivity extends AppCompatActivity {
                 .build();
 
         Request request = new Request.Builder()
-                .url("ws://192.168.0.112:8080/ws")
+                .url("ws://172.16.1.37:8080/ws")
+//                .url("ws://192.168.0.112:8080/ws")
                 .build();
 
         webSocket = client.newWebSocket(request, new WebSocketListener() {

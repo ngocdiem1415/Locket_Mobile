@@ -75,11 +75,12 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageViewHold
                 Log.w(TAG, "MessageTimestamp TextView is null at position " + position);
             }
 
-//            if (message.getSenderId() != null && message.getSenderId().equals(currentUser)) {
-//                styleSentMessage(holder);
-//            } else {
-//                styleReceivedMessage(holder);
-//            }
+            if (message.getSenderId() != null && message.getSenderId().equals(currentUser)) {
+                Log.w("ChatMessageAdapter", "THis is current user" + currentUser);
+                styleSentMessage(holder);
+            } else {
+                styleReceivedMessage(holder);
+            }
 
         } catch (Exception e) {
             Log.e(TAG, "Error binding message at position " + position, e);
@@ -92,16 +93,18 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageViewHold
                     RecyclerView.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
-            holder.itemView.setLayoutParams(params);
+//            holder.itemView.setLayoutParams(params);
 
             if (holder.getMessageContent() != null) {
                 holder.getMessageContent().setBackgroundResource(R.drawable.message_background_sent);
-                holder.getMessageContent().setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+                holder.getMessageAvatar().setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                holder.getMessageContent().setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                Log.w(TAG, "Set sucessfully layout for this message");
             }
 
-            if (holder.getMessageAvatar() != null) {
-                holder.getMessageAvatar().setVisibility(View.GONE);
-            }
+//            if (holder.getMessageAvatar() != null) {
+//                holder.getMessageAvatar().setVisibility(View.GONE);
+//            }
 
             holder.itemView.setPadding(50, 8, 10, 8);
         } catch (Exception e) {
@@ -115,18 +118,18 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageViewHold
                     RecyclerView.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
-            holder.itemView.setLayoutParams(params);
-
+//            holder.itemView.setLayoutParams(params);
+//
             if (holder.getMessageContent() != null) {
                 holder.getMessageContent().setBackgroundResource(R.drawable.message_background_received);
-                holder.getMessageContent().setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                holder.getMessageContent().setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
             }
             if (holder.getMessageAvatar() != null) {
-                holder.getMessageAvatar().setVisibility(View.VISIBLE);
+                holder.getMessageAvatar().setVisibility(View.GONE);
             }
-
-            // Set padding
-            holder.itemView.setPadding(10, 8, 50, 8);
+//
+//            // Set padding
+            holder.itemView.setPadding(400, 8, 20, 8);
         } catch (Exception e) {
             Log.e(TAG, "Error styling received message", e);
         }
