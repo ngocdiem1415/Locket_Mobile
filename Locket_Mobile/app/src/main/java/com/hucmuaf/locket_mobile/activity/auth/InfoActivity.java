@@ -1,11 +1,10 @@
 package com.hucmuaf.locket_mobile.activity.auth;
 
-import static com.bumptech.glide.load.resource.bitmap.TransformationUtils.circleCrop;
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.FileUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,13 +13,16 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.hucmuaf.locket_mobile.R;
+import com.hucmuaf.locket_mobile.auth.AuthManager;
+import com.hucmuaf.locket_mobile.auth.TokenManager;
 import com.hucmuaf.locket_mobile.activity.PageComponentActivity;
 import com.hucmuaf.locket_mobile.model.UserProfileRequest;
 import com.hucmuaf.locket_mobile.repo.UploadResponse;
@@ -29,7 +31,6 @@ import com.hucmuaf.locket_mobile.service.ImageService;
 import com.hucmuaf.locket_mobile.service.UserService;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,7 +43,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Url;
 
 public class InfoActivity extends AppCompatActivity {
     private TextInputEditText edName;
@@ -50,6 +50,9 @@ public class InfoActivity extends AppCompatActivity {
     private ImageView imgAvatar;
     private String imageUrl;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
+    private String token;
+
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,7 @@ public class InfoActivity extends AppCompatActivity {
         imgAvatar = findViewById(R.id.imgAvatar);
         TextInputEditText fullName = findViewById(R.id.teName);
         Button btnLogin = findViewById(R.id.btnLogin);
+        token = TokenManager.getToken(this);
 
         btnLogin.setOnClickListener(v -> updateProfile(fullName.getText().toString()));
 
@@ -77,18 +81,15 @@ public class InfoActivity extends AppCompatActivity {
 
         });
 
-        imagePickerLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Uri selectedImageUri = result.getData().getData();
-                        assert selectedImageUri != null;
-                        Log.d("DEBUG_URI", selectedImageUri.toString());
-                        // xử lý ảnh tại đây
-                        uploadImage(selectedImageUri);
-                    }
-                }
-        );
+        imagePickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                Uri selectedImageUri = result.getData().getData();
+                assert selectedImageUri != null;
+                Log.d("DEBUG_URI", selectedImageUri.toString());
+                // xử lý ảnh tại đây
+                uploadImage(selectedImageUri);
+            }
+        });
     }
 
     private void uploadImage(Uri url) {
@@ -102,8 +103,8 @@ public class InfoActivity extends AppCompatActivity {
             MultipartBody.Part body = MultipartBody.Part.createFormData("image", imageFile.getName(), requestBody);
 
             // Gọi API upload ảnh
-            ImageService imageService = ApiClient.getImageApiService();
-            Call<UploadResponse> call = imageService.uploadImage(body);
+            ImageService imageService = ApiClient.getImageApiServiceToken(this);
+            Call<UploadResponse> call = imageService.uploadImage(token, body);
 
             call.enqueue(new Callback<UploadResponse>() {
                 @Override
@@ -112,15 +113,49 @@ public class InfoActivity extends AppCompatActivity {
                         imageUrl = response.body().getUrl();
                         Log.d("Upload", "URL ảnh: " + imageUrl);
 
-                        Glide.with(InfoActivity.this)
-                                .load(imageUrl)
-                                .circleCrop()
-                                .into(imgAvatar);
+                        Glide.with(InfoActivity.this).load(imageUrl).circleCrop().into(imgAvatar);
 
                         imgAvatar.setVisibility(View.VISIBLE);
                         avatarLottie.setVisibility(View.GONE);
                     } else {
-                        Log.e("UploadResult", "Lỗi: " + response.code());
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            user.getIdToken(true).addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    // lấy token mới
+                                    String newToken = task.getResult().getToken();
+
+                                    ///Gửi token lên backend nếu muốn
+                                    AuthManager.verifyToken(InfoActivity.this, TokenManager.getUid(InfoActivity.this), newToken, new AuthManager.AuthCallback() {
+                                        ;
+
+                                        @Override
+                                        public void onSuccess(String userId) {
+                                            // Lưu UID vào TokenManager
+                                            TokenManager.saveUid(InfoActivity.this, userId);
+
+                                            Intent intent = new Intent(InfoActivity.this, PageComponentActivity.class);
+                                            intent.putExtra("userId", userId);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+
+                                        @Override
+                                        public void onFailure(String message) {
+                                            Log.e(TAG, "Xác thực token thất bại: " + message);
+                                            Toast.makeText(InfoActivity.this, "Lỗi xác thực: " + message, Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
+                                } else {
+                                    // Lỗi khi refresh token → buộc người dùng đăng nhập lại
+                                    Toast.makeText(InfoActivity.this, "Token hết hạn. Vui lòng đăng nhập lại.", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(InfoActivity.this, LoginActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
+                        }
                     }
                 }
 
@@ -199,8 +234,8 @@ public class InfoActivity extends AppCompatActivity {
 
         UserProfileRequest dataRequest = new UserProfileRequest(name, avatar);
         // Gọi API cập nhật thông tin người dùng
-        UserService userService = ApiClient.getUserService();
-        Call<ResponseBody> call = userService.updateUserProfile(userId, dataRequest);
+        UserService userService = ApiClient.getUserServiceToken(this);
+        Call<ResponseBody> call = userService.updateUserProfile(userId, token, dataRequest);
 
         // Gửi request
         call.enqueue(new Callback<ResponseBody>() {
@@ -214,6 +249,24 @@ public class InfoActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 } else {
+                    if (response.code() == 401) {
+                        String errorBody = null; // Lấy nội dung lỗi
+                        try {
+                            errorBody = response.errorBody().string();
+                            Log.e("UpdateProfile", "Lỗi xác thực: " + errorBody);
+                            Toast.makeText(InfoActivity.this, "Bạn cần đăng nhập lại!", Toast.LENGTH_SHORT).show();
+
+                            //chuyen ve trang login
+                            Intent intent = new Intent(InfoActivity.this, LoginActivity.class);
+                            startActivity(intent);
+                            finish();
+
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        Log.e("UpdateProfile", "Lỗi: " + response.code());
+                    }
                     Toast.makeText(InfoActivity.this, "Cập nhật thất bại", Toast.LENGTH_SHORT).show();
                 }
             }

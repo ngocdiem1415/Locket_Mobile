@@ -1,5 +1,7 @@
 package com.hucmuaf.locket_mobile.activity.auth;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,17 +19,31 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.hucmuaf.locket_mobile.R;
+import com.hucmuaf.locket_mobile.activity.PageComponentActivity;
+import com.hucmuaf.locket_mobile.auth.AuthManager;
+import com.hucmuaf.locket_mobile.auth.TokenManager;
+import com.hucmuaf.locket_mobile.service.ApiClient;
+import com.hucmuaf.locket_mobile.service.AuthService;
 import com.hucmuaf.locket_mobile.service.FirebaseService;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.security.MessageDigest;
 import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class SignupActivity extends AppCompatActivity {
     private EditText edEmail, edPassword, edConfirmPassword, edUserName, edPhoneNumber;
     private FirebaseAuth mAuth;
     private FirebaseDatabase database;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +70,12 @@ public class SignupActivity extends AppCompatActivity {
 
         edUserName.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -112,10 +130,36 @@ public class SignupActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         String userId = firebaseUser != null ? firebaseUser.getUid() : null;
-                        if (userId == null) {
-                            toast("Không thể lấy UID người dùng.");
-                            return;
-                        }
+
+                        // lấy token của phien đăng nhập hiện tại
+                        firebaseUser.getIdToken(true).addOnCompleteListener(tokenTask -> {
+                            if (tokenTask.isSuccessful()) {
+                                String idToken = tokenTask.getResult().getToken();
+
+                                ///Gửi token lên backend nếu muốn
+                                AuthManager.verifyToken(this, userId, idToken, new AuthManager.AuthCallback() {
+                                    @Override
+                                    public void onSuccess(String userId) {
+                                        // Lưu UID vào TokenManager
+                                        TokenManager.saveUid(SignupActivity.this, userId);
+
+                                        Intent intent = new Intent(SignupActivity.this, InfoActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+
+                                    @Override
+                                    public void onFailure(String message) {
+                                        Log.e(TAG, "Xác thực token thất bại: " + message);
+                                        Toast.makeText(SignupActivity.this, "Lỗi xác thực: " + message, Toast.LENGTH_SHORT).show();
+
+                                        Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                });
+                            }
+                        });
 
                         Map<String, String> user = new HashMap<>();
                         user.put("email", email);
