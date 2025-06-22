@@ -1,143 +1,3 @@
-//package com.hucmuaf.locket_mobile.activity;
-//
-//import android.content.Intent;
-//import android.os.Bundle;
-//import android.util.Log;
-//import android.widget.ImageView;
-//import android.widget.TextView;
-//
-//import androidx.appcompat.app.AppCompatActivity;
-//import androidx.recyclerview.widget.LinearLayoutManager;
-//import androidx.recyclerview.widget.RecyclerView;
-//
-//import com.bumptech.glide.Glide;
-//import com.google.firebase.auth.FirebaseAuth;
-//import com.google.firebase.auth.FirebaseUser;
-//import com.google.firebase.firestore.FirebaseFirestore;
-//import com.hucmuaf.locket_mobile.R;
-//import com.hucmuaf.locket_mobile.adapter.ChatMessageAdapter;
-//import com.hucmuaf.locket_mobile.model.Message;
-//import com.hucmuaf.locket_mobile.service.ApiClient;
-//import com.hucmuaf.locket_mobile.service.MessageListAPIService;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//public class MessageActivity extends AppCompatActivity {
-//    private MessageListAPIService apiService;
-//    private List<Message> messageList = new ArrayList<>();
-//    private FirebaseAuth mAuth;
-//    private FirebaseFirestore db;
-//    private String currentUserId;
-//    private ImageView backButton;
-//    private ImageView avt;
-//    private TextView username;
-//    private RecyclerView recyclerViewMessages;
-//    private ChatMessageAdapter messageAdapter;
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.item_message_list);
-//
-//        mAuth = FirebaseAuth.getInstance();
-//        db = FirebaseFirestore.getInstance();
-//        apiService = ApiClient.getMessageListApiService();
-//
-//        initializeViews();
-//
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        if (currentUser != null && currentUser.getUid() != null) {
-//            currentUserId = currentUser.getUid();
-//            loadUserProfile(currentUserId);
-//            loadMessages(currentUserId);
-//        } else {
-//            Log.w("MessageActivity", "No user logged in");
-//            username.setText("Unknown User");
-//            avt.setImageResource(R.drawable.default_avatar);
-//        }
-//
-//        backButton.setOnClickListener(v -> onBackPressed());
-//        if (avt != null) {
-//            avt.setOnClickListener(v -> {
-//                Intent intent = new Intent(MessageActivity.this, ChatActivity.class);
-//                startActivity(intent);
-//            });
-//        }
-//        if (username != null) {
-//            username.setOnClickListener(v -> {
-//                Intent intent = new Intent(MessageActivity.this, ChatActivity.class);
-//                startActivity(intent);
-//            });
-//        }
-//    }
-//
-//    private void initializeViews() {
-//        backButton = findViewById(R.id.backButton);
-//        avt = findViewById(R.id.messageAvatar);
-//        username = findViewById(R.id.username);
-//        recyclerViewMessages = findViewById(R.id.recyclerViewMessages);
-//
-//        // Set up RecyclerView
-//        messageAdapter = new ChatMessageAdapter(messageList, currentUserId);
-//        recyclerViewMessages.setLayoutManager(new LinearLayoutManager(this));
-//        recyclerViewMessages.setAdapter(messageAdapter);
-//        Log.w("Message Activity", "Can not initialize views");
-//    }
-//
-//    private void loadUserProfile(String userId) {
-//        db.collection("users").document(userId).get()
-//                .addOnSuccessListener(documentSnapshot -> {
-//                    if (documentSnapshot.exists()) {
-//                        String name = documentSnapshot.getString("fullName");
-//                        String avtUrl = documentSnapshot.getString("urlAvatar");
-//                        if (name != null) {
-//                            username.setText(name);
-//                        } else {
-//                            username.setText("Unknown User");
-//                        }
-//                        if (avtUrl != null && !avtUrl.isEmpty()) {
-//                            Glide.with(MessageActivity.this)
-//                                    .load(avtUrl)
-//                                    .circleCrop()
-//                                    .placeholder(R.drawable.default_avatar)
-//                                    .into(avt);
-//                        } else {
-//                            avt.setImageResource(R.drawable.default_avatar);
-//                        }
-//                    } else {
-//                        Log.w("MessageActivity", "User not found: " + userId);
-//                        username.setText("Unknown User");
-//                        avt.setImageResource(R.drawable.default_avatar);
-//                    }
-//                })
-//                .addOnFailureListener(e -> {
-//                    Log.e("MessageActivity", "Error getting user profile: " + e.getMessage());
-//                    username.setText("Unknown User");
-//                    avt.setImageResource(R.drawable.default_avatar);
-//                });
-//    }
-//
-//    private void loadMessages(String userId) {
-//        apiService.getMessageWithUserId(userId).enqueue(new retrofit2.Callback<List<Message>>() {
-//            @Override
-//            public void onResponse(retrofit2.Call<List<Message>> call, retrofit2.Response<List<Message>> response) {
-//                if (response.isSuccessful() && response.body() != null) {
-//                    messageList.clear();
-//                    messageList.addAll(response.body());
-//                    messageAdapter.notifyDataSetChanged();
-//                } else {
-//                    Log.w("MessageActivity", "Failed to load messages: " + response.message());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(retrofit2.Call<List<Message>> call, Throwable t) {
-//                Log.e("MessageActivity", "Error loading messages: " + t.getMessage());
-//            }
-//        });
-//    }
-//}
 package com.hucmuaf.locket_mobile.activity;
 
 import android.content.Intent;
@@ -146,7 +6,6 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -160,28 +19,28 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.hucmuaf.locket_mobile.R;
-import com.hucmuaf.locket_mobile.adapter.ChatMessageAdapter;
+import com.hucmuaf.locket_mobile.adapter.MessageAdapter;
+import com.hucmuaf.locket_mobile.inteface.onMessageLoaded;
 import com.hucmuaf.locket_mobile.model.Message;
-import com.hucmuaf.locket_mobile.service.ApiClient;
-import com.hucmuaf.locket_mobile.service.MessageListAPIService;
+import com.hucmuaf.locket_mobile.repo.MessageRepository;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MessageActivity extends AppCompatActivity {
-    private MessageListAPIService apiService;
+    private MessageRepository messageRepository;
     private List<Message> messageList = new ArrayList<>();
     private FirebaseAuth mAuth;
     private DatabaseReference db;
     private String currentUserId;
     private ImageView backButton;
-    private ImageView avt;
-    private TextView username;
+    private TextView title;
     private RecyclerView recyclerViewMessages;
-    private ChatMessageAdapter messageAdapter;
+    private MessageAdapter messageAdapter;
+    private List<String> receiverIds = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,73 +49,70 @@ public class MessageActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance().getReference();
-        apiService = ApiClient.getMessageListApiService();
+        messageRepository = new MessageRepository();
 
-//        db.setValue("id","JsnmEU9dB0MKXXNzTzWL8gDZWJs1" )
         initializeViews();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        System.out.println("Userrrrrrrrrrrrrrrrrr" + currentUserId);
         if (currentUser != null && currentUser.getUid() != null) {
             currentUserId = currentUser.getUid();
-            System.out.println("This is current user id: " + currentUserId);
-            Log.w("MessageActivity", "This is currentId  " + currentUserId);
-            loadUserProfile(currentUserId);
-            loadMessages(currentUserId);
+            Log.d("MessageActivity", "Current user ID: " + currentUserId);
+
+            messageRepository.getReceiverByUserId(currentUserId, new onMessageLoaded() {
+                @Override
+                public void onSuccess(List<Message> messages) {
+                    Set<String> tempReceiverIds = new HashSet<>();
+                    for (Message message : messages) {
+                        if (message.getReceiverId() != null) {
+                            tempReceiverIds.add(message.getReceiverId());
+                        }
+                    }
+                    receiverIds.addAll(tempReceiverIds);
+                    Log.w("MessageActivity", "Receiver IDs: " + receiverIds + ", Size: " + receiverIds.size());
+
+                    if (recyclerViewMessages != null) {
+                        if (messageAdapter == null) {
+                            messageAdapter = new MessageAdapter(MessageActivity.this, messageList, receiverIds, currentUserId, recyclerViewMessages);
+                            recyclerViewMessages.setLayoutManager(new LinearLayoutManager(MessageActivity.this));
+                            recyclerViewMessages.setAdapter(messageAdapter);
+                            Log.d("MessageActivity", "RecyclerView initialized with size: " + receiverIds.size());
+                        } else {
+                            messageAdapter.notifyDataSetChanged();
+                        }
+                    }
+
+                    for (String id : receiverIds) {
+                        loadUserProfile(id);
+                        loadLastMessages(id);
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.e("MessageActivity", "Failed to load receivers: " + e.getMessage());
+                    setDefaultState();
+                }
+            });
         } else {
-            try {
-                Log.w("MessageActivity", "No user logged in");
-                setDefaultUserInfo();
-            } catch (Exception e) {
-                Log.w("MessageActivity", "No user logged in");
-                throw new RuntimeException(e);
-            }
-
+            Log.w("MessageActivity", "No user logged in");
+            setDefaultState();
         }
 
-        // Set click listeners
-        if (backButton != null) {
-            backButton.setOnClickListener(v -> onBackPressed());
-        }
-        if (avt != null) {
-            avt.setOnClickListener(v -> {
-                Intent intent = new Intent(MessageActivity.this, ChatActivity.class);
-                startActivity(intent);
-            });
-        }
-        if (username != null) {
-            username.setOnClickListener(v -> {
-                Intent intent = new Intent(MessageActivity.this, ChatActivity.class);
-                startActivity(intent);
-            });
-        }
+        backButton.setOnClickListener(v -> onBackPressed());
     }
 
     private void initializeViews() {
         backButton = findViewById(R.id.backButton);
-        avt = findViewById(R.id.currentUserAvatar);
-        username = findViewById(R.id.currentUsername);
+        title = findViewById(R.id.title);
         recyclerViewMessages = findViewById(R.id.recyclerViewMessages);
-
-        // Set up RecyclerView
-        if (recyclerViewMessages != null) {
-            messageAdapter = new ChatMessageAdapter(messageList, currentUserId);
-            recyclerViewMessages.setLayoutManager(new LinearLayoutManager(this));
-            recyclerViewMessages.setAdapter(messageAdapter);
-        } else {
-            Log.e("MessageActivity", "recyclerViewMessages is null");
-        }
-        Log.d("MessageActivity", "Views initialized - avt: " + (avt != null) + ", username: " + (username != null));
     }
 
     private void loadUserProfile(String userId) {
-        if (db == null || username == null || avt == null) {
-            Log.e("MessageActivity", "Database or views are not initialized");
-            setDefaultUserInfo();
+        if (db == null) {
+            Log.e("MessageActivity", "Database is not initialized");
             return;
         }
 
-        // Lấy dữ liệu từ node users/<userId>
         db.child("users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -264,70 +120,53 @@ public class MessageActivity extends AppCompatActivity {
                     String name = dataSnapshot.child("fullName").getValue(String.class);
                     String avtUrl = dataSnapshot.child("urlAvatar").getValue(String.class);
 
-                    if (name != null) {
-                        username.setText(name);
-                    } else {
-                        username.setText("Unknown User");
-                    }
-
-                    if (avtUrl != null && !avtUrl.isEmpty()) {
-                        Glide.with(MessageActivity.this)
-                                .load(avtUrl)
-                                .circleCrop()
-                                .placeholder(R.drawable.default_avatar)
-                                .error(R.drawable.default_avatar)
-                                .into(avt);
-                    } else {
-                        avt.setImageResource(R.drawable.default_avatar);
+                    int position = receiverIds.indexOf(userId);
+                    if (position != -1 && messageAdapter != null) {
+                        messageAdapter.updateUserInfo(position, name, avtUrl);
+                        messageAdapter.notifyItemChanged(position);
                     }
                 } else {
                     Log.w("MessageActivity", "User not found: " + userId);
-                    setDefaultUserInfo();
                 }
             }
-
 
             @Override
             public void onCancelled(@NotNull DatabaseError databaseError) {
                 Log.e("MessageActivity", "Error getting user profile: " + databaseError.getMessage());
-                setDefaultUserInfo();
             }
         });
     }
 
-    private void setDefaultUserInfo() {
-        if (username != null) {
-            username.setText("Unknown User");
-        }
-        if (avt != null) {
-            avt.setImageResource(R.drawable.default_avatar);
-        }
-    }
-
-    private void loadMessages(String userId) {
-        if (apiService == null) {
-            Log.e("MessageActivity", "API service is not initialized");
-            return;
-        }
-
-        apiService.getMessageWithUserId(userId).enqueue(new retrofit2.Callback<List<Message>>() {
+    private void loadLastMessages(String userId) {
+        messageRepository.getLastMessageWithUserId(userId, new onMessageLoaded() {
             @Override
-            public void onResponse(retrofit2.Call<List<Message>> call, retrofit2.Response<List<Message>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    messageList.clear();
-                    messageList.addAll(response.body());
-                    if (messageAdapter != null) {
-                        messageAdapter.notifyDataSetChanged();
+            public void onSuccess(List<Message> messages) {
+                if (!messages.isEmpty()) {
+                    Message lastMessage = messages.get(0);
+                    int position = receiverIds.indexOf(userId);
+                    if (position != -1 && messageAdapter != null) {
+                        messageList.add(lastMessage);
+                        messageAdapter.updateMessage(position, lastMessage);
+                        messageAdapter.notifyItemChanged(position);
                     }
-                } else {
-                    Log.w("MessageActivity", "Failed to load messages: " + response.message());
                 }
             }
 
             @Override
-            public void onFailure(retrofit2.Call<List<Message>> call, Throwable t) {
-                Log.e("MessageActivity", "Error loading messages: " + t.getMessage());
+            public void onFailure(Exception e) {
+                Log.e("MessageActivity", "Error loading last message: " + e.getMessage());
             }
         });
+    }
+
+    private int findReceiverPosition(String receiverId) {
+        return receiverIds.indexOf(receiverId);
+    }
+
+    private void setDefaultState() {
+        title.setText("Messages");
+        if (recyclerViewMessages != null && messageAdapter != null) {
+            messageAdapter.notifyDataSetChanged();
+        }
     }
 }
