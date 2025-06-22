@@ -80,4 +80,17 @@ public class User {
     public void setUrlAvatar(String urlAvatar) {
         this.urlAvatar = urlAvatar;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId='" + userId + '\'' +
+                ", userName='" + userName + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", urlAvatar='" + urlAvatar + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }
