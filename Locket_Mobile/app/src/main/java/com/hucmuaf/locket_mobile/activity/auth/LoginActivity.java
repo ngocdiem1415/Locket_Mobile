@@ -129,7 +129,6 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "signInWithEmail:success");
-                        Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
 
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         String userId = firebaseUser != null ? firebaseUser.getUid() : null;
@@ -165,6 +164,7 @@ public class LoginActivity extends AppCompatActivity {
                                 });
                             }
                         });
+                        Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
 
                     } else {
                         Log.w(TAG, "signInWithEmail:failure", task.getException());

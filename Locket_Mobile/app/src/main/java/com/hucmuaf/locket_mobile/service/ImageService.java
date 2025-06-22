@@ -5,8 +5,10 @@ import com.hucmuaf.locket_mobile.modedb.SaveResponse;
 
 import java.util.List;
 
+import com.hucmuaf.locket_mobile.modedb.UploadImageResponse;
 import com.hucmuaf.locket_mobile.repo.UploadResponse;
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -34,10 +36,12 @@ public interface ImageService {
     Call<List<Image>> getImageBySenderIdAndReceiverId(@Query("senderId") String senderId, @Query("receiverId") String receiverId);
 
     @Multipart
-    @POST("api/upload")
+    @POST("api/upload/image")
     Call<UploadResponse> uploadImage(
-            @Path("userId") String userId,
+            @Header("userId") String uid,
             @Header("Authorization") String idToken,
-            @Part MultipartBody.Part image);
+            @Part MultipartBody.Part image
+    );
+
 
 }

@@ -28,6 +28,7 @@ import com.hucmuaf.locket_mobile.activity.PageComponentActivity;
 import com.hucmuaf.locket_mobile.model.UserProfileRequest;
 import com.hucmuaf.locket_mobile.repo.UploadResponse;
 import com.hucmuaf.locket_mobile.service.ApiClient;
+import com.hucmuaf.locket_mobile.service.FirebaseService;
 import com.hucmuaf.locket_mobile.service.ImageService;
 import com.hucmuaf.locket_mobile.service.UserService;
 
@@ -64,6 +65,7 @@ public class InfoActivity extends AppCompatActivity {
         TextInputEditText fullName = findViewById(R.id.teName);
         Button btnLogin = findViewById(R.id.btnLogin);
         token = TokenManager.getToken(this);
+        mAuth = FirebaseService.getInstance().getAuth();
 
         btnLogin.setOnClickListener(v -> updateProfile(fullName.getText().toString()));
 
@@ -99,13 +101,20 @@ public class InfoActivity extends AppCompatActivity {
         }
         try {
             File imageFile = createTempFileFromUri(url);  // Chuyển Uri thành File thật
+            // ✅ Sửa: đúng cú pháp mới của OkHttp
             RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), imageFile);
-            // Tạo MultipartBody.Part để gửi ảnh , dữ liệu nhận vào của api là part
+
+            // Đảm bảo key "image" trùng với @RequestPart("image") bên BE
             MultipartBody.Part body = MultipartBody.Part.createFormData("image", imageFile.getName(), requestBody);
 
             // Gọi API upload ảnh
             ImageService imageService = ApiClient.getImageApiServiceToken(this);
-            Call<UploadResponse> call = imageService.uploadImage(TokenManager.getUid(InfoActivity.this), token, body);
+            System.out.println("Token: " + token);
+            System.out.println("UID: " + TokenManager.getUid(this));
+            System.out.println("Body: " + body);
+
+            String bearerToken = "Bearer " + token;
+            Call<UploadResponse> call = imageService.uploadImage(TokenManager.getUid(this), bearerToken, body);
 
             call.enqueue(new Callback<UploadResponse>() {
                 @Override
@@ -119,46 +128,7 @@ public class InfoActivity extends AppCompatActivity {
                         imgAvatar.setVisibility(View.VISIBLE);
                         avatarLottie.setVisibility(View.GONE);
                     } else {
-                        // kiểm tra lại token nếu hết hạn thì tạo lại cái mới
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        if (user != null) {
-                            user.getIdToken(true).addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    // lấy token mới
-                                    String newToken = task.getResult().getToken();
-
-                                    ///Gửi token lên backend nếu muốn
-                                    AuthManager.verifyToken(InfoActivity.this, TokenManager.getUid(InfoActivity.this), newToken, new AuthManager.AuthCallback() {
-                                        ;
-
-                                        @Override
-                                        public void onSuccess(String userId) {
-                                            // Lưu UID vào TokenManager
-                                            TokenManager.saveUid(InfoActivity.this, userId);
-                                            Log.e(TAG, "Xác thực token thành công: " + userId);
-
-                                            Intent intent = new Intent(InfoActivity.this, PageComponentActivity.class);
-                                            intent.putExtra("userId", userId);
-                                            startActivity(intent);
-                                            finish();
-                                        }
-
-                                        @Override
-                                        public void onFailure(String message) {
-                                            Log.e(TAG, "Xác thực token thất bại: " + message);
-                                            Toast.makeText(InfoActivity.this, "Lỗi xác thực: " + message, Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-
-                                } else {
-                                    // Lỗi khi refresh token → buộc người dùng đăng nhập lại
-                                    Toast.makeText(InfoActivity.this, "Token hết hạn. Vui lòng đăng nhập lại.", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(InfoActivity.this, LoginActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            });
-                        }
+                        Log.e("UpdateProfile", "Lỗi: " + response.code());
                     }
                 }
 
@@ -219,7 +189,7 @@ public class InfoActivity extends AppCompatActivity {
 
 
     private void updateProfile(String fullname) {
-        String userId = getIntent().getStringExtra("userId");
+        String userId = TokenManager.getUid(InfoActivity.this);
         if (userId == null || userId.isEmpty()) {
             Toast.makeText(this, "Lỗi: Không tìm thấy userId", Toast.LENGTH_SHORT).show();
             return;
@@ -238,7 +208,8 @@ public class InfoActivity extends AppCompatActivity {
         UserProfileRequest dataRequest = new UserProfileRequest(name, avatar);
         // Gọi API cập nhật thông tin người dùng
         UserService userService = ApiClient.getUserServiceToken(this);
-        Call<ResponseBody> call = userService.updateUserProfile(userId, token, dataRequest);
+        String bearerToken = "Bearer " + token;
+        Call<ResponseBody> call = userService.updateUserProfile(userId, bearerToken, dataRequest);
 
         // Gửi request
         call.enqueue(new Callback<ResponseBody>() {
@@ -251,27 +222,48 @@ public class InfoActivity extends AppCompatActivity {
                     Intent intent = new Intent(InfoActivity.this, PageComponentActivity.class);
                     startActivity(intent);
                     finish();
-                } else {
-                    if (response.code() == 401) {
-                        String errorBody = null; // Lấy nội dung lỗi
-                        try {
-                            errorBody = response.errorBody().string();
-                            Log.e("UpdateProfile", "Lỗi xác thực: " + errorBody);
-                            Toast.makeText(InfoActivity.this, "Bạn cần đăng nhập lại!", Toast.LENGTH_SHORT).show();
+                } else if (response.code() == 401) {
+                    Log.e("UpdateProfile", "Lỗi: " + response.code());
+                    // kiểm tra lại token nếu hết hạn thì tạo lại cái mới
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    if (user != null) {
+                        user.getIdToken(true).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                // lấy token mới
+                                String newToken = task.getResult().getToken();
 
-                            //chuyen ve trang login
-                            Intent intent = new Intent(InfoActivity.this, LoginActivity.class);
-                            startActivity(intent);
-                            finish();
+                                ///Gửi token lên backend nếu muốn
+                                AuthManager.verifyToken(InfoActivity.this, TokenManager.getUid(InfoActivity.this), newToken, new AuthManager.AuthCallback() {
+                                    ;
 
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    } else {
-                        Log.e("UpdateProfile", "Lỗi: " + response.code());
+                                    @Override
+                                    public void onSuccess(String userId) {
+                                        // Lưu UID vào TokenManager
+                                        TokenManager.saveUid(InfoActivity.this, userId);
+                                        Log.e(TAG, "Xác thực token thành công: " + userId);
+
+                                        // Gợi ý người dùng thao tác lại
+                                        Toast.makeText(InfoActivity.this, "Token đã làm mới. Vui lòng thử gửi lại ảnh.", Toast.LENGTH_LONG).show();
+
+                                        Intent intent = new Intent(InfoActivity.this, PageComponentActivity.class);
+                                        intent.putExtra("userId", userId);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+
+                                    @Override
+                                    public void onFailure(String message) {
+                                        Log.e(TAG, "Xác thực token thất bại: " + message);
+                                        Toast.makeText(InfoActivity.this, "Lỗi xác thực: " + message, Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        });
                     }
-                    Toast.makeText(InfoActivity.this, "Cập nhật thất bại", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.e("UpdateProfile", "Lỗi: " + response.code());
                 }
+                Toast.makeText(InfoActivity.this, "Cập nhật thất bại", Toast.LENGTH_SHORT).show();
             }
 
             @Override

@@ -126,13 +126,18 @@ public class AuthService {
 
     //xác thực token bên be
     public FirebaseToken verifyAndExtractToken(String uid, String authHeader) throws FirebaseAuthException, IOException {
+        System.out.println(uid);
+        System.out.println(authHeader);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new IllegalArgumentException("Không tồn tại token hoặc sai định dạng.");
 
     }
         String token = authHeader.substring(7);
+
+        // Giải mã token từ Firebase
         FirebaseToken decodedToken = firebaseConfig.firebaseAuth().verifyIdToken(token);
 
+        // So sánh uid trong token với uid ở header
         if (!decodedToken.getUid().equals(uid)) {
             throw new SecurityException("UID trong token không khớp với userId yêu cầu");
         }

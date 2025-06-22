@@ -1,5 +1,8 @@
 package com.hucmuaf.locket_mobile.activity;
 
+import static android.util.Log.DEBUG;
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -37,18 +40,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.hucmuaf.locket_mobile.R;
+import com.hucmuaf.locket_mobile.activity.auth.InfoActivity;
 import com.hucmuaf.locket_mobile.adapter.ItemFriendToSendPhotoAdapter;
+import com.hucmuaf.locket_mobile.auth.AuthManager;
+import com.hucmuaf.locket_mobile.auth.TokenManager;
 import com.hucmuaf.locket_mobile.inteface.OnFriendToSendListenter;
 import com.hucmuaf.locket_mobile.modedb.Image;
 import com.hucmuaf.locket_mobile.modedb.SaveResponse;
 import com.hucmuaf.locket_mobile.modedb.UploadImageResponse;
 import com.hucmuaf.locket_mobile.modedb.User;
+import com.hucmuaf.locket_mobile.repo.UploadResponse;
 import com.hucmuaf.locket_mobile.service.ApiClient;
+import com.hucmuaf.locket_mobile.service.FirebaseService;
 import com.hucmuaf.locket_mobile.service.FriendRequestService;
 import com.hucmuaf.locket_mobile.service.ImageService;
 import com.hucmuaf.locket_mobile.service.OnFriendLoadedListener;
-import com.hucmuaf.locket_mobile.service.UploadImageService;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,6 +80,7 @@ public class ShowImageActivity extends AppCompatActivity {
     private View decor_caption;
     private View cached;
     private RecyclerView listFriendRV;
+    private FirebaseAuth mAuth;
 
     private List<User> listFriend;
     private List<String> listFriendToSend;
@@ -79,6 +89,9 @@ public class ShowImageActivity extends AppCompatActivity {
     private LinearLayout allFriends;
     private boolean sendAll;
     private String userId;
+
+    private String token;
+    private FirebaseService firebaseService;
 
     @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
     @Override
@@ -94,6 +107,8 @@ public class ShowImageActivity extends AppCompatActivity {
 
         sendAll = false;
         userId = getIntent().getStringExtra("userId");
+        mAuth = FirebaseService.getInstance().getAuth();
+        token = TokenManager.getToken(this);
 
         ImageView imageView = findViewById(R.id.camera_preview);
         String imagePath = getIntent().getStringExtra("imagePath");
@@ -199,7 +214,7 @@ public class ShowImageActivity extends AppCompatActivity {
             File file = new File(imagePath);
             Log.e("Image Path", imagePath);
             RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
-            MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
             uploadImage(body);
         });
 
@@ -240,11 +255,18 @@ public class ShowImageActivity extends AppCompatActivity {
 
     public void uploadImage(MultipartBody.Part part) {
         final String[] path = {""};
-        UploadImageService uploadImageService = ApiClient.getUploadImageService();
-        Call<UploadImageResponse> imagePathCall = uploadImageService.uploadImage(part);
-        imagePathCall.enqueue(new Callback<UploadImageResponse>() {
+
+        // Gọi API upload ảnh
+        ImageService imageService = ApiClient.getImageApiServiceToken(this);
+        System.out.println("Token: " + token);
+        System.out.println("UID: " + TokenManager.getUid(this));
+        String bearerToken = "Bearer " + token;
+
+        Call<UploadResponse> imagePathCall = imageService.uploadImage(TokenManager.getUid(this),token, part);
+
+        imagePathCall.enqueue(new Callback<UploadResponse>() {
             @Override
-            public void onResponse(@NonNull Call<UploadImageResponse> call, @NonNull Response<UploadImageResponse> response) {
+            public void onResponse(@NonNull Call<UploadResponse> call, @NonNull Response<UploadResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     String imageUrl = response.body().getUrl(); // 🔥 Đây là link ảnh từ Cloudinary
                     Log.d("UPLOAD", "Ảnh đã upload: " + imageUrl);
@@ -262,13 +284,50 @@ public class ShowImageActivity extends AppCompatActivity {
                     Image newImage = new Image(imageId, imageUrl, caption, currentTime, userId, listFriendToSend);
 
                     saveImage(newImage);
+
+                } else if (response.code() == 401) {
+                    // kiểm tra lại token nếu hết hạn thì tạo lại cái mới
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    if (user != null) {
+                        user.getIdToken(true).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                // lấy token mới
+                                String newToken = task.getResult().getToken();
+
+                                ///Gửi token lên backend nếu muốn
+                                AuthManager.verifyToken(ShowImageActivity.this, TokenManager.getUid(ShowImageActivity.this), newToken, new AuthManager.AuthCallback() {
+                                    @Override
+                                    public void onSuccess(String userId) {
+                                        // Lưu UID vào TokenManager
+                                        TokenManager.saveUid(ShowImageActivity.this, userId);
+                                        Log.e(TAG, "Xác thực token thành công: " + userId);
+
+                                        // Gợi ý người dùng thao tác lại
+                                        Toast.makeText(ShowImageActivity.this, "Token đã làm mới. Vui lòng thử gửi lại ảnh.", Toast.LENGTH_LONG).show();
+
+                                        Intent intent = new Intent(ShowImageActivity.this, PageComponentActivity.class);
+                                        intent.putExtra("userId", userId);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+
+                                    @Override
+                                    public void onFailure(String message) {
+                                        Log.e(TAG, "Xác thực token thất bại: " + message);
+                                        Toast.makeText(ShowImageActivity.this, "Lỗi xác thực: " + message, Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        });
+                    }
                 } else {
-                    Log.e("UPLOAD", "Lỗi: " + response.code());
+                    Log.e("SendImage", "Lỗi: " + response.code());
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<UploadImageResponse> call, @NonNull Throwable t) {
+            public void onFailure
+                    (@NonNull Call<UploadResponse> call, @NonNull Throwable t) {
                 Log.e("UPLOAD", "Upload thất bại", t);
             }
         });
@@ -284,6 +343,7 @@ public class ShowImageActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     String message = response.body().getMessage();
                     Intent intent = new Intent(ShowImageActivity.this, PageComponentActivity.class);
+
                     intent.putExtra("userId", userId);
                     startActivity(intent);
                     finish();
