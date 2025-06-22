@@ -42,7 +42,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
         this.listImage = listImage;
         this.listUsers = users;
         map = new HashMap<>();
-//        mapImageToUser(this.listUsers, this.listImage);
+        mapImageToUser(this.listUsers, this.listImage);
     }
 
     public void mapImageToUser(List<User> users, List<Image> images){
@@ -68,10 +68,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
     public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
         Log.e("Map", map.toString());
         Image item = listImage.get(position);
+        User u = map.get(item.getSenderId());
         String url = item.getUrlImage();
         String caption = item.getCaption();
-        String avatar = "";
-        String accName = item.getSenderId();
+        String avatar = u.getUrlAvatar();
+        String accName = u.getFullName();
         String timestamp = getTimeDifferenceFromNow(item.getTimestamp());
 
         // Load ảnh từ URL bằng Glide

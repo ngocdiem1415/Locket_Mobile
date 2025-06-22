@@ -43,6 +43,7 @@ public class UploadController {
             Map uploadResult = cloudinary.uploader().upload(file.getBytes(), options);
             // Trả về secure_url (link ảnh công khai)
             return ResponseEntity.ok(Map.of("url", uploadResult.get("secure_url")));
+
         } catch (FirebaseAuthException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token không hợp lệ: " + e.getMessage());
         } catch (IOException e) {
