@@ -18,7 +18,8 @@ public class ApiClient {
     private static Retrofit retrofit = null;
     private static FriendListApiService friendListApiService = null;
     private static MessageListAPIService messageListAPIService;
-    ;
+    //service lấy ra danh sách id bạn bè, danh sách user là bạn bè của current user
+    private static FriendRequestService friendRequestService = null;
 
     public static Retrofit getClient() {
         if (retrofit == null) {
@@ -49,5 +50,12 @@ public class ApiClient {
         }
         return messageListAPIService;
 
+    }
+
+    public static FriendRequestService getFriendRequestService(){
+        if (friendRequestService == null){
+            friendRequestService = getClient().create(FriendRequestService.class);
+        }
+        return friendRequestService;
     }
 }

@@ -50,6 +50,31 @@ public class MessageDao {
         return future;
     }
 
+    public CompletableFuture<List<Message>> getReceiverIdByUserID(String userId) {
+        CompletableFuture<List<Message>> future = new CompletableFuture<>();
+        Query query = dbRef.orderByChild("receiverId").equalTo(userId);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<Message> result = new ArrayList<>();
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    Message message = child.getValue(Message.class);
+                    if (message != null) {
+                        result.add(message);
+                    }
+                }
+                future.complete(result);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                future.completeExceptionally(databaseError.toException());
+            }
+        });
+        return future;
+    }
+
     public CompletableFuture<List<Message>> getAllMessage() {
         CompletableFuture<List<Message>> future = new CompletableFuture<>();
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
