@@ -256,19 +256,21 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageViewHolder> {
                 holder.getUsername().setText(receiverIds.get(position));
             }
 
-            if (avtUrl != null && !avtUrl.trim().isEmpty()) {
-                Glide.with(context)
-                        .load(avtUrl)
-                        .circleCrop()
-                        .placeholder(R.drawable.default_avatar)
-                        .error(R.drawable.default_avatar)
-                        .into(holder.getAvatar());
-            } else {
-                Glide.with(context)
-                        .load(R.drawable.default_avatar)
-                        .circleCrop()
-                        .into(holder.getAvatar());
-            }
+                if (avtUrl != null && !avtUrl.trim().isEmpty()) {
+                    Glide.with(context)
+                            .asBitmap()
+                            .load(avtUrl)
+                            .circleCrop()
+                            .placeholder(R.drawable.default_avatar)
+                            .error(R.drawable.default_avatar)
+                            .into(holder.getAvatar());
+                    Log.w("MessafeAdapter", "Load avatar: " + avtUrl);
+                } else {
+                    Glide.with(context)
+                            .load(R.drawable.default_avatar)
+                            .circleCrop()
+                            .into(holder.getAvatar());
+                }
             holder.getAvatar().setOnClickListener(v -> {
                 String receiverId = receiverIds.get(position);
                 Intent intent = new Intent(context, ChatActivity.class);

@@ -11,7 +11,8 @@ public class Message {
 
     @SerializedName("receiverId")
     private String receiverId;
-
+    @SerializedName("imageId")
+    private String imageId;
     @SerializedName("content")
     private String content;
     @SerializedName("timestamp")
@@ -22,10 +23,11 @@ public class Message {
     public Message() {
     }
 
-    public Message(String senderId, String receiverId, String content, long timestamp, String type) {
+    public Message(String senderId, String receiverId, String content, String imageId, long timestamp, String type) {
 //        this.id = id;
         this.senderId = senderId;
         this.receiverId = receiverId;
+        this.imageId = imageId;
         this.content = content;
         this.timestamp = timestamp;
         this.type = type;
@@ -61,6 +63,14 @@ public class Message {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public void getImageId(String imageId) {
+        this.imageId = imageId;
+    }
+
+    public String getImageId() {
+        return imageId;
     }
 
     public long getTimestamp() {

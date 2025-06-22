@@ -66,6 +66,7 @@ public class ChatActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> pickImageLauncher;
     private WebSocket webSocket;
     private OkHttpClient client;
+    private String imageId;
     private MessageRepository messageRepository;
 
 //    private static final String WS_SERVER_URL = "ws://192.168.181.190:8080/ws"; // Fixed URL format
@@ -317,6 +318,7 @@ public class ChatActivity extends AppCompatActivity {
                             public void onResponse(retrofit2.Call<Void> call, retrofit2.Response<Void> response) {
                                 Log.d("API", "Message sent successfully");
                             }
+
                             @Override
                             public void onFailure(retrofit2.Call<Void> call, Throwable t) {
                                 Log.e("API", "Failed to send message: " + t.getMessage());
