@@ -12,7 +12,7 @@
         android:layout_gravity="center"
         android:clipChildren="true"
         android:clipToPadding="true"
-        app:cardCornerRadius="25dp"
+        app:cardCornerRadius="20dp"
         app:cardElevation="4dp">
 
         <ImageView
