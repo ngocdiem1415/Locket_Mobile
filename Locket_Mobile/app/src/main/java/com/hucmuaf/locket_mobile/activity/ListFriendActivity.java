@@ -69,38 +69,30 @@ public class ListFriendActivity extends AppCompatActivity implements OnAddFriend
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listfriend);
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         apiService = ApiClient.getFriendListApiService();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null && currentUser.getEmail() != null) {
-            loadUserIdFromEmail(currentUser.getEmail());
+
+        // Lấy userId từ Intent trước, nếu không có thì lấy từ Firebase Auth
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra("userId")) {
+            currentUserId = intent.getStringExtra("userId");
+            Log.d("ListFriendActivity", "Using userId from Intent: " + currentUserId);
         } else {
-            currentUserId = " ";
-            initializeAfterUserId();
-        }
-    }
-
-    private void loadUserIdFromEmail(String email) {
-        // Gọi API để lấy user ID từ email
-        Call<String> call = apiService.getUserIdByEmail(email);
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    currentUserId = response.body();
-                    initializeAfterUserId();
-                } else {
-                    currentUserId = "Unknown";
-                    initializeAfterUserId();
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
+            //  lấy từ Firebase Auth
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser != null) {
+                currentUserId = currentUser.getUid();
+                Log.d("ListFriendActivity", "Using Firebase UID as fallback: " + currentUserId);
+            } else {
                 currentUserId = " ";
-                initializeAfterUserId();
+                Log.e("ListFriendActivity", "No userId available");
             }
-        });
+        }
+        
+        // Log để debug
+        Log.d("ListFriendActivity", "Final userId being used: " + currentUserId);
+        
+        initializeAfterUserId();
     }
 
     private void initializeAfterUserId() {
@@ -292,6 +284,7 @@ public class ListFriendActivity extends AppCompatActivity implements OnAddFriend
 
     private void loadFriendList() {
         // Gọi API để lấy danh sách bạn bè từ Firebase
+        Log.d("ListFriendActivity", "Loading friend list for userId: " + currentUserId);
         Call<FriendListResponse> call = apiService.getFriendList(currentUserId);
         call.enqueue(new Callback<FriendListResponse>() {
             @SuppressLint({"SetTextI18n", "NotifyDataSetChanged"})
@@ -299,12 +292,14 @@ public class ListFriendActivity extends AppCompatActivity implements OnAddFriend
             public void onResponse(@NonNull Call<FriendListResponse> call, @NonNull Response<FriendListResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     FriendListResponse friendListResponse = response.body();
+                    Log.d("ListFriendActivity", "Friend count loaded: " + friendListResponse.getTotalFriends() + " for userId: " + currentUserId);
                     friendCount.setText(friendListResponse.getTotalFriends() + " người bạn đã được bổ sung");
 // Hiển thị danh sách bạn bè hiện có trên Firebase
                     friendsList.clear();
                     friendsList.addAll(friendListResponse.getFriends());
                     friendAdapter.notifyDataSetChanged();
                 } else {
+                    Log.e("ListFriendActivity", "Friend list response not successful. Code: " + response.code() + " for userId: " + currentUserId);
                     friendsList.clear();
                     friendAdapter.notifyDataSetChanged();
                     friendCount.setText("0 người bạn đã được bổ sung");
@@ -316,10 +311,12 @@ public class ListFriendActivity extends AppCompatActivity implements OnAddFriend
             public void onFailure(@NonNull Call<FriendListResponse> call, @NonNull Throwable t) {
                 // Xử lý lỗi JSON parsing
                 if (t.getMessage() != null && t.getMessage().contains("JSON document was not fully consumed")) {
+                    Log.d("ListFriendActivity", "JSON parsing error - treating as success for userId: " + currentUserId);
                     friendsList.clear();
                     friendAdapter.notifyDataSetChanged();
                     friendCount.setText("0 người bạn đã được bổ sung");
                 } else {
+                    Log.e("ListFriendActivity", "Friend list load failure: " + t.getMessage() + " for userId: " + currentUserId, t);
                     Toast.makeText(ListFriendActivity.this, "Không thể tải danh sách bạn bè", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -450,13 +447,13 @@ public class ListFriendActivity extends AppCompatActivity implements OnAddFriend
         senderUser.setFullName("Current User");
         request.setSender(senderUser);
         request.setSenderName("Current User");
-        
-        Log.d("ListFriendActivity", "Sending friend request: " + 
-              "SenderId=" + request.getSenderId() + 
-              ", ReceiverId=" + request.getReceiverId() + 
-              ", Status=" + request.getStatus() + 
-              ", SenderName=" + request.getSenderName());
-        
+
+        Log.d("ListFriendActivity", "Sending friend request: " +
+                "SenderId=" + request.getSenderId() +
+                ", ReceiverId=" + request.getReceiverId() +
+                ", Status=" + request.getStatus() +
+                ", SenderName=" + request.getSenderName());
+
         Call<Void> call = apiService.sendFriendRequest(request);
         call.enqueue(new Callback<Void>() {
             @SuppressLint("NotifyDataSetChanged")
@@ -471,10 +468,10 @@ public class ListFriendActivity extends AppCompatActivity implements OnAddFriend
                     newRequest.setStatus("PENDING");
                     newRequest.setTimestamp(System.currentTimeMillis());
                     newRequest.setSenderName("Current User");
-                    
+
                     sentRequestsList.add(0, newRequest);
                     sentRequestAdapter.notifyItemInserted(0);
-                    
+
                     TextView sentRequestsTitle = findViewById(R.id.sent_requests);
                     if (sentRequestsTitle != null && sentRequestsTitle.getVisibility() == View.GONE) {
                         sentRequestsTitle.setVisibility(View.VISIBLE);
@@ -482,18 +479,18 @@ public class ListFriendActivity extends AppCompatActivity implements OnAddFriend
                     if (sentRequestsRecyclerView.getVisibility() == View.GONE) {
                         sentRequestsRecyclerView.setVisibility(View.VISIBLE);
                     }
-                    
+
                     searchResultsList.remove(user);
                     searchUserAdapter.notifyDataSetChanged();
-                    
+
                     if (searchResultsList.isEmpty()) {
                         searchResultsRecyclerView.setVisibility(View.GONE);
                     }
-                    
+
                     new android.os.Handler().postDelayed(() -> {
                         loadSentRequests();
                     }, 200);
-                    
+
                 } else {
                     String errorMessage = "Không thể gửi lời mời kết bạn";
                     if (response.errorBody() != null) {
@@ -505,7 +502,7 @@ public class ListFriendActivity extends AppCompatActivity implements OnAddFriend
                         }
                     }
                     Toast.makeText(ListFriendActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-                    
+
                     searchUserAdapter.notifyDataSetChanged();
                 }
             }
@@ -523,7 +520,7 @@ public class ListFriendActivity extends AppCompatActivity implements OnAddFriend
                     newRequest.setStatus("PENDING");
                     newRequest.setTimestamp(System.currentTimeMillis());
                     newRequest.setSenderName("Current User");
-                    
+
                     sentRequestsList.add(0, newRequest);
                     sentRequestAdapter.notifyItemInserted(0);
                     TextView sentRequestsTitle = findViewById(R.id.sent_requests);
@@ -547,7 +544,7 @@ public class ListFriendActivity extends AppCompatActivity implements OnAddFriend
 
                 } else {
                     Toast.makeText(ListFriendActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                    
+
                     searchUserAdapter.notifyDataSetChanged();
                 }
             }
@@ -854,6 +851,18 @@ public class ListFriendActivity extends AppCompatActivity implements OnAddFriend
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh dữ liệu khi quay lại để đảm bảo đồng bộ
+        if (currentUserId != null && !currentUserId.isEmpty() && !currentUserId.equals(" ")) {
+            Log.d("ListFriendActivity", "Refreshing data on resume for userId: " + currentUserId);
+            loadFriendList();
+            loadPendingRequests();
+            loadSentRequests();
         }
     }
 }
