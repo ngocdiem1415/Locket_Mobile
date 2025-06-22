@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,11 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.gson.Gson;
 import com.hucmuaf.locket_mobile.R;
 import com.hucmuaf.locket_mobile.adapter.ImageAdapter;
 import com.hucmuaf.locket_mobile.adapter.ItemFriendAdapter;
-import com.hucmuaf.locket_mobile.adapter.PhotoAdapter;
 import com.hucmuaf.locket_mobile.inteface.OnImageClickListener;
 import com.hucmuaf.locket_mobile.modedb.Image;
 import com.hucmuaf.locket_mobile.modedb.User;
@@ -28,8 +25,6 @@ import com.hucmuaf.locket_mobile.repo.ImageLoadCallback;
 import com.hucmuaf.locket_mobile.service.ApiClient;
 import com.hucmuaf.locket_mobile.service.FirebaseService;
 import com.hucmuaf.locket_mobile.service.FriendRequestService;
-import com.hucmuaf.locket_mobile.service.OnFriendLoadedListener;
-import com.hucmuaf.locket_mobile.service.OnImagesLoadedListener;
 
 import java.util.ArrayList;
 import java.util.HashSet;
