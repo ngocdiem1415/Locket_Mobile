@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
     //     private static final String BASE_URL = "http://10.50.0.1:8080/"; // For Android emulator
 
-    private static final String BASE_URL = "http://192.168.1.140:8080/"; // For real device, your computer's IP
+    private static final String BASE_URL = "https://locket-mobile.onrender.com/";// For real device, your computer's IP
 
     // private static final String BASE_URL = "http://localhost:8080/"; // For testing
 

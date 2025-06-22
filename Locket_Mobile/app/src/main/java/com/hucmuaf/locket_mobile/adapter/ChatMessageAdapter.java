@@ -82,17 +82,14 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageViewHold
             }
 
             // Nếu là tin nhắn nhận
-//            !message.getSenderId().equals(currentUser) &&
-            if ( avtUrl != null) {
+
+            if (!message.getSenderId().equals(currentUser) && avtUrl != null) {
                 holder.getMessageAvatar().setVisibility(View.VISIBLE);
                 Glide.with(context)
                         .load(avtUrl)
                         .circleCrop()
                         .error(R.drawable.default_avatar)
                         .into(holder.getMessageAvatar());
-            }
-            else {
-                holder.getMessageAvatar().setVisibility(View.GONE); // Tin nhắn của mình thì ẩn avatar
             }
 
         } catch (Exception e) {
