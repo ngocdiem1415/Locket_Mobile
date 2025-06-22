@@ -77,5 +77,10 @@ dependencies {
     // Cloudinary
     implementation ("com.cloudinary:cloudinary-android:2.2.0")
 
+    // glide load url from internet
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
+
+
 }
 

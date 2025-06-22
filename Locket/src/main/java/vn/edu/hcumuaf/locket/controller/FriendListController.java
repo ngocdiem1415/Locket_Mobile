@@ -1,5 +1,6 @@
 package vn.edu.hcumuaf.locket.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.hcumuaf.locket.dto.FriendListResponse;
@@ -7,7 +8,7 @@ import vn.edu.hcumuaf.locket.dto.SearchUserRequest;
 import vn.edu.hcumuaf.locket.dto.FriendRequestDto;
 import vn.edu.hcumuaf.locket.dto.ShareRequest;
 import vn.edu.hcumuaf.locket.dto.ImportRequest;
-import vn.edu.hcumuaf.locket.model.entity.FriendRequest;
+import vn.edu.hcumuaf.locket.model.FriendRequest;
 import vn.edu.hcumuaf.locket.model.entity.User;
 import vn.edu.hcumuaf.locket.service.FriendListService;
 import vn.edu.hcumuaf.locket.responsitory.UserDao;
@@ -170,4 +171,4 @@ public class FriendListController {
                     return ResponseEntity.badRequest().body("Failed to cancel friend request: " + ex.getMessage());
                 });
     }
-} 
+}
