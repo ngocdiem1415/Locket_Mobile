@@ -50,8 +50,8 @@
         <activity android:name=".activity.MessageActivity"
             android:windowSoftInputMode="adjustResize|stateVisible"/>
 
-        <!--adjustResize: giúp layout điều chỉnh để không che bàn phím.
-            stateVisible: bàn phím sẽ hiển thị nếu có EditText được focus.-->
+            <!--adjustResize: giúp layout điều chỉnh để không che bàn phím.
+                stateVisible: bàn phím sẽ hiển thị nếu có EditText được focus.-->
 
 
 

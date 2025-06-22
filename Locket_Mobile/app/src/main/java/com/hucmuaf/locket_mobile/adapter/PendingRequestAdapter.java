@@ -4,8 +4,11 @@ import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.hucmuaf.locket_mobile.R;
 import com.hucmuaf.locket_mobile.holder.PendingRequestViewHolder;
 import com.hucmuaf.locket_mobile.inteface.OnPendingRequestActionListener;
@@ -17,7 +20,6 @@ public class PendingRequestAdapter extends RecyclerView.Adapter<PendingRequestVi
 
     private final List<FriendRequest> pendingRequestsList;
     public OnPendingRequestActionListener listener;
-
 
     public PendingRequestAdapter(List<FriendRequest> pendingRequestsList, OnPendingRequestActionListener listener) {
         this.pendingRequestsList = pendingRequestsList;
@@ -39,6 +41,13 @@ public class PendingRequestAdapter extends RecyclerView.Adapter<PendingRequestVi
             FriendRequest request = pendingRequestsList.get(position);
             if (request != null) {
                 holder.bind(request);
+                holder.btnAccept.setOnClickListener(v -> {
+                    if (listener != null) listener.onAcceptRequest(request);
+                });
+
+                holder.btnReject.setOnClickListener(v -> {
+                    if (listener != null) listener.onRejectRequest(request);
+                });
             }
         }
     }
@@ -48,6 +57,7 @@ public class PendingRequestAdapter extends RecyclerView.Adapter<PendingRequestVi
         // Trả về số lượng lời mời kết bạn trong danh sách
         return pendingRequestsList != null ? pendingRequestsList.size() : 0;
     }
+
     @SuppressLint("NotifyDataSetChanged")
     public void updateData(List<FriendRequest> newRequests) {
         this.pendingRequestsList.clear();
