@@ -13,11 +13,14 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.hucmuaf.locket_mobile.R;
 import com.hucmuaf.locket_mobile.adapter.ImageAdapter;
 import com.hucmuaf.locket_mobile.adapter.ItemFriendAdapter;
 import com.hucmuaf.locket_mobile.adapter.PhotoAdapter;
+import com.hucmuaf.locket_mobile.inteface.OnImageClickListener;
 import com.hucmuaf.locket_mobile.modedb.Image;
 import com.hucmuaf.locket_mobile.modedb.User;
 import com.hucmuaf.locket_mobile.repo.ImageResponsitory;
@@ -49,11 +52,15 @@ public class AllImageActivity extends AppCompatActivity{
     //Firebase
     private FriendRequestService frService;
     private ImageResponsitory imageRepo;
+    private FirebaseAuth mAuth;
 
     private Set<String> listFriendIds;
     private List<User> listFriend;
     private List<Image> allPhotos;
-    private String currentUserId = "camt91990"; // Hoặc lấy từ session/login
+    private String currentUserId = null; //lấy từ session/login
+
+    private String friendId = "ALL";
+    private String friendName = "Tất cả bạn bè";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +69,10 @@ public class AllImageActivity extends AppCompatActivity{
         listFriendIds = new HashSet<>();
         listFriend = new ArrayList<>();
         allPhotos = new ArrayList<>();
-
+        //lấy ra user hiện tại
+        mAuth = FirebaseService.getInstance().getAuth();
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        currentUserId = firebaseUser != null ? firebaseUser.getUid() : null;
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.all_images);
@@ -84,33 +94,7 @@ public class AllImageActivity extends AppCompatActivity{
 
         TextView titleFriend = findViewById(R.id.title);
 
-        LinearLayout imageAllFriend = findViewById(R.id.image_all_friend);
         TextView tvName = findViewById(R.id.tvName);
-        // CHẶN SỰ KIỆN TỪ decor_caption TRUYỀN XUỐNG mask
-//        imageAllFriend.setOnClickListener(v -> {
-//            Log.e("Click", "Click rồi này");
-//            getAllImagePages(userID, new OnImagesLoadedListener() {
-//                @Override
-//                public void onSuccess(List<Image> images) {
-//                    pages.clear();
-//                    // Xử lý danh sách ảnh ở đây
-//                    pages = images;
-//                    titleFriend.setText(tvName.getText());
-//                    Log.e("React Activity", pages.toString());
-//                    PhotoAdapter adapter = new PhotoAdapter(ReactActivity.this, pages);
-//
-//                    imageView.setAdapter(adapter);
-//                    Log.e("API", images.toString());
-//                    maskView.setVisibility(View.GONE);
-//                    layout.setVisibility(View.GONE);
-//                }
-//
-//                @Override
-//                public void onFailure(String error) {
-//                    Log.e("API", "Error: " + error);
-//                }
-//            });
-//        });
 
         listFriendView = findViewById(R.id.list_friends);
         listFriendView.setLayoutManager(new LinearLayoutManager(this));
@@ -120,78 +104,54 @@ public class AllImageActivity extends AppCompatActivity{
         friendAdapter = new ItemFriendAdapter(AllImageActivity.this, listFriend, new ItemFriendAdapter.OnFriendClickListener() {
             @Override
             public void onFriendClick(User user) {
-//                getImageOfUser(user.getUserId(), new OnImagesLoadedListener() {
-//                    @Override
-//                    public void onSuccess(List<Image> images) {
-//                        // Xử lý danh sách ảnh ở đây
-//                        pages = images;
-//                        titleFriend.setText(user.getUserName());
-//                        Log.e("React Activity", pages.toString());
-//                        PhotoAdapter adapter = new PhotoAdapter(ReactActivity.this, pages);
-//                        imageView.setAdapter(adapter);
-//                        Log.e("API", images.toString());
-//                        maskView.setVisibility(View.GONE);
-//                        layout.setVisibility(View.GONE);
-//                    }
-//
-//                    @Override
-//                    public void onFailure(String error) {
-//                        Log.e("API", "Error: " + error);
-//                    }
-//                });
+                filterImagesBySenderId(user.getUserId());
+                friendId = user.getUserId();
+                friendName = user.getFullName();
+                titleFriend.setText(user.getFullName());
+                maskView.setVisibility(View.GONE);
+                layout.setVisibility(View.GONE);
             }
         });
         listFriendView.setAdapter(friendAdapter);
+
+        //Khi bấm tất cả bạn bè thì hiển thị lại toàn bộ ảnh
+        LinearLayout layoutAllFriend = findViewById(R.id.image_all_friend);
+        layoutAllFriend.setOnClickListener(v -> {
+            imageAdapter.updateList(allPhotos);
+            titleFriend.setText("Tất cả bạn bè");
+            friendId = "ALL";
+            friendName = "Tất cả bạn bè";
+            maskView.setVisibility(View.GONE);
+            layout.setVisibility(View.GONE);
+        });
 
         //Xử lý hiển thị lưới ảnh
         photoGrid = findViewById(R.id.photo_grid);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         photoGrid.setLayoutManager(layoutManager);
 
-//        listFriendView = findViewById(R.id.list_friends);
-//        listFriendView.setLayoutManager(new LinearLayoutManager(this));
-//
-//        friendAdapter = new ItemFriendAdapter(this, listUser, new ItemFriendAdapter.OnFriendClickListener() {
-//            @Override
-//            public void onFriendClick(User user) {
-//                if (user.getUserId().equals("ALL")) {
-//                    // Hiện tất cả ảnh
-//                    imageAdapter.updateList(allPhotos);
-//                } else {
-//                    // Lọc theo senderId
-//                    filterImagesBySenderId(user.getUserId());
-//                }
-//
-//                // Ẩn danh sách bạn bè sau khi chọn
-//                findViewById(R.id.friends_board).setVisibility(View.GONE);
-//                findViewById(R.id.mask).setVisibility(View.GONE);
-//            }
-//        });
-//
-//        listFriendView.setAdapter(friendAdapter);
-//
-//        View maskView = findViewById(R.id.mask);
-//        LinearLayout layout = findViewById(R.id.friends_board);
-//
-//        ImageView down_toggle = findViewById(R.id.down_toggle);
-//
-//        down_toggle.setOnClickListener(v ->{
-//            maskView.setVisibility(View.VISIBLE);
-//            layout.setVisibility(View.VISIBLE);
-//        });
-//
-//        maskView.setOnClickListener(e ->{
-//            maskView.setVisibility(View.GONE);
-//            layout.setVisibility(View.GONE);
-//        });
-
-//        imageAdapter = new ImageAdapter(this, allPhotos, photo -> {
-//            Intent intent = new Intent(AllImageActivity.this, ReactActivity.class);
-//            intent.putExtra("photo", new Gson().toJson(photo)); // Truyền sang chi tiết
-//            startActivity(intent);
-//        });
+        imageAdapter = new ImageAdapter(this, allPhotos, new OnImageClickListener() {
+            @Override
+            public void onImageClick(Image image) {
+                Intent intent = new Intent(AllImageActivity.this, PageComponentActivity.class);
+                intent.putExtra("userId", currentUserId);
+                intent.putExtra("imageId", image.getImageId()); // ảnh cần hiển thị
+                intent.putExtra("friendId", friendId);
+                intent.putExtra("friendName", friendName);
+                intent.putExtra("pageIndex", 1); // chuyển sang trang react
+                startActivity(intent);
+            }
+        });
 
         photoGrid.setAdapter(imageAdapter);
+
+        //Khi nhấn vào nút chụp ở bottomBar thì chuyển sang home page
+        View take = findViewById(R.id.take);
+        take.setOnClickListener(v -> {
+            Intent intent = new Intent(AllImageActivity.this, PageComponentActivity.class);
+            startActivity(intent);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        });
 
         loadListFriendID();
         loadListUser();
@@ -205,13 +165,6 @@ public class AllImageActivity extends AppCompatActivity{
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     listFriend.clear();
-                    // Thêm mục "Tất cả bạn bè"
-//                    User allUser = new User();
-//                    allUser.setUserId("ALL");
-//                    allUser.setFullName("Tất cả bạn bè");
-//                    allUser.setUrlAvatar("@mipmap/groups");
-//                    listFriend.add(allUser);
-
                     listFriend.addAll(response.body());
 
                     //Thêm mục "Tôi"
