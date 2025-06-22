@@ -319,19 +319,19 @@ public class ChatActivity extends AppCompatActivity {
                 Log.d("WebSocket", "Sent: " + jsonObject.toString());
             }
             if (api != null) {
-                api.sendMessage(new Message(currentUserId, otherUserId, message.getContent(), System.currentTimeMillis(), "CHAT"))
+//                api.sendMessage(new Message(currentUserId, otherUserId, message.getContent(), System.currentTimeMillis(), "CHAT"))
 //                api.sendMessage(currentUserId, otherUserId, message.getContent())
-                        .enqueue(new retrofit2.Callback<Void>() {
-                            @Override
-                            public void onResponse(retrofit2.Call<Void> call, retrofit2.Response<Void> response) {
-                                Log.d("API", "Message sent successfully");
-                            }
-
-                            @Override
-                            public void onFailure(retrofit2.Call<Void> call, Throwable t) {
-                                Log.e("API", "Failed to send message: " + t.getMessage());
-                            }
-                        });
+//                        .enqueue(new retrofit2.Callback<Void>() {
+//                            @Override
+//                            public void onResponse(retrofit2.Call<Void> call, retrofit2.Response<Void> response) {
+//                                Log.d("API", "Message sent successfully");
+//                            }
+//
+//                            @Override
+//                            public void onFailure(retrofit2.Call<Void> call, Throwable t) {
+//                                Log.e("API", "Failed to send message: " + t.getMessage());
+//                            }
+//                        });
             }
         } catch (Exception e) {
             Log.e("WebSocket", "Error sending message", e);
