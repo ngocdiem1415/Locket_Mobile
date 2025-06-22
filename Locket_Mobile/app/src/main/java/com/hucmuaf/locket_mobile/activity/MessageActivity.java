@@ -80,8 +80,12 @@ public class MessageActivity extends AppCompatActivity {
                     if (response.isSuccessful() && response.body() != null) {
                         List<User> friendList = response.body();
                         for (User user : friendList) {
-                            listFriend.add(user.getUserId());
-                            Log.d("Friend", "Tên: " + user.getFullName());
+                            if (user != null) {
+                                listFriend.add(user.getUserId());
+                                Log.d("Friend", "Tên: " + user.getFullName());
+                            } else {
+                                Log.w("MessageActivity", "User is null");
+                            }
                         }
                     } else {
                         Log.e("Friend", "Lỗi response: " + response.code());
