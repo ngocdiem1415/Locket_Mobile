@@ -26,7 +26,7 @@ public class ItemFriendAdapter extends RecyclerView.Adapter<ItemFriendViewHolder
     private List<User> itemList;
     private OnFriendClickListener listener;
 
-    public interface OnFriendClickListener{
+    public interface OnFriendClickListener {
         void onFriendClick(User user);
     }
 
@@ -37,7 +37,7 @@ public class ItemFriendAdapter extends RecyclerView.Adapter<ItemFriendViewHolder
         this.listener = listener;
     }
 
-    public void updateList(List<User> newList){
+    public void updateList(List<User> newList) {
         itemList = newList;
         notifyDataSetChanged();
     }
@@ -53,6 +53,7 @@ public class ItemFriendAdapter extends RecyclerView.Adapter<ItemFriendViewHolder
     @Override
     public void onBindViewHolder(@NonNull ItemFriendViewHolder holder, int position) {
         User u = itemList.get(position);
+        Log.d("ITem Friend Adapter", itemList.toString());
         holder.bind(u, listener);
         String imageName = u.getUrlAvatar();
 
@@ -74,7 +75,6 @@ public class ItemFriendAdapter extends RecyclerView.Adapter<ItemFriendViewHolder
 //                .error(R.drawable.default_img) // ảnh khi load lỗi
 //                .into(holder.getIvIcon());
         holder.getTvName().setText(u.getFullName());
-        Log.e("ImageError", u.getFullName());
     }
 
     @Override

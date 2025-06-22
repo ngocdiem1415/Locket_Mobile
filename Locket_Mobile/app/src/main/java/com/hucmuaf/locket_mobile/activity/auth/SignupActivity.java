@@ -1,3 +1,4 @@
+
 package com.hucmuaf.locket_mobile.activity.auth;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
@@ -44,6 +45,7 @@ public class SignupActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseDatabase database;
     private String userId;
+    private String idToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,12 +132,11 @@ public class SignupActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         String userId = firebaseUser != null ? firebaseUser.getUid() : null;
-                        Log.e(TAG, "Đăng kí thành công: " + userId);
 
                         // lấy token của phien đăng nhập hiện tại
                         firebaseUser.getIdToken(true).addOnCompleteListener(tokenTask -> {
                             if (tokenTask.isSuccessful()) {
-                                String idToken = tokenTask.getResult().getToken();
+                                idToken = tokenTask.getResult().getToken();
 
                                 ///Gửi token lên backend nếu muốn
                                 AuthManager.verifyToken(this, userId, idToken, new AuthManager.AuthCallback() {
@@ -165,7 +166,7 @@ public class SignupActivity extends AppCompatActivity {
                         user.put("userName", userName);
                         user.put("password", hashPwd(password));
                         user.put("phoneNumber", phoneNumber);
-                        user.put("avatar", "https://res.cloudinary.com/dwjztnzgv/image/upload/v1750495440/avatar_knqsmw.jpg");
+                        user.put("urlAvatar", "https://res.cloudinary.com/dwjztnzgv/image/upload/v1750495440/avatar_knqsmw.jpg");
                         user.put("userId", userName);
 
                         database.getReference("users").child(userId)
@@ -173,6 +174,7 @@ public class SignupActivity extends AppCompatActivity {
                                 .addOnCompleteListener(dbTask -> {
                                     if (dbTask.isSuccessful()) {
                                         toast("Đăng ký thành công");
+                                        Log.e(TAG, "Đăng kí thành công: " + userId + " - Token: " + idToken);
                                         Intent intent = new Intent(SignupActivity.this, InfoActivity.class);
                                         startActivity(intent);
                                         finish();

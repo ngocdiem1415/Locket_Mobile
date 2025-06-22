@@ -1,5 +1,6 @@
 package com.hucmuaf.locket_mobile.repo;
 
+import android.service.autofill.FillRequest;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.hucmuaf.locket_mobile.inteface.onMessageLoaded;
+import com.hucmuaf.locket_mobile.model.FriendRequest;
 import com.hucmuaf.locket_mobile.model.Message;
 import com.hucmuaf.locket_mobile.service.FirebaseService;
 
@@ -41,6 +43,7 @@ public class MessageRepository implements onMessageLoaded {
 
                     if (userId.equals(sender)) {
                         receiverIds.add(receiver);
+                        receiverIds.add(userId);
                         relatedMessages.add(message);
                     } else if (userId.equals(receiver)) {
                         receiverIds.add(sender);
@@ -69,6 +72,42 @@ public class MessageRepository implements onMessageLoaded {
     public void onFailure(Exception e) {
 
     }
+
+//    public void getAllFriendWithUserId(String userId, onMessageLoaded callback) {
+//        db.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                db.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                        Set<String> userSet = new HashSet<>();
+//                        List<Message> messages = new ArrayList<>();
+//                        for (DataSnapshot snap : snapshot.getChildren()) {
+//                            Message message = snap.getValue(Message.class);
+//                            FriendRequest friendRequest = snap.getValue(FriendRequest.class);
+//                            if (message == null && friendRequest == null) continue;
+//                            String friendId = friendRequest.getSenderId().equals(userId) ? friendRequest.getReceiverId() : friendRequest.getSenderId();
+//                            userSet.add(friendId);
+//                            messages.add(message);
+//                        }
+//                        callback.onSuccess(messages);
+//                        Log.d("MessageRepository", "Unique all friend of userIds:" + userSet);
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError error) {
+//
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                callback.onFailure(error.toException());
+//                Log.e("MessageRepository", "Failed to load all friend: " + error.getMessage());
+//            }
+//        });
+//    }
 
     public void getLastMessageWithUserId(String userId, onMessageLoaded callback) {
         db.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -111,7 +150,8 @@ public class MessageRepository implements onMessageLoaded {
         });
     }
 
-    public void getMessageBetweenUserWithReceiver(String userId, String receiverId, onMessageLoaded callback) {
+    public void getMessageBetweenUserWithReceiver(String userId, String
+            receiverId, onMessageLoaded callback) {
         db.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

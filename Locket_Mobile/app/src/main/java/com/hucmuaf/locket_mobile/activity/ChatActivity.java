@@ -1,5 +1,6 @@
 package com.hucmuaf.locket_mobile.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
 import com.hucmuaf.locket_mobile.R;
 import com.hucmuaf.locket_mobile.adapter.ChatMessageAdapter;
+import com.hucmuaf.locket_mobile.adapter.MessageAdapter;
 import com.hucmuaf.locket_mobile.inteface.onMessageLoaded;
 import com.hucmuaf.locket_mobile.model.Message;
 import com.hucmuaf.locket_mobile.model.MessageType;
@@ -50,6 +53,7 @@ public class ChatActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private MessageListAPIService apiService;
     private ImageView avt;
+    private Context context;
     private TextView name;
     private TextView timestamp;
     private EditText editTextMessage;
@@ -212,8 +216,12 @@ public class ChatActivity extends AppCompatActivity {
                     } else {
                         Log.e(TAG, "Name TextView is null");
                     }
-
                     if (avtUrl != null && !avtUrl.isEmpty() && avt != null) {
+                        Glide.with(ChatActivity.this)
+                                .load(avtUrl)
+                                .circleCrop()
+                                .error(R.drawable.default_avatar)
+                                .into(avt);
                         Log.d(TAG, "Avatar URL available: " + avtUrl);
                     }
 
@@ -242,7 +250,7 @@ public class ChatActivity extends AppCompatActivity {
                 .build();
 
         Request request = new Request.Builder()
-                .url("ws://172.16.1.37:8080/ws")
+                .url("ws://192.168.0.113:8080/ws")
 //                .url("ws://192.168.0.112:8080/ws")
                 .build();
 
@@ -331,25 +339,6 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
-//    private void sendWebSocketMessage(Message message) {
-//        try {
-//            JSONObject jsonObject = new JSONObject();
-//            jsonObject.put("senderId", message.getSenderId());
-//            jsonObject.put("receiverId", message.getReceiverId());
-//            jsonObject.put("content", message.getContent());
-////            jsonObject.put("imageUrl", message.getImageUrl());
-////            jsonObject.put("caption", message.getCaption());
-//            jsonObject.put("timestamp", message.getTimestamp());
-//            jsonObject.put("type", message.getType().toString());
-//
-//            if (webSocket != null) {
-//                webSocket.send(jsonObject.toString());
-//                Log.d("WebSocket", "Sent: " + jsonObject.toString());
-//            }
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     private void sendMessage(String content) {
         Message newMessage = new Message(currentUserId, otherUserId, content, System.currentTimeMillis(), "JOIN");

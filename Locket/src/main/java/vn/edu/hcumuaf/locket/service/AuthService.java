@@ -19,6 +19,8 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.System.Logger.Level.DEBUG;
+
 @Service
 public class AuthService {
 
@@ -92,9 +94,11 @@ public class AuthService {
         return Base64.getEncoder().encodeToString(rawPassword.getBytes());
     }
 
+    //xác thực token để return về bên fe
     public ResponseEntity<?> verifyToken(String userId, String authHeader) throws IOException, FirebaseAuthException {
        try {
-           if (!authHeader.startsWith("Bearer ")) {
+
+           if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                        .body("Token không hợp lệ: Thiếu tiền tố Bearer");
            }
@@ -118,5 +122,25 @@ public class AuthService {
            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                    .body("Token không hợp lệ hoặc đã hết hạn: " + e.getMessage());
        }
+    }
+
+    //xác thực token bên be
+    public FirebaseToken verifyAndExtractToken(String uid, String authHeader) throws FirebaseAuthException, IOException {
+        System.out.println(uid);
+        System.out.println(authHeader);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Không tồn tại token hoặc sai định dạng.");
+
+    }
+        String token = authHeader.substring(7);
+
+        // Giải mã token từ Firebase
+        FirebaseToken decodedToken = firebaseConfig.firebaseAuth().verifyIdToken(token);
+
+        // So sánh uid trong token với uid ở header
+        if (!decodedToken.getUid().equals(uid)) {
+            throw new SecurityException("UID trong token không khớp với userId yêu cầu");
+        }
+        return decodedToken;
     }
 }

@@ -1,12 +1,14 @@
 package com.hucmuaf.locket_mobile.service;
 
 import com.hucmuaf.locket_mobile.modedb.Image;
-import com.hucmuaf.locket_mobile.modedb.SaveImageResponse;
-import com.hucmuaf.locket_mobile.repo.UploadResponse;
+import com.hucmuaf.locket_mobile.modedb.SaveResponse;
+
 import java.util.List;
-import java.util.Map;
+
+import com.hucmuaf.locket_mobile.modedb.UploadImageResponse;
+import com.hucmuaf.locket_mobile.repo.UploadResponse;
 import okhttp3.MultipartBody;
-import okhttp3.ResponseBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -15,6 +17,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ImageService {
     @GET("api/images/{imageId}")
@@ -27,12 +30,18 @@ public interface ImageService {
     Call<List<Image>> getImageOfUser(@Path("userId") String userId);
 
     @POST("api/images/save")
-    Call<SaveImageResponse> saveImage(@Body Image image);
+    Call<SaveResponse> saveImage(@Body Image image);
+
+    @GET("api/images/pair")
+    Call<List<Image>> getImageBySenderIdAndReceiverId(@Query("senderId") String senderId, @Query("receiverId") String receiverId);
 
     @Multipart
-    @POST("api/upload")
+    @POST("api/upload/image")
     Call<UploadResponse> uploadImage(
+            @Header("userId") String uid,
             @Header("Authorization") String idToken,
-            @Part MultipartBody.Part image);
+            @Part MultipartBody.Part image
+    );
+
 
 }

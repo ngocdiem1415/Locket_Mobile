@@ -4,8 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.hcumuaf.locket.dto.UserProfileRequest;
+import vn.edu.hcumuaf.locket.model.entity.User;
 import vn.edu.hcumuaf.locket.service.FriendService;
 import vn.edu.hcumuaf.locket.service.UserService;
+
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/user")
@@ -23,5 +26,13 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Lỗi khi cập nhật: " + e.getMessage());
         }
+    }   
+
+    @GetMapping("/find/{userId}")
+    public CompletableFuture<ResponseEntity<User>> findUserById(@PathVariable String userId) {
+        return userService.findUserById(userId)
+                .thenApply(ResponseEntity::ok)
+                .exceptionally(ex -> ResponseEntity.internalServerError().build());
     }
+
 }

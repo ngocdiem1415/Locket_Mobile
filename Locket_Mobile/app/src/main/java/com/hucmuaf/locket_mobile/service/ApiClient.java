@@ -4,7 +4,9 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.hucmuaf.locket_mobile.activity.PageComponentActivity;
 import com.hucmuaf.locket_mobile.inteface.FriendListApiService;
+import com.hucmuaf.locket_mobile.modedb.UploadImageResponse;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -23,7 +25,9 @@ public class ApiClient {
 
     private static FriendListApiService friendListApiService = null;
     private static MessageListAPIService messageListAPIService;
+//    private static UploadImageService uploadImageService;
     private static ImageService imageService;
+    private static ReactionService reactionService;
     private static UserService userService;
     private static AuthService authService;
     //service lấy ra danh sách id bạn bè, danh sách user là bạn bè của current user
@@ -45,6 +49,18 @@ public class ApiClient {
         return retrofit;
     }
 
+    public static ImageService getImageService(){
+        if(imageService == null) {
+            imageService = getClient().create(ImageService.class);
+        }
+        return imageService;
+    }
+//    public static UploadImageService getUploadImageService() {
+//        if (uploadImageService == null) {
+//            uploadImageService = getClient().create(UploadImageService.class);
+//        }
+//        return uploadImageService;
+//    }
     // retrofit với AuthInterceptor để tự động thêm token vào header
     // Retrofit có token – cho các API quan trọng (profile, cập nhật,...)
     public static Retrofit getAuthClient(Context context) {
@@ -79,9 +95,13 @@ public class ApiClient {
             messageListAPIService = getClient().create(MessageListAPIService.class);
         }
         return messageListAPIService;
-
     }
-
+    public static ReactionService getReactionService() {
+        if (reactionService == null) {
+            reactionService = getClient().create(ReactionService.class);
+        }
+        return reactionService;
+    }
     public static ImageService getImageApiService() {
         if (imageService == null) {
             imageService = getClient().create(ImageService.class);
@@ -124,7 +144,7 @@ public class ApiClient {
         }
         return authService;
     }
-      
+
     public static FriendRequestService getFriendRequestService(){
         if (friendRequestService == null){
             friendRequestService = getClient().create(FriendRequestService.class);
