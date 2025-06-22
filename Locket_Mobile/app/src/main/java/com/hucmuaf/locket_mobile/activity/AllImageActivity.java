@@ -185,11 +185,11 @@ public class AllImageActivity extends AppCompatActivity{
 //            layout.setVisibility(View.GONE);
 //        });
 
-        imageAdapter = new ImageAdapter(this, allPhotos, photo -> {
-            Intent intent = new Intent(AllImageActivity.this, ReactActivity.class);
-            intent.putExtra("photo", new Gson().toJson(photo)); // Truyền sang chi tiết
-            startActivity(intent);
-        });
+//        imageAdapter = new ImageAdapter(this, allPhotos, photo -> {
+//            Intent intent = new Intent(AllImageActivity.this, ReactActivity.class);
+//            intent.putExtra("photo", new Gson().toJson(photo)); // Truyền sang chi tiết
+//            startActivity(intent);
+//        });
 
         photoGrid.setAdapter(imageAdapter);
 

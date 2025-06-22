@@ -65,6 +65,8 @@ public class MessageActivity extends AppCompatActivity {
                     for (Message message : messages) {
                         if (message.getReceiverId() != null) {
                             tempReceiverIds.add(message.getReceiverId());
+                            tempReceiverIds.add(message.getSenderId());
+                            tempReceiverIds.remove(currentUserId);
                         }
                     }
                     receiverIds.addAll(tempReceiverIds);

@@ -15,7 +15,7 @@ public class ApiClient {
 //    private static final String BASE_URL = "http:/172.16.0.229:8080/"; // For testing
 //     private static final String BASE_URL = "http:/172.16.1.37:8080/"; // For testing
 
-    private static final String BASE_URL = "http://10.50.25.101:8080/"; // For real device, your computer's IP
+    private static final String BASE_URL = "http://172.16.1.37:8080/"; // For real device, your computer's IP
     // private static final String BASE_URL = "http://localhost:8080/"; // For testing
 
 

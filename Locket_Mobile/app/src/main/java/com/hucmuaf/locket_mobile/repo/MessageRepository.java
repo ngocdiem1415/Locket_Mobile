@@ -41,6 +41,7 @@ public class MessageRepository implements onMessageLoaded {
 
                     if (userId.equals(sender)) {
                         receiverIds.add(receiver);
+                        receiverIds.add(userId);
                         relatedMessages.add(message);
                     } else if (userId.equals(receiver)) {
                         receiverIds.add(sender);
