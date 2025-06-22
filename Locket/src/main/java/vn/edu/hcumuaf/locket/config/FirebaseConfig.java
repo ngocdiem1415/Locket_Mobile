@@ -31,7 +31,7 @@ public class FirebaseConfig {
 
     private void initializeFirebaseApp() throws IOException {
         if (FirebaseApp.getApps().isEmpty()) {
-            InputStream serviceAccount = new ClassPathResource("modis-admin-keys.json").getInputStream();
+            InputStream serviceAccount = new ClassPathResource("FIREBASE_CREDENTIALS_JSON").getInputStream();
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .setDatabaseUrl("https://modis-8f5f6-default-rtdb.firebaseio.com")

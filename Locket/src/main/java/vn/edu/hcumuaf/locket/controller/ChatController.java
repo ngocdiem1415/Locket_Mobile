@@ -30,11 +30,11 @@ public class ChatController {
     @MessageMapping("/chat.register")
     public void register(@Payload Message chatMessage, SimpMessageHeaderAccessor headerAccessor) {
         String senderId = chatMessage.getSenderId();
-        log.info("Registering user with senderId: {}, sessionId: {}", senderId, headerAccessor.getSessionId());
+//        log.info("Registering user with senderId: {}, sessionId: {}", senderId, headerAccessor.getSessionId());
 
         if (senderId != null && !senderId.trim().isEmpty()) {
             headerAccessor.getSessionAttributes().put("username", senderId);
-            log.info("Session attributes set: {}", headerAccessor.getSessionAttributes());
+//            log.info("Session attributes set: {}", headerAccessor.getSessionAttributes());
 
             Message joinMessage = new Message();
             joinMessage.setType(Message.MessageType.JOIN);
@@ -47,7 +47,7 @@ public class ChatController {
                     chatMessage
             );
         } else {
-            log.warn("Invalid senderId received in /chat.register: {}", senderId);
+//            log.warn("Invalid senderId received in /chat.register: {}", senderId);
         }
     }
 
