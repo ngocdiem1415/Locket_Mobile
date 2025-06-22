@@ -80,6 +80,5 @@ dependencies {
     implementation ("com.vanniktech:emoji-google:0.16.0")
     implementation ("com.vanniktech:emoji:0.16.0")
 
-
 }
 
