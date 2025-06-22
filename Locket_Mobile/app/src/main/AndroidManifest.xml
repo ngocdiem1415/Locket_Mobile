@@ -53,9 +53,6 @@
             <!--adjustResize: giúp layout điều chỉnh để không che bàn phím.
                 stateVisible: bàn phím sẽ hiển thị nếu có EditText được focus.-->
 
-
-        <activity android:name=".activity.TakeActivity" />
-        <activity android:name=".activity.ReactActivity" />
         <activity android:name=".activity.auth.AllImageActivity" />
         <activity android:name=".activity.auth.InfoActivity" />
         <activity android:name=".activity.ShowImageActivity"/>

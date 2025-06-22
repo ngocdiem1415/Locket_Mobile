@@ -1,5 +1,7 @@
 package com.hucmuaf.locket_mobile.modedb;
 
+import androidx.annotation.NonNull;
+
 public class User {
 
     private String userId;
@@ -79,5 +81,11 @@ public class User {
 
     public void setUrlAvatar(String urlAvatar) {
         this.urlAvatar = urlAvatar;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return  this.userId + ","+ this.userName+"," +this.fullName+","+ this.email+","+this.phoneNumber+","+this.urlAvatar+","+this.password;
     }
 }

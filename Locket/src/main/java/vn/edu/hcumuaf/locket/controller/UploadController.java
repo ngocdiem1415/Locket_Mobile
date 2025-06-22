@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import vn.edu.hcumuaf.locket.model.entity.UploadImageResponse;
 
 import java.io.IOException;
 import java.util.Map;
@@ -24,7 +25,7 @@ public class UploadController {
     public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
         try {
             Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-            return ResponseEntity.ok(Map.of("url", (String) uploadResult.get("secure_url")));
+            return ResponseEntity.ok(new UploadImageResponse((String) uploadResult.get("secure_url")));
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Lỗi upload: " + e.getMessage());
         }
