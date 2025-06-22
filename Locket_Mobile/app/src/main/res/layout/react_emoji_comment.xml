@@ -112,8 +112,7 @@
             android:layout_marginBottom="110dp"
             android:background="@drawable/circle_border"
             android:elevation="0dp"
-            android:gravity="center"
-            android:visibility="gone">
+            android:gravity="center">
 
             <EditText
                 android:id="@+id/comment_edit_text"

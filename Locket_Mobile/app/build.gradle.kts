@@ -77,14 +77,8 @@ dependencies {
     // Cloudinary
     implementation ("com.cloudinary:cloudinary-android:2.2.0")
 
-<<<<<<< HEAD
     implementation ("com.vanniktech:emoji-google:0.16.0")
     implementation ("com.vanniktech:emoji:0.16.0")
-=======
-    // glide load url from internet
-    implementation ("com.github.bumptech.glide:glide:4.15.1")
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
->>>>>>> 3819b1f1a8ec1b9d9b3d28e5c7b116a9f2fef7bd
 
 
 }
