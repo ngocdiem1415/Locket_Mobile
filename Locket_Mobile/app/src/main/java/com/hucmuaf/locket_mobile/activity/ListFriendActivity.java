@@ -29,6 +29,7 @@ import com.hucmuaf.locket_mobile.inteface.FriendListApiService;
 import com.hucmuaf.locket_mobile.inteface.OnFriendActionListener;
 import com.hucmuaf.locket_mobile.inteface.OnPendingRequestActionListener;
 import com.hucmuaf.locket_mobile.inteface.OnSentRequestActionListener;
+import com.hucmuaf.locket_mobile.inteface.OnAddFriendClickListener;
 import com.hucmuaf.locket_mobile.model.FriendListResponse;
 import com.hucmuaf.locket_mobile.model.User;
 import com.hucmuaf.locket_mobile.model.FriendRequest;
@@ -37,6 +38,7 @@ import com.hucmuaf.locket_mobile.dto.ShareRequest;
 import com.hucmuaf.locket_mobile.adapter.FriendAdapter;
 import com.hucmuaf.locket_mobile.adapter.PendingRequestAdapter;
 import com.hucmuaf.locket_mobile.adapter.SentRequestAdapter;
+import com.hucmuaf.locket_mobile.adapter.SearchUserAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,19 +48,22 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ListFriendActivity extends AppCompatActivity {
+public class ListFriendActivity extends AppCompatActivity implements OnAddFriendClickListener {
     private FriendListApiService apiService;
     private String currentUserId;
     private TextView friendCount;
     private RecyclerView friendsRecyclerView;
     private RecyclerView pendingRequestsRecyclerView;
     private RecyclerView sentRequestsRecyclerView;
+    private RecyclerView searchResultsRecyclerView;
     private FriendAdapter friendAdapter;
     private PendingRequestAdapter pendingRequestAdapter;
     private SentRequestAdapter sentRequestAdapter;
+    private SearchUserAdapter searchUserAdapter;
     private final List<User> friendsList = new ArrayList<>();
     private final List<FriendRequest> pendingRequestsList = new ArrayList<>();
     private final List<FriendRequest> sentRequestsList = new ArrayList<>();
+    private final List<User> searchResultsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +148,7 @@ public class ListFriendActivity extends AppCompatActivity {
         friendsRecyclerView = findViewById(R.id.friendsRecyclerView);
         pendingRequestsRecyclerView = findViewById(R.id.pendingRequestsRecyclerView);
         sentRequestsRecyclerView = findViewById(R.id.sentRequestsRecyclerView);
+        searchResultsRecyclerView = findViewById(R.id.searchResultsRecyclerView);
       
         searchFriend.addTextChangedListener(new TextWatcher() {
             @Override
@@ -191,6 +197,9 @@ public class ListFriendActivity extends AppCompatActivity {
         });
         sentRequestsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         sentRequestsRecyclerView.setAdapter(sentRequestAdapter);
+        searchUserAdapter = new SearchUserAdapter(this, searchResultsList, this);
+        searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        searchResultsRecyclerView.setAdapter(searchUserAdapter);
     }
 
     private void setupClickListeners() {
@@ -322,10 +331,11 @@ public class ListFriendActivity extends AppCompatActivity {
     // Tìm kiếm bạn bè realtime
     private void searchUsers(String query) {
         if (query.trim().isEmpty()) {
-            // Load lại danh sách bạn bè ban đầu từ Firebase
+            searchResultsRecyclerView.setVisibility(View.GONE);
             loadFriendList();
             return;
         }
+        
         SearchUserRequest request = new SearchUserRequest(query, currentUserId);
         Call<List<User>> call = apiService.searchUsers(request);
         call.enqueue(new Callback<List<User>>() {
@@ -333,40 +343,134 @@ public class ListFriendActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-// Cập nhật danh sách bạn bè với kết quả tìm kiếm
-                    friendsList.clear();
-                    friendsList.addAll(response.body());
-                    friendAdapter.notifyDataSetChanged();
+                    List<User> searchResults = response.body();
+                    filterSearchResults(searchResults);
                 } else {
+                    searchResultsList.clear();
+                    searchUserAdapter.notifyDataSetChanged();
+                    searchResultsRecyclerView.setVisibility(View.GONE);
                     Toast.makeText(ListFriendActivity.this, "Không tìm thấy kết quả", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
+                searchResultsList.clear();
+                searchUserAdapter.notifyDataSetChanged();
+                searchResultsRecyclerView.setVisibility(View.GONE);
                 Toast.makeText(ListFriendActivity.this, "Lỗi tìm kiếm: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    private void filterSearchResults(List<User> searchResults) {
+        Call<List<FriendRequest>> call = apiService.getSentRequests(currentUserId);
+        call.enqueue(new Callback<List<FriendRequest>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<FriendRequest>> call, @NonNull Response<List<FriendRequest>> response) {
+                List<User> filteredResults = new ArrayList<>();
+                
+                if (response.isSuccessful() && response.body() != null) {
+                    List<FriendRequest> sentRequests = response.body();
+                    
+                    for (User user : searchResults) {
+                        // Bỏ qua chính mình
+                        if (user.getUserId().equals(currentUserId)) {
+                            continue;
+                        }
+                        
+                        boolean shouldShow = true;
+                        for (FriendRequest request : sentRequests) {
+                            if ((request.getSenderId().equals(currentUserId) && request.getReceiverId().equals(user.getUserId())) ||
+                                (request.getReceiverId().equals(currentUserId) && request.getSenderId().equals(user.getUserId()))) {
+                                if (!"REJECTED".equals(request.getStatus()) && !"CANCELLED".equals(request.getStatus())) {
+                                    shouldShow = false;
+                                }
+                                break;
+                            }
+                        }
+                        
+                        if (shouldShow) {
+                            filteredResults.add(user);
+                        }
+                    }
+                } else {
+                    for (User user : searchResults) {
+                        if (!user.getUserId().equals(currentUserId)) {
+                            filteredResults.add(user);
+                        }
+                    }
+                }
+                
+                updateSearchResults(filteredResults);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<FriendRequest>> call, @NonNull Throwable t) {
+                List<User> filteredResults = new ArrayList<>();
+                for (User user : searchResults) {
+                    if (!user.getUserId().equals(currentUserId)) {
+                        filteredResults.add(user);
+                    }
+                }
+                updateSearchResults(filteredResults);
+            }
+        });
+    }
+
+    // Cập nhật kết quả tìm kiếm
+    @SuppressLint("NotifyDataSetChanged")
+    private void updateSearchResults(List<User> results) {
+        searchResultsList.clear();
+        searchResultsList.addAll(results);
+        searchUserAdapter.notifyDataSetChanged();
+        
+        if (results.isEmpty()) {
+            searchResultsRecyclerView.setVisibility(View.GONE);
+        } else {
+            searchResultsRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onAddFriendClick(User user) {
+        addFriend(user);
+    }
+
     // Thêm bạn bè
     private void addFriend(User user) {
         // Gửi lời mời kết bạn
-        FriendRequest request = new FriendRequest(currentUserId, user.getUserId(), null, null, System.currentTimeMillis());
+        FriendRequest request = new FriendRequest();
+        request.setSenderId(currentUserId);
+        request.setReceiverId(user.getUserId());
+        request.setStatus("PENDING");
+        request.setTimestamp(System.currentTimeMillis());
+        
         Call<String> call = apiService.sendFriendRequest(request);
         call.enqueue(new Callback<String>() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(ListFriendActivity.this, "Friend request sent!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ListFriendActivity.this, "Đã gửi lời mời kết bạn!", Toast.LENGTH_SHORT).show();
+                    // Ẩn user khỏi kết quả tìm kiếm
+                    searchResultsList.remove(user);
+                    searchUserAdapter.notifyDataSetChanged();
+                    
+                    // Ẩn RecyclerView nếu không còn kết quả
+                    if (searchResultsList.isEmpty()) {
+                        searchResultsRecyclerView.setVisibility(View.GONE);
+                    }
+                    
+                    loadSentRequests();
                 } else {
-                    Toast.makeText(ListFriendActivity.this, "Failed to send friend request", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ListFriendActivity.this, "Không thể gửi lời mời kết bạn", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(ListFriendActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ListFriendActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -34,12 +34,18 @@ public class SentRequestViewHolder extends RecyclerView.ViewHolder {
     @SuppressLint("SetTextI18n")
     public void bind(FriendRequest request) {
         // Hiển thị tên người nhận lời mời
-        if (request.getSenderName() != null) {
+        if (request.getSenderName() != null && !request.getSenderName().isEmpty()) {
             nameTextView.setText(request.getSenderName());
+        } else if (request.getSender() != null && request.getSender().getFullName() != null && !request.getSender().getFullName().isEmpty()) {
+            nameTextView.setText(request.getSender().getFullName());
+        } else if (request.getSender() != null && request.getSender().getUserName() != null) {
+            nameTextView.setText(request.getSender().getUserName());
         } else {
             nameTextView.setText("Unknown User");
         }
+        
         loadAvatarSafely(request);
+        
         // Xử lý sự kiện hủy lời mời
         cancelButton.setOnClickListener(v -> {
             if (listener != null) {
