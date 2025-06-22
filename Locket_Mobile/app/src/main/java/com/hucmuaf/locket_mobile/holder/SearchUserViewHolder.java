@@ -49,6 +49,10 @@ public class SearchUserViewHolder extends RecyclerView.ViewHolder {
 
         addFriendButton.setOnClickListener(v -> {
             if (listener != null) {
+                addFriendButton.setText("Đã gửi");
+                addFriendButton.setEnabled(false);
+                addFriendButton.setBackgroundResource(R.drawable.bg_gray_chip);
+                
                 listener.onAddFriendClick(user);
             }
         });

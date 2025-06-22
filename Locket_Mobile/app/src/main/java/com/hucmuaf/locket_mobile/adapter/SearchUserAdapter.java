@@ -18,8 +18,8 @@ import java.util.List;
 public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserViewHolder> {
     
     private List<User> userList;
-    private final Context context;
-    private final OnAddFriendClickListener listener;
+    private Context context;
+    private OnAddFriendClickListener listener;
 
     public SearchUserAdapter(Context context, List<User> userList, OnAddFriendClickListener listener) {
         this.context = context;
@@ -44,4 +44,5 @@ public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserViewHolder
     public int getItemCount() {
         return userList.size();
     }
+
 }

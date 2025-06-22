@@ -30,7 +30,7 @@ public interface FriendListApiService {
     
     // Gửi lời mời kết bạn
     @POST("api/friend-list/send-request")
-    Call<String> sendFriendRequest(@Body FriendRequest request);
+    Call<Void> sendFriendRequest(@Body FriendRequest request);
 
     // Chấp nhận lời mời kết bạn
     @PUT("api/friend-list/accept-request/{requestId}")
