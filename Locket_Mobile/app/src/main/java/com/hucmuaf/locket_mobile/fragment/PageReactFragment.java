@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.hucmuaf.locket_mobile.R;
+import com.hucmuaf.locket_mobile.activity.AllImageActivity;
 import com.hucmuaf.locket_mobile.adapter.ItemFriendAdapter;
 import com.hucmuaf.locket_mobile.adapter.PhotoAdapter;
 import com.hucmuaf.locket_mobile.listener.SwipeGestureListenerDown;
@@ -48,6 +50,9 @@ public class PageReactFragment extends Fragment {
     private List<Image> pages;
     private List<User> listFriend;
     private String userId = null;
+    private String initialImageId = null;
+    private String initialFriendId = null;
+    private String initialFriendName = null;
     private Context context;
     private Activity activity;
 
@@ -66,7 +71,10 @@ public class PageReactFragment extends Fragment {
 
         assert getArguments() != null;
         userId = getArguments().getString("userId");
-        Log.e("React Activity", String.valueOf(userId));
+        initialImageId = getArguments().getString("imageId"); //TRuyền thêm imageId để cuộn đến đúng ảnh
+        initialFriendId = getArguments().getString("friendId");
+        initialFriendName = getArguments().getString("friendName");
+        Log.e("React Activity", String.valueOf(userId) + "+ ImageId: " + String.valueOf(initialImageId));
 
         View maskView = view.findViewById(R.id.mask);
         LinearLayout layout = view.findViewById(R.id.friends_board);
@@ -83,6 +91,10 @@ public class PageReactFragment extends Fragment {
         });
 
         TextView titleFriend = view.findViewById(R.id.title);
+        if (initialFriendId != null){
+            titleFriend.setText(initialFriendName);
+        }
+
 
         LinearLayout imageAllFriend = view.findViewById(R.id.image_all_friend);
         TextView tvName = view.findViewById(R.id.tvName);
@@ -212,8 +224,17 @@ public class PageReactFragment extends Fragment {
 
                 Log.e("React Activity", pages.toString());
                 PhotoAdapter adapter = new PhotoAdapter(context, pages);
-
                 imageView.setAdapter(adapter);
+
+                // Scroll đến đúng ảnh
+                if (initialImageId != null) {
+                    for (int i = 0; i < pages.size(); i++) {
+                        if (initialImageId.equals(pages.get(i).getImageId())) {
+                            imageView.setCurrentItem(i, false);
+                            break;
+                        }
+                    }
+                }
                 Log.e("API", images.toString());
             }
 
@@ -227,6 +248,15 @@ public class PageReactFragment extends Fragment {
         take.setOnClickListener(v -> {
             ViewPager2 viewPager = requireActivity().findViewById(R.id.main_viewpager);
             viewPager.setCurrentItem(0, true); // trở lại trang đầu tiên.
+        });
+
+        //Hiển thị trang lưới ảnh khi bấm vào nút flash
+        ImageView flash = view.findViewById(R.id.flash);
+        flash.setOnClickListener(v ->{
+            Log.e("CHUYển SANG", "All Image");
+            Intent intent = new Intent(requireContext(), AllImageActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
         });
     }
 
