@@ -130,6 +130,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "signInWithEmail:success");
                         Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         String userId = firebaseUser != null ? firebaseUser.getUid() : null;
                         if (userId == null) {
@@ -147,6 +148,8 @@ public class LoginActivity extends AppCompatActivity {
                                     public void onSuccess(String userId) {
                                         // Lưu UID vào TokenManager
                                         TokenManager.saveUid(LoginActivity.this, userId);
+                                        TokenManager.saveToken(LoginActivity.this ,idToken);
+                                        Log.e(TAG, "Xác thực token thành công: " + userId + " - Token: " + idToken);
 
                                         Intent intent = new Intent(LoginActivity.this, PageComponentActivity.class);
                                         intent.putExtra("userId", userId);

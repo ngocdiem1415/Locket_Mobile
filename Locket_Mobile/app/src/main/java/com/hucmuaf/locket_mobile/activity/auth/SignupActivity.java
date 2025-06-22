@@ -130,6 +130,7 @@ public class SignupActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         String userId = firebaseUser != null ? firebaseUser.getUid() : null;
+                        Log.e(TAG, "Đăng kí thành công: " + userId);
 
                         // lấy token của phien đăng nhập hiện tại
                         firebaseUser.getIdToken(true).addOnCompleteListener(tokenTask -> {
@@ -142,10 +143,8 @@ public class SignupActivity extends AppCompatActivity {
                                     public void onSuccess(String userId) {
                                         // Lưu UID vào TokenManager
                                         TokenManager.saveUid(SignupActivity.this, userId);
-
-                                        Intent intent = new Intent(SignupActivity.this, InfoActivity.class);
-                                        startActivity(intent);
-                                        finish();
+                                        TokenManager.saveToken(SignupActivity.this, idToken);
+                                        Log.e(TAG, "Xác thực token thành công: " + userId + " - Token: " + idToken);
                                     }
 
                                     @Override
@@ -175,7 +174,6 @@ public class SignupActivity extends AppCompatActivity {
                                     if (dbTask.isSuccessful()) {
                                         toast("Đăng ký thành công");
                                         Intent intent = new Intent(SignupActivity.this, InfoActivity.class);
-                                        intent.putExtra("userId", userName);
                                         startActivity(intent);
                                         finish();
                                     } else {

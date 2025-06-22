@@ -29,10 +29,10 @@ public class AuthController {
         return authService.register(request);
     }
 
-    @PostMapping("/login")     // Đăng nhập người dùng mới
-    public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
-        return authService.login(body);
-    }
+//    @PostMapping("/login")     // Đăng nhập người dùng mới
+//    public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
+//        return authService.login(body);
+//    }
 
     @PostMapping("/{userId}/verifyToken")
     // xac thưc token của người dùng đăng nhập hoặc đăng kí

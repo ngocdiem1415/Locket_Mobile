@@ -1,5 +1,6 @@
 package com.hucmuaf.locket_mobile.activity.auth;
 
+import static android.util.Log.DEBUG;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.content.Intent;
@@ -111,7 +112,7 @@ public class InfoActivity extends AppCompatActivity {
                 public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         imageUrl = response.body().getUrl();
-                        Log.d("Upload", "URL ảnh: " + imageUrl);
+                        Log.d("Upload", "URL ảnh: " + imageUrl + " - Token: " + token);
 
                         Glide.with(InfoActivity.this).load(imageUrl).circleCrop().into(imgAvatar);
 
@@ -133,6 +134,7 @@ public class InfoActivity extends AppCompatActivity {
                                         public void onSuccess(String userId) {
                                             // Lưu UID vào TokenManager
                                             TokenManager.saveUid(InfoActivity.this, userId);
+                                            Log.e(TAG, "Xác thực token thành công: " + userId);
 
                                             Intent intent = new Intent(InfoActivity.this, PageComponentActivity.class);
                                             intent.putExtra("userId", userId);
