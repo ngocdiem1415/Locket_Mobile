@@ -19,6 +19,7 @@ public class AuthManager {
         void onFailure(String message);
     }
 
+    // ham verify khi người dùng đăng nhập
     public static void verifyToken(Context context, String uId, String idToken, AuthCallback callback) {
         AuthService authService = ApiClient.getAuthService();
         String authHeader = "Bearer " + idToken;

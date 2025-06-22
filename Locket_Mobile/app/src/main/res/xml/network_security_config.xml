@@ -34,6 +34,8 @@
         <domain includeSubdomains="true">192.168.142.193</domain>
         <domain includeSubdomains="true">172.16.1.19</domain>
         <domain includeSubdomains="true">10.50.25.101</domain>
+        <domain includeSubdomains="true">172.16.1.38</domain>
+
     </domain-config>
     <base-config cleartextTrafficPermitted="true">
         <trust-anchors>
