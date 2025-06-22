@@ -119,6 +119,7 @@ public class InfoActivity extends AppCompatActivity {
                         imgAvatar.setVisibility(View.VISIBLE);
                         avatarLottie.setVisibility(View.GONE);
                     } else {
+                        // kiểm tra lại token nếu hết hạn thì tạo lại cái mới
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
                             user.getIdToken(true).addOnCompleteListener(task -> {
