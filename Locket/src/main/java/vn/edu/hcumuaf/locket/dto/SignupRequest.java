@@ -1,33 +1,20 @@
-package vn.edu.hcumuaf.locket.model.entity;
+package vn.edu.hcumuaf.locket.dto;
 
+public class SignupRequest {
+    private String userId;
+    private String userName;
+    private String email;
+    private String phoneNumber;
+    private String password;
 
-public class User {
-   private String userId;
-   
-   private String userName;
-   
-   private String fullName;
-   
-   private String email;
-   
-   private String phoneNumber;
-   
-   private String urlAvatar;
-   
-   private String password;
-
-    public User() {
-        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+    public SignupRequest() {
     }
 
-
-    public User(String userId, String userName, String fullName, String email, String phoneNumber, String urlAvatar, String password) {
+    public SignupRequest(String userId, String userName,String email, String phoneNumber, String password) {
         this.userId = userId;
         this.userName = userName;
-        this.fullName = fullName;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.urlAvatar = urlAvatar;
         this.password = password;
     }
 
@@ -47,14 +34,6 @@ public class User {
         this.userName = userName;
     }
 
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -69,14 +48,6 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public String getUrlAvatar() {
-        return urlAvatar;
-    }
-
-    public void setUrlAvatar(String urlAvatar) {
-        this.urlAvatar = urlAvatar;
     }
 
     public String getPassword() {
