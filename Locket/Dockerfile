@@ -5,15 +5,18 @@ FROM gradle:8.4.0-jdk21 as build
 COPY . /app
 WORKDIR /app
 
-# 3. Build the app using Gradle wrapper
+# 3. Gán quyền thực thi cho gradlew (nếu cần)
+RUN chmod +x ./gradlew
+
+# 4. Build project
 RUN ./gradlew clean build --no-daemon
 
-# 4. Use JDK to run jar
+# 5. Use JDK to run jar
 FROM openjdk:21
 WORKDIR /app
 
-# 5. Copy jar from previous stage
+# 6. Copy jar from previous stage
 COPY --from=build /app/build/libs/*.jar Modis.jar
 
-# 6. Run app
+# 7. Run app
 ENTRYPOINT ["java", "-jar", "Modis.jar"]
