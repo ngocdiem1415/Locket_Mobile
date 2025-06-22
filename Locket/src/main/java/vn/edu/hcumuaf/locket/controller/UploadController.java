@@ -45,7 +45,7 @@ public class UploadController {
             return ResponseEntity.ok(Map.of("url", uploadResult.get("secure_url")));
 
         } catch (FirebaseAuthException e) {
-
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token không hợp lệ: " + e.getMessage());
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi upload ảnh: " + e.getMessage());
         } catch (Exception e) {
