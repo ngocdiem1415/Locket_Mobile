@@ -50,12 +50,16 @@ import com.hucmuaf.locket_mobile.adapter.FriendReactAdapter;
 import com.hucmuaf.locket_mobile.activity.AllImageActivity;
 import com.hucmuaf.locket_mobile.adapter.ItemFriendAdapter;
 import com.hucmuaf.locket_mobile.adapter.PhotoAdapter;
+import com.hucmuaf.locket_mobile.inteface.FriendListApiService;
 import com.hucmuaf.locket_mobile.modedb.Image;
 import com.hucmuaf.locket_mobile.modedb.Reaction;
 import com.hucmuaf.locket_mobile.modedb.SaveResponse;
 import com.hucmuaf.locket_mobile.modedb.User;
+
 import com.hucmuaf.locket_mobile.model.Message;
 import com.hucmuaf.locket_mobile.model.MessageType;
+
+import com.hucmuaf.locket_mobile.model.FriendListResponse;
 import com.hucmuaf.locket_mobile.repo.ImageLoadCallback;
 import com.hucmuaf.locket_mobile.repo.ImageResponsitory;
 import com.hucmuaf.locket_mobile.service.ApiClient;
@@ -176,7 +180,7 @@ public class PageReactFragment extends Fragment {
                     pages.clear();
                     // Xử lý danh sách ảnh ở đây
                     pages = images;
-                    usersOfPages.add(currUser);
+                    if (!usersOfPages.contains(currUser)) usersOfPages.add(currUser);
                     titleFriend.setText(tvName.getText());
                     Log.e("React Activity", pages.toString());
                     PhotoAdapter adapter = new PhotoAdapter(context, pages, usersOfPages);
@@ -196,7 +200,40 @@ public class PageReactFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.list_friends);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-
+        pages = new ArrayList<>();
+        usersOfPages = new ArrayList<>();
+//            getAllImagePages(userId, new OnImagesLoadedListener() {
+//                @Override
+//                public void onSuccess(List<Image> images) {
+//                    pages.clear();
+//                    // Xử lý danh sách ảnh ở đây
+//                    pages = images;
+//                    if (!usersOfPages.contains(currUser)) usersOfPages.add(currUser);
+//                    Log.d("React Activity empty ","Gửi ảnh qua nè"+ pages.toString());
+//                    Log.d("React Activity empty ","Gửi user qua nè"+ usersOfPages.toString());
+//
+//                    PhotoAdapter adapter = new PhotoAdapter(context, pages, usersOfPages);
+//
+//                    imageView.setAdapter(adapter);
+//
+//                    // Scroll đến đúng ảnh
+//                    if (initialImageId != null) {
+//                        for (int i = 0; i < pages.size(); i++) {
+//                            if (initialImageId.equals(pages.get(i).getImageId())) {
+//                                imageView.setCurrentItem(i, false);
+//                                break;
+//                            }
+//                        }
+//                    }
+//                    Log.e("API", images.toString());
+//                }
+//
+//                @Override
+//                public void onFailure(String error) {
+//                    Log.e("API", "Error: " + error);
+//
+//                }
+//            });
         listFriend = new ArrayList<>();
         getFriends(userId, new OnFriendLoadedListener() {
             @Override
@@ -212,7 +249,7 @@ public class PageReactFragment extends Fragment {
                             public void onSuccess(List<Image> images) {
                                 // Xử lý danh sách ảnh ở đây
                                 pages = images;
-                                usersOfPages.add(currUser);
+                                if (!usersOfPages.contains(currUser)) usersOfPages.add(currUser);
                                 titleFriend.setText(user.getFullName());
                                 Log.e("React Activity", pages.toString());
                                 PhotoAdapter adapter = new PhotoAdapter(context, pages, usersOfPages);
@@ -232,6 +269,38 @@ public class PageReactFragment extends Fragment {
                     }
                 });
                 recyclerView.setAdapter(itemAdapter);
+
+                getAllImagePagesRealTime(userId, convertListToSet(listFriend), new ImageLoadCallback() {
+                    @Override
+                    public void onSuccess(List<Image> images) {
+                        pages.clear();
+                        // Xử lý danh sách ảnh ở đây
+                        pages = images;
+                        if (!usersOfPages.contains(currUser)) usersOfPages.add(currUser);
+                        Log.d("React Activity ", "Gửi ảnh qua nè" + pages.toString());
+                        Log.d("React Activity ", "Gửi user qua nè" + usersOfPages.toString());
+                        PhotoAdapter adapter = new PhotoAdapter(context, pages, usersOfPages);
+
+                        imageView.setAdapter(adapter);
+
+                        // Scroll đến đúng ảnh
+                        if (initialImageId != null) {
+                            for (int i = 0; i < pages.size(); i++) {
+                                if (initialImageId.equals(pages.get(i).getImageId())) {
+                                    imageView.setCurrentItem(i, false);
+                                    break;
+                                }
+                            }
+                        }
+                        Log.e("API", images.toString());
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.e("API", "Error: " + e.getMessage());
+
+                    }
+                });
             }
 
             @Override
@@ -307,73 +376,7 @@ public class PageReactFragment extends Fragment {
                 }
             }
         });
-        pages = new ArrayList<>();
-        usersOfPages = new ArrayList<>();
-        if (listFriend.isEmpty()) {
-            getAllImagePages(userId, new OnImagesLoadedListener() {
-                @Override
-                public void onSuccess(List<Image> images) {
-                    pages.clear();
-                    // Xử lý danh sách ảnh ở đây
-                    pages = images;
-                    usersOfPages.add(currUser);
-                    Log.e("React Activity", pages.toString());
 
-                    PhotoAdapter adapter = new PhotoAdapter(context, pages, usersOfPages);
-
-                    imageView.setAdapter(adapter);
-
-                    // Scroll đến đúng ảnh
-                    if (initialImageId != null) {
-                        for (int i = 0; i < pages.size(); i++) {
-                            if (initialImageId.equals(pages.get(i).getImageId())) {
-                                imageView.setCurrentItem(i, false);
-                                break;
-                            }
-                        }
-                    }
-                    Log.e("API", images.toString());
-                }
-
-                @Override
-                public void onFailure(String error) {
-                    Log.e("API", "Error: " + error);
-
-                }
-            });
-        } else {
-            getAllImagePagesRealTime(userId, convertListToSet(listFriend), new ImageLoadCallback() {
-                @Override
-                public void onSuccess(List<Image> images) {
-                    pages.clear();
-                    // Xử lý danh sách ảnh ở đây
-                    pages = images;
-                    usersOfPages.add(currUser);
-                    Log.e("React Activity", pages.toString());
-
-                    PhotoAdapter adapter = new PhotoAdapter(context, pages, usersOfPages);
-
-                    imageView.setAdapter(adapter);
-
-                    // Scroll đến đúng ảnh
-                    if (initialImageId != null) {
-                        for (int i = 0; i < pages.size(); i++) {
-                            if (initialImageId.equals(pages.get(i).getImageId())) {
-                                imageView.setCurrentItem(i, false);
-                                break;
-                            }
-                        }
-                    }
-                    Log.e("API", images.toString());
-                }
-
-                @Override
-                public void onFailure(Exception e) {
-                    Log.e("API", "Error: " + e.getMessage());
-
-                }
-            });
-        }
         View take = view.findViewById(R.id.take);
         take.setOnClickListener(v -> {
             ViewPager2 viewPager = requireActivity().findViewById(R.id.main_viewpager);
@@ -549,7 +552,7 @@ public class PageReactFragment extends Fragment {
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 currUser = response.body();
                 assert currUser != null;
-                Log.e("Page React Fragment", currUser.toString());
+                Log.e("Page React Fragment UserCurr", currUser.toString());
             }
 
             @Override
@@ -632,30 +635,39 @@ public class PageReactFragment extends Fragment {
 
     public void getAllImagePagesRealTime(String userId, Set<String> listFriendIds, ImageLoadCallback listener) {
         imageResponsitory.getAllImagesByUserId(userId, listFriendIds, listener);
-
     }
 
     public void getFriends(String userId, OnFriendLoadedListener listener) {
-        FriendRequestService friendRequestService = ApiClient.getFriendRequestService();
-        Call<List<User>> call = friendRequestService.getListFriendByUserId(userId);
-        call.enqueue(new Callback<List<User>>() {
+        FriendListApiService friendRequestService = ApiClient.getFriendListApiService();
+        Call<FriendListResponse> call = friendRequestService.getFriendList(userId);
+        call.enqueue(new Callback<FriendListResponse>() {
             @Override
-            public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
+            public void onResponse(@NonNull Call<FriendListResponse> call, @NonNull Response<FriendListResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    usersOfPages = response.body();
+//                    usersOfPages.clear();
+                    usersOfPages.addAll(convert(response.body().getFriends()));
                     Log.e("PageReactFragment", usersOfPages.toString());
                     Log.e("PageReactFragment", response.body().toString());
-                    listener.onSuccess(response.body());
+                    listener.onSuccess(usersOfPages);
                 } else {
                     listener.onFailure("Error code: " + response.code());
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<FriendListResponse> call, @NonNull Throwable t) {
                 listener.onFailure(t.getMessage());
             }
         });
+    }
+
+    public List<User> convert(List<com.hucmuaf.locket_mobile.model.User> users) {
+        List<User> newList = new ArrayList<>();
+        for (com.hucmuaf.locket_mobile.model.User u : users) {
+            User newUser = new User(u.getUserId(), u.getUserName(), u.getFullName(), u.getEmail(), u.getPhoneNumber(), u.getUrlAvatar(), u.getPassword());
+            newList.add(newUser);
+        }
+        return newList;
     }
 
     public void getFriendReactToYou(String imageId, OnFriendLoadedListener listener) {
@@ -666,6 +678,7 @@ public class PageReactFragment extends Fragment {
             public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     listener.onSuccess(response.body());
+                    Log.e("Ban be da tha emoji", response.body().toString());
                 } else {
                     listener.onFailure("Error code: " + response.code());
                 }

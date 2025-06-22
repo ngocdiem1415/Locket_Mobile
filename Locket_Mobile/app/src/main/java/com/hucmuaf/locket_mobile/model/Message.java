@@ -11,8 +11,6 @@ public class Message {
 
     @SerializedName("receiverId")
     private String receiverId;
-    //    @SerializedName("imageId")
-//    private String imageId;
     @SerializedName("content")
     private String content;
     @SerializedName("timestamp")
