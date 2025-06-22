@@ -119,14 +119,16 @@ public class ApiClient {
         }
         return authService;
     }
+
     public static AuthService getAuthService() {
         if (authService == null) {
             authService = getClient().create(AuthService.class);
         }
         return authService;
+    }
 
-    public static FriendRequestService getFriendRequestService(){
-        if (friendRequestService == null){
+    public static FriendRequestService getFriendRequestService() {
+        if (friendRequestService == null) {
             friendRequestService = getClient().create(FriendRequestService.class);
         }
         return friendRequestService;
