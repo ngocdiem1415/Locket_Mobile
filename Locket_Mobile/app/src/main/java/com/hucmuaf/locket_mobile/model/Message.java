@@ -62,7 +62,6 @@ public class Message {
         this.content = content;
     }
 
-
     public long getTimestamp() {
         return timestamp;
     }
