@@ -23,11 +23,11 @@ public class Message {
     public Message() {
     }
 
-    public Message(String senderId, String receiverId, String content, String imageId, long timestamp, String type) {
+    public Message(String senderId, String receiverId, String content, /**String imageId, */ long timestamp, String type) {
 //        this.id = id;
         this.senderId = senderId;
         this.receiverId = receiverId;
-        this.imageId = imageId;
+//        this.imageId = imageId;
         this.content = content;
         this.timestamp = timestamp;
         this.type = type;

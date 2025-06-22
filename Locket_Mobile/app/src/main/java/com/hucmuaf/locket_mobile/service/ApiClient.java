@@ -123,6 +123,7 @@ public class ApiClient {
             authService = getClient().create(AuthService.class);
         }
         return authService;
+    }
       
     public static FriendRequestService getFriendRequestService(){
         if (friendRequestService == null){
