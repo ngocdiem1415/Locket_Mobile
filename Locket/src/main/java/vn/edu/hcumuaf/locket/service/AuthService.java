@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.database.DatabaseReference;
+import org.apache.juli.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -89,5 +90,33 @@ public class AuthService {
 
     private String hashPassword(String rawPassword) {
         return Base64.getEncoder().encodeToString(rawPassword.getBytes());
+    }
+
+    public ResponseEntity<?> verifyToken(String userId, String authHeader) throws IOException, FirebaseAuthException {
+       try {
+           if (!authHeader.startsWith("Bearer ")) {
+               return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                       .body("Token không hợp lệ: Thiếu tiền tố Bearer");
+           }
+
+           //bỏ tiền tố "Bearer"
+           String token = authHeader.substring(7);
+           FirebaseToken decodedToken = firebaseConfig.firebaseAuth().verifyIdToken(token);
+           String uidFromToken = decodedToken.getUid();
+
+           if (!uidFromToken.equals(userId)) {
+               return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                       .body("UID trong token không khớp với userId trong đường dẫn.");
+           }
+
+           Map<String, Object> response = new HashMap<>();
+           response.put("userId", uidFromToken);
+           response.put("message", "Xác thực thành công");
+
+           return ResponseEntity.ok(response);
+       } catch (FirebaseAuthException e) {
+           return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                   .body("Token không hợp lệ hoặc đã hết hạn: " + e.getMessage());
+       }
     }
 }
