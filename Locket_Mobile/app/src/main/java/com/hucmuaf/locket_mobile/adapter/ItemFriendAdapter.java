@@ -56,6 +56,7 @@ public class ItemFriendAdapter extends RecyclerView.Adapter<ItemFriendViewHolder
         holder.bind(u, listener);
         String imageName = u.getUrlAvatar();
 
+        /**try catch lại khi URL bị null*/
         // Load ảnh từ URL bằng Glide
         Glide.with(context)
                 .load(imageName)

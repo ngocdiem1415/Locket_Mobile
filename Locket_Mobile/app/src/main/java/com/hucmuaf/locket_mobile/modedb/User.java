@@ -16,6 +16,13 @@ public class User {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
+    public User(String userId, String userName,String email, String phoneNumber, String password) {
+        this.userId = userId;
+        this.userName = userName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+    }
 
     public User(String userId, String userName, String fullName, String email, String phoneNumber, String urlAvatar, String password) {
         this.userId = userId;
@@ -83,9 +90,17 @@ public class User {
         this.urlAvatar = urlAvatar;
     }
 
-    @NonNull
+
     @Override
     public String toString() {
-        return  this.userId + ","+ this.userName+"," +this.fullName+","+ this.email+","+this.phoneNumber+","+this.urlAvatar+","+this.password;
+        return "User{" +
+                "userId='" + userId + '\'' +
+                ", userName='" + userName + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", urlAvatar='" + urlAvatar + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

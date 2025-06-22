@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,6 +41,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.firebase.Timestamp;
 import com.hucmuaf.locket_mobile.R;
 import com.hucmuaf.locket_mobile.adapter.FriendReactAdapter;
+import com.hucmuaf.locket_mobile.activity.AllImageActivity;
 import com.hucmuaf.locket_mobile.adapter.ItemFriendAdapter;
 import com.hucmuaf.locket_mobile.adapter.PhotoAdapter;
 import com.hucmuaf.locket_mobile.modedb.Image;
@@ -75,6 +77,9 @@ public class PageReactFragment extends Fragment {
     private List<User> listFriend;
     private List<User> listFriendReactToYou;
     private String userId = null;
+    private String initialImageId = null;
+    private String initialFriendId = null;
+    private String initialFriendName = null;
     private Context context;
     private Activity activity;
     private boolean ignoreNextTextChange = false;
@@ -100,7 +105,10 @@ public class PageReactFragment extends Fragment {
 
         assert getArguments() != null;
         userId = getArguments().getString("userId");
-        Log.e("React Activity", String.valueOf(userId));
+        initialImageId = getArguments().getString("imageId"); //TRuyền thêm imageId để cuộn đến đúng ảnh
+        initialFriendId = getArguments().getString("friendId");
+        initialFriendName = getArguments().getString("friendName");
+        Log.e("React Activity", String.valueOf(userId) + "+ ImageId: " + String.valueOf(initialImageId));
 
         View maskView = view.findViewById(R.id.mask);
         LinearLayout layout = view.findViewById(R.id.friends_board);
@@ -119,6 +127,10 @@ public class PageReactFragment extends Fragment {
         });
 
         TextView titleFriend = view.findViewById(R.id.title);
+        if (initialFriendId != null) {
+            titleFriend.setText(initialFriendName);
+        }
+
 
         LinearLayout imageAllFriend = view.findViewById(R.id.image_all_friend);
         TextView tvName = view.findViewById(R.id.tvName);
@@ -282,9 +294,20 @@ public class PageReactFragment extends Fragment {
                 pages = images;
 
                 Log.e("React Activity", pages.toString());
+
                 PhotoAdapter adapter = new PhotoAdapter(context, pages, usersOfPages);
 
                 imageView.setAdapter(adapter);
+
+                // Scroll đến đúng ảnh
+                if (initialImageId != null) {
+                    for (int i = 0; i < pages.size(); i++) {
+                        if (initialImageId.equals(pages.get(i).getImageId())) {
+                            imageView.setCurrentItem(i, false);
+                            break;
+                        }
+                    }
+                }
                 Log.e("API", images.toString());
             }
 
@@ -416,6 +439,15 @@ public class PageReactFragment extends Fragment {
             Reaction reaction = new Reaction(userId, imageId, icon, time);
             addReaction(rootView, reaction);
         });
+
+        //Hiển thị trang lưới ảnh khi bấm vào nút flash
+        ImageView flash = view.findViewById(R.id.flash);
+        flash.setOnClickListener(v -> {
+            Log.e("CHUYển SANG", "All Image");
+            Intent intent = new Intent(requireContext(), AllImageActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
+        });
     }
 
     public void reactEmoji(FrameLayout rootView, String userId, String imageId, String icon, long time) {
@@ -463,141 +495,143 @@ public class PageReactFragment extends Fragment {
 
             }
         });
+
     }
 
-    public void getAllImagePages(String userId, OnImagesLoadedListener listener) {
-        ImageService imageService = ApiClient.getImageService();
-        Call<List<Image>> call = imageService.getAllImages(userId);
-        Log.e("PAGES", call.toString());
+        public void getAllImagePages (String userId, OnImagesLoadedListener listener){
+            ImageService imageService = ApiClient.getImageService();
+            Call<List<Image>> call = imageService.getAllImages(userId);
+            Log.e("PAGES", call.toString());
 
-        call.enqueue(new Callback<List<Image>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Image>> call, @NonNull Response<List<Image>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    listener.onSuccess(response.body());
-                } else {
-                    listener.onFailure("Error code: " + response.code());
+            call.enqueue(new Callback<List<Image>>() {
+                @Override
+                public void onResponse(@NonNull Call<List<Image>> call, @NonNull Response<List<Image>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        listener.onSuccess(response.body());
+                    } else {
+                        listener.onFailure("Error code: " + response.code());
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<List<Image>> call, @NonNull Throwable t) {
-                listener.onFailure(t.getMessage());
-            }
-        });
-    }
-
-    public void getFriends(String userId, OnFriendLoadedListener listener) {
-        FriendRequestService friendRequestService = ApiClient.getFriendRequestService();
-        Call<List<User>> call = friendRequestService.getListFriendByUserId(userId);
-        call.enqueue(new Callback<List<User>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    usersOfPages = response.body();
-                    listener.onSuccess(usersOfPages);
-                } else {
-                    listener.onFailure("Error code: " + response.code());
+                @Override
+                public void onFailure(@NonNull Call<List<Image>> call, @NonNull Throwable t) {
+                    listener.onFailure(t.getMessage());
                 }
-            }
+            });
+        }
 
-            @Override
-            public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {
-                listener.onFailure(t.getMessage());
-            }
-        });
-    }
-
-    public void getFriendReactToYou(String imageId, OnFriendLoadedListener listener) {
-        ReactionService reactionService = ApiClient.getReactionService();
-        Call<List<User>> call = reactionService.getFriendReactedToImageYou(imageId);
-        call.enqueue(new Callback<List<User>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    listener.onSuccess(response.body());
-                } else {
-                    listener.onFailure("Error code: " + response.code());
+        public void getFriends (String userId, OnFriendLoadedListener listener){
+            FriendRequestService friendRequestService = ApiClient.getFriendRequestService();
+            Call<List<User>> call = friendRequestService.getListFriendByUserId(userId);
+            call.enqueue(new Callback<List<User>>() {
+                @Override
+                public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        usersOfPages = response.body();
+                        listener.onSuccess(usersOfPages);
+                    } else {
+                        listener.onFailure("Error code: " + response.code());
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {
-                listener.onFailure(t.getMessage());
-            }
-        });
-    }
-
-    public void getImageBySenderIdAndReceiverId(String senderId, String receiverId, OnImagesLoadedListener listener) {
-        ImageService imageService = ApiClient.getImageService();
-        Call<List<Image>> call = imageService.getImageBySenderIdAndReceiverId(senderId, receiverId);
-
-        call.enqueue(new Callback<List<Image>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Image>> call, @NonNull Response<List<Image>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    listener.onSuccess(response.body());
-                } else {
-                    listener.onFailure("Error code: " + response.code());
+                @Override
+                public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {
+                    listener.onFailure(t.getMessage());
                 }
+            });
+        }
+
+        public void getFriendReactToYou (String imageId, OnFriendLoadedListener listener){
+            ReactionService reactionService = ApiClient.getReactionService();
+            Call<List<User>> call = reactionService.getFriendReactedToImageYou(imageId);
+            call.enqueue(new Callback<List<User>>() {
+                @Override
+                public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        listener.onSuccess(response.body());
+                    } else {
+                        listener.onFailure("Error code: " + response.code());
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {
+                    listener.onFailure(t.getMessage());
+                }
+            });
+        }
+
+        public void getImageBySenderIdAndReceiverId (String senderId, String
+        receiverId, OnImagesLoadedListener listener){
+            ImageService imageService = ApiClient.getImageService();
+            Call<List<Image>> call = imageService.getImageBySenderIdAndReceiverId(senderId, receiverId);
+
+            call.enqueue(new Callback<List<Image>>() {
+                @Override
+                public void onResponse(@NonNull Call<List<Image>> call, @NonNull Response<List<Image>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        listener.onSuccess(response.body());
+                    } else {
+                        listener.onFailure("Error code: " + response.code());
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<List<Image>> call, @NonNull Throwable t) {
+                    listener.onFailure(t.getMessage());
+                }
+            });
+        }
+
+        public void addFlyingIconsRandomly (FrameLayout animationContainer, String emoji,int count){
+            for (int i = 0; i < count; i++) {
+                int delay = random.nextInt(800); // từ 0-800ms
+
+                handler.postDelayed(() -> {
+                    addFlyingIcon(animationContainer, emoji);
+                }, delay);
             }
+        }
 
-            @Override
-            public void onFailure(@NonNull Call<List<Image>> call, @NonNull Throwable t) {
-                listener.onFailure(t.getMessage());
-            }
-        });
-    }
+        private void addFlyingIcon (FrameLayout animationContainer, String emoji){
+            final TextView icon = new TextView(context);
+            icon.setText(emoji);
+            icon.setTextSize(30 + random.nextInt(20)); // random size 30-50
 
-    public void addFlyingIconsRandomly(FrameLayout animationContainer, String emoji, int count) {
-        for (int i = 0; i < count; i++) {
-            int delay = random.nextInt(800); // từ 0-800ms
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
 
-            handler.postDelayed(() -> {
-                addFlyingIcon(animationContainer, emoji);
-            }, delay);
+            // Set vị trí ban đầu ngẫu nhiên trong khoảng 20% đến 80% chiều rộng màn hình
+            int screenWidth = animationContainer.getWidth();
+            int startX = random.nextInt(screenWidth);
+            params.leftMargin = startX;
+            params.gravity = Gravity.BOTTOM;
+
+            icon.setLayoutParams(params);
+
+            animationContainer.addView(icon);
+
+            float startY = 0f;
+            float endY = -random.nextInt(1800) - 2300f; // cao hơn nếu muốn
+
+            ObjectAnimator moveY = ObjectAnimator.ofFloat(icon, "translationY", startY, endY);
+            moveY.setDuration(1500 + random.nextInt(600)); // 1500-2100ms
+            moveY.setInterpolator(new AccelerateInterpolator());
+
+            ObjectAnimator fadeOut = ObjectAnimator.ofFloat(icon, "alpha", 1f, 1f);
+            fadeOut.setDuration(moveY.getDuration());
+
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.playTogether(moveY, fadeOut);
+
+            animatorSet.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    animationContainer.removeView(icon);
+                }
+            });
+
+            animatorSet.start();
         }
     }
-
-    private void addFlyingIcon(FrameLayout animationContainer, String emoji) {
-        final TextView icon = new TextView(context);
-        icon.setText(emoji);
-        icon.setTextSize(30 + random.nextInt(20)); // random size 30-50
-
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        // Set vị trí ban đầu ngẫu nhiên trong khoảng 20% đến 80% chiều rộng màn hình
-        int screenWidth = animationContainer.getWidth();
-        int startX = random.nextInt(screenWidth);
-        params.leftMargin = startX;
-        params.gravity = Gravity.BOTTOM;
-
-        icon.setLayoutParams(params);
-
-        animationContainer.addView(icon);
-
-        float startY = 0f;
-        float endY = -random.nextInt(1800) - 2300f; // cao hơn nếu muốn
-
-        ObjectAnimator moveY = ObjectAnimator.ofFloat(icon, "translationY", startY, endY);
-        moveY.setDuration(1500 + random.nextInt(600)); // 1500-2100ms
-        moveY.setInterpolator(new AccelerateInterpolator());
-
-        ObjectAnimator fadeOut = ObjectAnimator.ofFloat(icon, "alpha", 1f, 1f);
-        fadeOut.setDuration(moveY.getDuration());
-
-        AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.playTogether(moveY, fadeOut);
-
-        animatorSet.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                animationContainer.removeView(icon);
-            }
-        });
-
-        animatorSet.start();
-    }
-}
