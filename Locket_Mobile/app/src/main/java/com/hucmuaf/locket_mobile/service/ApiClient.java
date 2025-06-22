@@ -14,6 +14,13 @@ public class ApiClient {
     //     private static final String BASE_URL = "http://10.50.0.1:8080/"; // For Android emulator
     private static final String BASE_URL = "http://172.16.1.38:8080/"; // For real device, your computer's IP
 //     private static final String BASE_URL = "http://localhost:8080/"; // For testing
+//    private static final String BASE_URL = "http://10.0.100.23:8080/"; // For real device, your computer's IP
+//     private static final String BASE_URL = "http:/192.168.0.113:8080/"; // For testing
+//    private static final String BASE_URL = "http:/172.16.0.229:8080/"; // For testing
+//     private static final String BASE_URL = "http:/172.16.1.37:8080/"; // For testing
+
+    private static final String BASE_URL = "http://10.50.25.101:8080/"; // For real device, your computer's IP
+    // private static final String BASE_URL = "http://localhost:8080/"; // For testing
 
     private static Retrofit retrofit = null;
     // Retrofit có AuthInterceptor để tự động thêm token vào header
@@ -22,9 +29,10 @@ public class ApiClient {
     private static FriendListApiService friendListApiService = null;
     private static MessageListAPIService messageListAPIService;
     private static ImageService imageService;
-
     private static UserService userService;
     private static AuthService authService;
+    //service lấy ra danh sách id bạn bè, danh sách user là bạn bè của current user
+    private static FriendRequestService friendRequestService = null;
 
     public static Retrofit getClient() {
         if (retrofit == null) {
@@ -120,5 +128,11 @@ public class ApiClient {
             authService = getClient().create(AuthService.class);
         }
         return authService;
+      
+    public static FriendRequestService getFriendRequestService(){
+        if (friendRequestService == null){
+            friendRequestService = getClient().create(FriendRequestService.class);
+        }
+        return friendRequestService;
     }
 }

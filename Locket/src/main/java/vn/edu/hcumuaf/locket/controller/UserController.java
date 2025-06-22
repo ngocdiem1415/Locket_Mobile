@@ -24,6 +24,4 @@ public class UserController {
             return ResponseEntity.status(500).body("Lỗi khi cập nhật: " + e.getMessage());
         }
     }
-
-
 }

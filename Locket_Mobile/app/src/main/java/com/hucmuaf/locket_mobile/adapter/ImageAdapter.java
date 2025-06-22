@@ -21,13 +21,7 @@ public class ImageAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
     private List<Image> imageList;
     private Context context;
     private OnImageClickListener listener;
-
-    //Xử lý sự kiện khu người dùng nhấn vào một ảnh
-    //?????
-//    public interface OnImageClickListener {
-//        void onImageClick(Image image);
-//    }
-    //check in android can not create contructor with parameter here
+    
     public ImageAdapter(Context context, List<Image> photoList, OnImageClickListener listener) {
         this.context = context;
         this.imageList = photoList;

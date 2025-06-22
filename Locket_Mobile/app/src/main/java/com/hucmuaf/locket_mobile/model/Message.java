@@ -3,15 +3,16 @@ package com.hucmuaf.locket_mobile.model;
 import com.google.gson.annotations.SerializedName;
 
 public class Message {
-//    @SerializedName("id")
-//    private String id;
+    @SerializedName("id")
+    private String id;
 
     @SerializedName("senderId")
     private String senderId;
 
     @SerializedName("receiverId")
     private String receiverId;
-
+    @SerializedName("imageId")
+    private String imageId;
     @SerializedName("content")
     private String content;
     @SerializedName("timestamp")
@@ -22,22 +23,23 @@ public class Message {
     public Message() {
     }
 
-    public Message(String senderId, String receiverId, String content, long timestamp, String type) {
+    public Message(String senderId, String receiverId, String content, String imageId, long timestamp, String type) {
 //        this.id = id;
         this.senderId = senderId;
         this.receiverId = receiverId;
+        this.imageId = imageId;
         this.content = content;
         this.timestamp = timestamp;
         this.type = type;
     }
 
-//    public String getId() {
-//        return id;
-//    }
+    public String getId() {
+        return id;
+    }
 
-//    public void setId(String id) {
-//        this.id = id;
-//    }
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getSenderId() {
         return senderId;
@@ -61,6 +63,14 @@ public class Message {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public void getImageId(String imageId) {
+        this.imageId = imageId;
+    }
+
+    public String getImageId() {
+        return imageId;
     }
 
     public long getTimestamp() {

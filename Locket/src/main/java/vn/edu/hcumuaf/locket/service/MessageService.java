@@ -26,7 +26,8 @@ public class MessageService {
     public void saveMessage(Message message) {
         DatabaseReference ref = database.getReference("messages").push();
         Map<String, Object> messageData = new HashMap<>();
-        message.setId(message.getSenderId() + "_" + message.getReceiverId() + ":" + random.nextInt());
+        message.getId();
+//        message.setId(message.getSenderId() + "_" + message.getReceiverId() + ":" + random.nextInt());
         message.setTimestamp(System.currentTimeMillis());
 
         messageData.put("id", message.getId());
@@ -43,6 +44,10 @@ public class MessageService {
                     messages.sort(Comparator.comparingLong(Message::getTimestamp).reversed());
                     return messages;
                 });
+    }
+
+    public CompletableFuture<List<Message>> getReceiverByUserId(String senderId) {
+        return messageDao.getReceiverIdByUserID(senderId);
     }
 
     public CompletableFuture<List<Message>> getAllMessages() {
