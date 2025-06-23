@@ -12,8 +12,8 @@ public class WebCorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:63342");
-        configuration.addAllowedOrigin("http://127.0.0.1:63342");
+//        configuration.addAllowedOrigin("http://localhost:63342");
+        configuration.addAllowedOrigin("https://locket-mobile.onrender.com/");
         configuration.addAllowedOrigin("http://localhost:8080");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
