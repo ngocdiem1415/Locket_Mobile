@@ -250,7 +250,7 @@ public class ChatActivity extends AppCompatActivity {
                 .build();
 
         Request request = new Request.Builder()
-                .url("ws://192.168.0.113:8080/ws")
+                .url("https://locket-mobile.onrender.com/ws")
 //                .url("ws://192.168.0.112:8080/ws")
                 .build();
 
