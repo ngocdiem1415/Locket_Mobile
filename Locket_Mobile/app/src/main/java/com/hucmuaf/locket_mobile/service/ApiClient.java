@@ -15,7 +15,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
     //     private static final String BASE_URL = "http://10.50.0.1:8080/"; // For Android emulator
 
+
     private static final String BASE_URL = "https://locket-mobile.onrender.com/";
+
     private static Retrofit retrofit = null;
     // Retrofit có AuthInterceptor để tự động thêm token vào header
     private static Retrofit authRetrofit = null;
@@ -86,6 +88,7 @@ public class ApiClient {
         }
         return friendListApiService;
     }
+
     public static MessageListAPIService getMessageListApiService() {
         if (messageListAPIService == null) {
             messageListAPIService = getClient().create(MessageListAPIService.class);
@@ -140,7 +143,7 @@ public class ApiClient {
         }
         return authService;
     }
-      
+
     public static FriendRequestService getFriendRequestService(){
         if (friendRequestService == null){
             friendRequestService = getClient().create(FriendRequestService.class);

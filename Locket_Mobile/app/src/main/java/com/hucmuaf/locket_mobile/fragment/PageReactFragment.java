@@ -111,6 +111,8 @@ public class PageReactFragment extends Fragment {
     private String initialImageId = null;
     private String initialFriendId = null;
     private String initialFriendName = null;
+    private String friendId = "ALL";
+    private String friendName = "Tất cả bạn bè";
     private Context context;
     private Activity activity;
     private boolean ignoreNextTextChange = false;
@@ -180,7 +182,10 @@ public class PageReactFragment extends Fragment {
                     pages.clear();
                     // Xử lý danh sách ảnh ở đây
                     pages = images;
-                    if (!usersOfPages.contains(currUser)) usersOfPages.add(currUser);
+                    if (!usersOfPages.contains(currUser)) {
+                        currUser.setFullName("Tôi");
+                        usersOfPages.add(currUser);
+                    }
                     titleFriend.setText(tvName.getText());
                     Log.e("React Activity", pages.toString());
                     PhotoAdapter adapter = new PhotoAdapter(context, pages, usersOfPages);
@@ -251,6 +256,8 @@ public class PageReactFragment extends Fragment {
                                 pages = images;
                                 if (!usersOfPages.contains(currUser)) usersOfPages.add(currUser);
                                 titleFriend.setText(user.getFullName());
+                                friendId = user.getUserId();
+                                friendName = user.getFullName();
                                 Log.e("React Activity", pages.toString());
                                 PhotoAdapter adapter = new PhotoAdapter(context, pages, usersOfPages);
                                 imageView.setAdapter(adapter);
@@ -504,6 +511,8 @@ public class PageReactFragment extends Fragment {
         flash.setOnClickListener(v -> {
             Log.e("CHUYển SANG", "All Image");
             Intent intent = new Intent(requireContext(), AllImageActivity.class);
+            intent.putExtra("friendId", friendId);
+            intent.putExtra("friendName", friendName);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
         });
