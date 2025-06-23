@@ -64,6 +64,8 @@ public class AllImageActivity extends AppCompatActivity{
         listFriendIds = new HashSet<>();
         listFriend = new ArrayList<>();
         allPhotos = new ArrayList<>();
+
+
         //lấy ra user hiện tại
         mAuth = FirebaseService.getInstance().getAuth();
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
@@ -140,12 +142,25 @@ public class AllImageActivity extends AppCompatActivity{
 
         photoGrid.setAdapter(imageAdapter);
 
+        //Nhận từ reactFragment
+        Intent intent = getIntent();
+        friendId = intent.getStringExtra("friendId");
+        friendName = intent.getStringExtra("friendName");
+
+        if (!friendId.equals("ALL")){
+            filterImagesBySenderId(friendId);
+            titleFriend.setText(friendName);
+            maskView.setVisibility(View.GONE);
+            layout.setVisibility(View.GONE);
+        }
+
         //Khi nhấn vào nút chụp ở bottomBar thì chuyển sang home page
         View take = findViewById(R.id.take);
         take.setOnClickListener(v -> {
-            Intent intent = new Intent(AllImageActivity.this, PageComponentActivity.class);
-            startActivity(intent);
-            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            Intent intentHome = new Intent(AllImageActivity.this, PageComponentActivity.class);
+            intentHome.putExtra("userCurrId", currentUserId);
+            startActivity(intentHome);
+            intentHome.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         });
 
         loadListFriendID();
