@@ -159,7 +159,7 @@ public class AllImageActivity extends AppCompatActivity{
         View take = findViewById(R.id.take);
         take.setOnClickListener(v -> {
             Intent intentHome = new Intent(AllImageActivity.this, PageComponentActivity.class);
-            intentHome.putExtra("userCurrId", currentUserId);
+            intentHome.putExtra("userId", currentUserId);
             startActivity(intentHome);
             intentHome.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         });
