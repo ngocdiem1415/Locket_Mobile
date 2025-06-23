@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -162,6 +163,15 @@ public class AllImageActivity extends AppCompatActivity{
             startActivity(intentHome);
             intentHome.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         });
+
+        //Nhấn vào icon message thì chuyển sang MessageActivity
+        ImageView message = findViewById(R.id.message);
+        message.setOnClickListener(v -> {
+            Intent intentChat = new Intent(AllImageActivity.this, MessageActivity.class);
+            startActivity(intentChat);
+            intentChat.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        });
+
 
         loadListFriendID();
         loadListUser();
