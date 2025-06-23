@@ -182,7 +182,10 @@ public class PageReactFragment extends Fragment {
                     pages.clear();
                     // Xử lý danh sách ảnh ở đây
                     pages = images;
-                    if (!usersOfPages.contains(currUser)) usersOfPages.add(currUser);
+                    if (!usersOfPages.contains(currUser)) {
+                        currUser.setFullName("Tôi");
+                        usersOfPages.add(currUser);
+                    }
                     titleFriend.setText(tvName.getText());
                     Log.e("React Activity", pages.toString());
                     PhotoAdapter adapter = new PhotoAdapter(context, pages, usersOfPages);
